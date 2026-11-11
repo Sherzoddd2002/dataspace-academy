@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a1020">
+  <meta name="description" content="DataSpace Academy — Python, Pandas, SQL va Excelni o'yin orqali o'rganish uchun 18 haftalik interaktiv akademiya.">
+  <title>DataSpace Academy — Data sayohati boshlanadi</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#dashboard" aria-label="DataSpace bosh sahifa">
+        <span class="brand-mark">D<span>✦</span></span>
+        <span class="brand-copy"><strong>DATA<span>SPACE</span></strong><small>ACADEMY</small></span>
+      </a>
+      <div class="sidebar-label">KOSMIK MARKAZ</div>
+      <nav class="nav-list" aria-label="Asosiy navigatsiya">
+        <button class="nav-item active" data-view="dashboard"><span class="nav-icon">⌂</span><span>Bosh sahifa</span></button>
+        <button class="nav-item" data-view="map"><span class="nav-icon">◎</span><span>Galaktika xaritasi</span><span class="nav-count">9</span></button>
+        <button class="nav-item" data-view="course"><span class="nav-icon">▤</span><span>54 ta dars</span></button>
+        <button class="nav-item" data-view="arena"><span class="nav-icon">⚔</span><span>Musobaqa maydoni</span></button>
+        <button class="nav-item" data-view="achievements"><span class="nav-icon">✧</span><span>Mukofotlarim</span></button>
+      </nav>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-label">MENING AKADEMIYAM</div>
+      <div class="side-progress">
+        <div class="side-progress-top"><span>Kurs taraqqiyoti</span><strong id="side-progress-percent">0%</strong></div>
+        <div class="progress-track"><i id="side-progress-bar" style="width:0%"></i></div>
+        <small><b id="side-completed">0</b> / 54 missiya</small>
+      </div>
+      <div class="sidebar-bottom">
+        <div class="mentor-card"><span class="mentor-avatar">🧑‍🚀</span><div><strong>Mentor maslahati</strong><small>Har kuni oz-ozdan mashq qil!</small></div></div>
+        <button class="profile-button" id="profile-button"><span class="avatar" id="sidebar-avatar">🚀</span><span class="profile-copy"><strong id="sidebar-name">Explorer</strong><small id="sidebar-level">1-daraja · Yangi sayyoh</small></span><span class="profile-more">•••</span></button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" aria-label="Menyuni ochish">☰</button>
+        <div class="breadcrumb"><span>DataSpace</span><i>/</i><strong id="breadcrumb-current">Bosh sahifa</strong></div>
+        <div class="topbar-actions">
+          <div class="streak-chip"><span>🔥</span><strong id="streak-count">0</strong><small>kun</small></div>
+          <div class="xp-chip"><span class="xp-gem">✦</span><strong id="xp-count">0</strong><small>XP</small></div>
+          <button class="top-avatar" id="top-profile" aria-label="Profil">🚀</button>
+        </div>
+      </header>
+      <div id="app-content" class="page-content" aria-live="polite">
+        <div class="loading-state"><div class="loader-orbit"></div><strong>Galaktika yuklanmoqda...</strong><span>Ma'lumotlar olami tayyorlanmoqda</span></div>
+      </div>
+      <footer class="app-footer"><span>© 2026 DataSpace Academy</span><span>O'rgan · Sinab ko'r · Kashf et <b>✦</b></span><button data-view="teacher" class="footer-teacher">Mentor paneli</button></footer>
+    </main>
+  </div>
+
+  <div class="toast-stack" id="toast-stack"></div>
+  <div class="modal-backdrop hidden" id="modal-backdrop">
+    <section class="modal-card" id="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title"></section>
+  </div>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>
