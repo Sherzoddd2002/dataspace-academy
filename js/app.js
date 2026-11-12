@@ -162,7 +162,7 @@
     const done=!!state.solved;
     const props=zone.props.map((p,i)=>'<span class="world-prop prop-'+(i+1)+'">'+p+'</span>').join('');
     const playerStep=Number(state.playerStep||0);
-    const heroLeft=done?69:7+playerStep*14;
+    const heroLeft=done?69:7+playerStep*18;
     const progress=done?100:Math.min(82,12+playerStep*22);
     return '<section class="game-world biome-'+worldIndex+' '+(done?'is-cleared':'')+'">'+
       '<div class="world-sky"><span class="world-moon"></span><i class="world-star star-a">✦</i><i class="world-star star-b">✧</i><i class="world-star star-c">·</i><span class="world-nebula"></span></div>'+
@@ -183,7 +183,12 @@
     if(action==='forward'||action==='back'){
       missionGameState.playerStep=Math.max(0,Math.min(3,Number(missionGameState.playerStep||0)+(action==='forward'?1:-1)));
       const player=document.querySelector('.voxel-player');
-      if(player&&!missionGameState.solved)player.style.left=(7+missionGameState.playerStep*14)+'%';
+      if(player&&!missionGameState.solved)player.style.left=(7+missionGameState.playerStep*18)+'%';
+      document.querySelectorAll('.route-node').forEach((node,i)=>node.classList.toggle('lit',missionGameState.playerStep>=i+1));
+      const routeProgress=document.querySelector('.world-progress i');
+      if(routeProgress)routeProgress.style.width=Math.min(82,12+missionGameState.playerStep*22)+'%';
+      const routeLabel=document.querySelector('.world-bottom-hud>span:first-child b');
+      if(routeLabel)routeLabel.textContent=Math.min(82,12+missionGameState.playerStep*22)+'%';
       if(action==='forward'&&player){
         const hero=player.querySelector('.voxel-character');
         hero?.classList.remove('action-jump');void hero?.offsetWidth;hero?.classList.add('action-jump');
@@ -210,12 +215,12 @@
       <label for="profile-name-input">Ism yoki taxallus</label><input id="profile-name-input" maxlength="24" placeholder="Masalan: Ali" value="${esc(profile.name)}">
       <label>Hamrohingni tanla</label><div class="avatar-picker">${AVATARS.map(a=>`<button class="avatar-choice ${a===picked?'selected':''}" type="button" data-avatar-choice="${a}">${a}</button>`).join('')}</div>
       <label class="character-class-label">O‘yin qahramoningning kasbi</label><div class="character-class-picker">${CHARACTER_CLASSES.map(c=>`<button class="character-class-option ${c.id===characterClass?'selected':''}" type="button" data-character-class="${c.id}"><span>${c.icon}</span><b>${c.name}</b><small>${c.short}</small></button>`).join('')}</div>
-      <div class="character-preview-row"><span>Qahramoning:</span>${renderVoxelCharacter('preview','idle')}</div>
+      <div class="character-preview-row"><span>Qahramoning:</span>${renderVoxelCharacter('preview','idle',characterClass)}</div>
       <div class="modal-actions">${first?'':'<button class="btn btn-ghost" data-close-modal>Bekor qilish</button>'}<button class="btn btn-primary" id="save-profile">${first?'Galaktikaga kirish':'Saqlash'} <span>→</span></button></div>`;
     document.getElementById('modal-backdrop').classList.remove('hidden');
     let avatar=picked;
     modal.querySelectorAll('[data-avatar-choice]').forEach(btn=>btn.addEventListener('click',()=>{avatar=btn.dataset.avatarChoice;modal.querySelectorAll('[data-avatar-choice]').forEach(x=>x.classList.toggle('selected',x===btn));}));
-    modal.querySelectorAll('[data-character-class]').forEach(btn=>btn.addEventListener('click',()=>{characterClass=btn.dataset.characterClass;modal.querySelectorAll('[data-character-class]').forEach(x=>x.classList.toggle('selected',x===btn));modal.querySelector('.character-preview-row').innerHTML='<span>Qahramoning:</span>'+renderVoxelCharacter('preview','idle');}));
+    modal.querySelectorAll('[data-character-class]').forEach(btn=>btn.addEventListener('click',()=>{characterClass=btn.dataset.characterClass;modal.querySelectorAll('[data-character-class]').forEach(x=>x.classList.toggle('selected',x===btn));modal.querySelector('.character-preview-row').innerHTML='<span>Qahramoning:</span>'+renderVoxelCharacter('preview','idle',characterClass);}));
     modal.querySelector('#save-profile').addEventListener('click',()=>{
       const name=modal.querySelector('#profile-name-input').value.trim();
       if(!name){toast('Ism yoki taxallus kiriting.','warning');return;}
