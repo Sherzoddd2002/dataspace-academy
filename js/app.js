@@ -144,8 +144,8 @@
   function getCharacterClass() {
     return CHARACTER_CLASSES.find(x=>x.id===profile.characterClass)||CHARACTER_CLASSES[0];
   }
-  function renderVoxelCharacter(size='game',mood='idle') {
-    const role=getCharacterClass();
+  function renderVoxelCharacter(size='game',mood='idle',classId=profile.characterClass) {
+    const role=CHARACTER_CLASSES.find(x=>x.id===classId)||CHARACTER_CLASSES[0];
     return '<div class="voxel-character voxel-'+size+' role-'+role.id+' mood-'+mood+' '+(mood==='win'?'player-win':'')+'" aria-label="'+esc(profile.name||'Data Explorer')+' qahramoni">'+
       '<div class="voxel-nameplate">'+esc(profile.name||'EXPLORER')+'</div>'+
       '<div class="voxel-head"><span class="voxel-cap">'+esc(profile.avatar||'🚀')+'</span><div class="voxel-face"><i></i><i></i><b></b></div></div>'+
@@ -161,22 +161,37 @@
     const zone=GAME_ZONES[Math.max(0,worldIndex)];
     const done=!!state.solved;
     const props=zone.props.map((p,i)=>'<span class="world-prop prop-'+(i+1)+'">'+p+'</span>').join('');
-    const progress=done?100:Math.min(84,16+Math.round((index%6)*8));
+    const playerStep=Number(state.playerStep||0);
+    const heroLeft=done?69:7+playerStep*14;
+    const progress=done?100:Math.min(82,12+playerStep*22);
     return '<section class="game-world biome-'+worldIndex+' '+(done?'is-cleared':'')+'">'+
       '<div class="world-sky"><span class="world-moon"></span><i class="world-star star-a">✦</i><i class="world-star star-b">✧</i><i class="world-star star-c">·</i><span class="world-nebula"></span></div>'+
       '<div class="world-hud"><div><small>WORLD '+String(worldIndex+1).padStart(2,'0')+' / 09</small><strong>'+esc(zone.name)+'</strong></div><span class="world-level-tag">'+esc(zone.tag)+'</span><span class="world-mission-tag">MISSION '+String(index+1).padStart(2,'0')+'</span></div>'+
       '<div class="world-props">'+props+'</div>'+
       '<div class="obby-platform platform-back"></div><div class="obby-platform platform-mid"></div><div class="obby-platform platform-front"></div>'+
-      '<div class="obby-route"><i class="route-node node-one '+(done?'lit':'')+'">1</i><i class="route-node node-two '+(done?'lit':'')+'">2</i><i class="route-node node-three '+(done?'lit':'')+'">3</i><span class="route-bridge"></span></div>'+
-      '<div class="voxel-player">'+renderVoxelCharacter('game',done?'win':'idle')+'</div>'+
+      '<div class="obby-route"><i class="route-node node-one '+(done||playerStep>=1?'lit':'')+'">1</i><i class="route-node node-two '+(done||playerStep>=2?'lit':'')+'">2</i><i class="route-node node-three '+(done||playerStep>=3?'lit':'')+'">3</i><span class="route-bridge"></span></div>'+
+      '<div class="voxel-player" style="left:'+heroLeft+'%">'+renderVoxelCharacter('game',done?'win':'idle')+'</div>'+
       '<div class="world-companion"><div class="companion-cube"><i></i><i></i><b></b></div><strong>BYTE</strong></div>'+
       '<div class="npc-speech"><span>🤖 BYTE · MENTOR</span><p>'+(done?'Ajoyib, '+esc(profile.name||'Explorer')+'! Portal ochildi. Keyingi orolga tayyormisan?':esc(zone.npc)+' Avval vazifani bajar, portalni och!')+'</p></div>'+
       '<div class="world-portal '+(done?'portal-open':'')+'"><span>'+(done?'✦':'🔒')+'</span><b>'+(done?'PORTAL OPEN':'DATA PORTAL')+'</b><small>'+(done?'NEXT ISLAND':'CHECKPOINT')+'</small></div>'+
       '<div class="world-bottom-hud"><span>OBBY QUEST <b>'+Math.round(progress)+'%</b></span><div class="world-progress"><i style="width:'+progress+'%"></i></div><span class="world-xp">✦ +20 XP</span></div>'+
-      '<div class="avatar-action-bar"><span>Qahramonni boshqar:</span><button data-player-action="jump" title="Space">⤴ JUMP</button><button data-player-action="wave" title="W">👋 WAVE</button><button data-player-action="dance" title="D">✦ DANCE</button><small>SPACE · W · D</small></div>'+
+      '<div class="avatar-action-bar"><span>Qahramonni boshqar:</span><button data-player-action="back" title="←">◀ BACK</button><button data-player-action="forward" title="→">▶ WALK</button><button data-player-action="jump" title="Space">⤴ JUMP</button><button data-player-action="wave" title="W">👋 WAVE</button><button data-player-action="dance" title="D">✦ DANCE</button><small>← → SPACE W D</small></div>'+
     '</section>';
   }
   function triggerCharacterAction(action) {
+    if(!missionGameState)return;
+    if(action==='forward'||action==='back'){
+      missionGameState.playerStep=Math.max(0,Math.min(3,Number(missionGameState.playerStep||0)+(action==='forward'?1:-1)));
+      const player=document.querySelector('.voxel-player');
+      if(player&&!missionGameState.solved)player.style.left=(7+missionGameState.playerStep*14)+'%';
+      if(action==='forward'&&player){
+        const hero=player.querySelector('.voxel-character');
+        hero?.classList.remove('action-jump');void hero?.offsetWidth;hero?.classList.add('action-jump');
+        setTimeout(()=>hero?.classList.remove('action-jump'),760);
+      }
+      if(missionGameState.playerStep===3&&action==='forward')toast('Checkpointga yetding! Endi vazifani yechib portalni och.','success');
+      return;
+    }
     const character=document.querySelector('.voxel-player .voxel-character');
     if(!character)return;
     character.classList.remove('action-jump','action-wave','action-dance');
@@ -355,7 +370,7 @@
     const order=(g.steps||[]).map((_,i)=>i);
     for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
     if(order.length>1&&order.every((v,i)=>v===i)){const first=order.shift();order.push(first);}
-    return {index,selected:null,picked:[],order,assignments:{},selectedItem:null,marked:[],minValue:g.start??g.min??0,flag:!!g.startFlag,surveyRows:[],surveySubject:g.subjects?.[0]||'',surveyHours:2,feedback:'',solved:isDone(index)&&!replay};
+    return {index,selected:null,picked:[],order,assignments:{},selectedItem:null,marked:[],minValue:g.start??g.min??0,flag:!!g.startFlag,surveyRows:[],surveySubject:g.subjects?.[0]||'',surveyHours:2,feedback:'',playerStep:isDone(index)&&!replay?3:0,solved:isDone(index)&&!replay};
   }
   function missionGameMatches(g,state) {
     return (g.rows||[]).filter(r=>Number(r.value)>=Number(state.minValue)&&(!g.flagLabel||!state.flag||!!r.flag));
@@ -421,7 +436,7 @@
     else if(g.type==='filter')ok=Number(s.minValue)===Number(g.target)&&(!g.flagLabel||!!s.flag===!!g.targetFlag);
     else if(g.type==='survey')ok=s.surveyRows.length>=Number(g.minimum||3);
     else ok=Number(s.selected)===Number(g.correct);
-    if(ok){s.solved=true;s.feedback='Zo‘r! Vazifani o‘zing hal qilding. Endi qisqa izoh va XP seni kutmoqda.';toast('Mini-o‘yin bajarildi! “Aha!” izohi ochildi.','success');}
+    if(ok){s.solved=true;s.playerStep=3;s.feedback='Zo‘r! Vazifani o‘zing hal qilding. Endi qisqa izoh va XP seni kutmoqda.';toast('Mini-o‘yin bajarildi! “Aha!” izohi ochildi.','success');}
     else{s.feedback=g.type==='sort'?'Har bir signalni uning ma’no turiga qarab joylashtir.':g.type==='sequence'?'Kod yuqoridan pastga bajariladi. Avval ma’lumot tayyorlanadi, keyin amal ishlaydi.':g.type==='clean'?'Bo‘sh katak, takroriy ID yoki noto‘g‘ri formatni izla.':g.type==='filter'?'Slayder chegarasi va qo‘shimcha belgini vazifa bilan solishtir.':'Tanlovni yana bir bor tekshir. Qaysi javob vazifadagi maqsadga olib boradi?';toast('Hali to‘g‘ri emas. Yana urinib ko‘r!','warning');}
     renderLesson();
   }
@@ -793,7 +808,7 @@
     document.addEventListener('keydown',e=>{
       if(e.key==='Escape'){closeModal();return;}
       if(activeView!=='lesson'||e.repeat||e.target?.matches('input,textarea,select,[contenteditable="true"]')||e.target?.closest('button,a'))return;
-      const key=e.code==='Space'?'jump':e.key.toLowerCase()==='w'?'wave':e.key.toLowerCase()==='d'?'dance':null;
+      const key=e.code==='Space'?'jump':e.key==='ArrowRight'?'forward':e.key==='ArrowLeft'?'back':e.key.toLowerCase()==='w'?'wave':e.key.toLowerCase()==='d'?'dance':null;
       if(key){e.preventDefault();triggerCharacterAction(key);}
     });
   }
