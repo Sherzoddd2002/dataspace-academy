@@ -76,7 +76,21 @@ export async function currentUser() {
 }
 
 export async function getMyProfile() {
-  return rpc("get_my_profile");
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const row = await rpc("get_my_profile");
+      if (row) return row;
+    } catch (error) {
+      const retryable = error?.status === 503 || error?.status === 502 || error?.status === 504 ||
+        error?.code === "42501" || /42501|jwt claim|session identity/i.test(error?.message || "");
+      if (!retryable) throw error;
+      if (attempt === 2) throw new Error(
+        "Akkaunt sessiyasi vaqtincha tasdiqlanmadi. Bir necha soniyadan keyin «Kirish» orqali qayta urinib ko‘ring."
+      );
+    }
+    if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 250 * (attempt + 1)));
+  }
+  return null;
 }
 
 export async function ensureProfile({ username, displayName, avatar = "🚀", characterClass = "navigator" }) {
