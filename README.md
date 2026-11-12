@@ -52,8 +52,12 @@ Brauzerda `http://localhost:8000` manzilini oching. `index.html` faylini to'g'ri
 
 ## GitHub Pages'ga joylash
 
-Repo sozlamalari → **Settings → Pages** bo'limida **Build and deployment → Source** uchun **GitHub Actions** ni tanlang. `main` branch'ga push qiling. `Deploy DataSpace Academy` workflow avtomatik ishga tushadi. Deploy muvaffaqiyatli tugagach, sayt:
-`https://sherzoddd2002.github.io/dataspace-academy/`
+Agar bu papka `dataspace-academy/` nomi bilan boshqa repozitoriy ichiga joylashtirilsa, repozitoriy ildizidagi `.github/workflows/deploy-dataspace.yml` workflow shu papkani Pages'ga chiqarishi mumkin. Ushbu mustaqil loyiha papkasi ichida esa `.github/workflows/deploy.yml` alohida repo sifatida joylashtirish uchun berilgan.
+
+1. GitHub repo → **Settings → Pages** ga kiring.
+2. **Build and deployment → Source** bo'limida **GitHub Actions** ni tanlang.
+3. `main` branch'ga push qiling. Workflow avtomatik ishga tushadi.
+4. Actions'dagi `Deploy DataSpace Academy` job muvaffaqiyatli tugagach, Pages URL'ini repo → Settings → Pages bo'limidan oling. GitHub Pages sozlamasini birinchi marta qo'lda yoqish talab qilinadi.
 
 ## Texnik arxitektura
 
@@ -64,7 +68,7 @@ Repo sozlamalari → **Settings → Pages** bo'limida **Build and deployment →
 - Excel: brauzer ichidagi mini-workbook; ma'lumot CSV ko'rinishida eksport qilinadi.
 - Progress: brauzer `localStorage`.
 
-**Internet talabi:** birinchi Python yoki SQL ishga tushishida runtime CDN'dan yuklanadi. Shu sababli o'quvchining brauzerida internet bo'lishi kerak. Python/Pandas/Matplotlib paketlari ilk yuklanishda vaqt olishi mumkin.
+**Internet talabi:** birinchi Python yoki SQL ishga tushishida runtime CDN'dan yuklanadi. Shu sababli o'quvchining brauzerida internet bo'lishi kerak. Keyingi foydalanishda brauzer keshi yuklashni tezlashtirishi mumkin. Python/Pandas/Matplotlib to'liq paketlari ilk yuklanishda vaqt olishi mumkin.
 
 ## Muhim cheklovlar
 
