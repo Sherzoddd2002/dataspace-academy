@@ -250,7 +250,9 @@
         closeModal();render();
         toast(signup?'Akkaunt yaratildi! Galaktikaga xush kelibsan.':'Xush kelibsan! Progressing tiklandi.','success');
       }catch(error){
-        errorEl.textContent=error?.message||'Kirishda xatolik yuz berdi.';
+        const detail=[error?.stage,error?.message,error?.code?('Kod: '+error.code):''].filter(Boolean).join(' · ');
+        errorEl.textContent=detail||'Kirishda xatolik yuz berdi.';
+        console.error('DataSpace account flow failed:',{stage:error?.stage,status:error?.status,code:error?.code,endpoint:error?.endpoint,message:error?.message});
         button.disabled=false;button.innerHTML=(signup?'Akkaunt yaratish':'Kirish')+' <span>→</span>';
         authModalBusy=false;
       }
