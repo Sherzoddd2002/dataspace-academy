@@ -23,8 +23,6 @@ function normalizeResult(result, label) {
 }
 
 async function getToken({ allowAnonymous = false } = {}) {
-  // session.token is the opaque cookie/session identifier, not a Data API JWT.
-  // The JWT plugin's token() action returns the signed Bearer token in data.token.
   if (allowAnonymous) {
     const user = await currentUser();
     if (!user) {
@@ -33,7 +31,7 @@ async function getToken({ allowAnonymous = false } = {}) {
         anonymousResult,
         "Ommaviy reyting uchun anonim token olinmadi."
       );
-      const anonymousToken = anonymousData?.token || anonymousData?.jwt || null;
+      const anonymousToken = anonymousData?.token || null;
       if (typeof anonymousToken !== "string" || !anonymousToken.trim()) {
         throw new Error("Ommaviy reyting uchun anonim JWT topilmadi.");
       }
@@ -41,13 +39,16 @@ async function getToken({ allowAnonymous = false } = {}) {
     }
   }
 
-  const result = await auth.token();
-  const data = normalizeResult(result, "Data API JWT tokenini olish imkoni bo‘lmadi.");
-  const token = data?.token || data?.jwt || data?.access_token || null;
-  if (typeof token !== "string" || !token.trim()) {
-    throw new Error("Data API uchun JWT token topilmadi. Qayta kiring.");
+  // Neon Auth's JWT plugin adds the signed Data API JWT to the session response
+  // as session.token via the exposed set-auth-jwt response header.
+  // Do not use auth.token() here: this browser SDK version does not expose it.
+  const result = await auth.getSession();
+  const data = normalizeResult(result, "Sessiya JWT tokenini olish imkoni bo‘lmadi.");
+  const token = data?.session?.token || null;
+  if (typeof token !== "string" || token.split(".").length !== 3) {
+    throw new Error("Sessiya uchun imzolangan JWT olinmadi. «Kirish» orqali qayta urinib ko‘ring.");
   }
-  return token.trim();
+  return token;
 }
 
 async function requestData(path, {
