@@ -283,12 +283,12 @@
       <section class="card" style="padding:19px"><h3 style="font-size:14px">O‘quvchi profili</h3><p class="muted" style="font-size:10px">${esc(profile.name||'Profil yaratilmagan')} · ${profile.avatar||'🚀'} · ${currentLevel()}-daraja</p><div class="progress-track" style="height:8px"><i style="width:${p}%"></i></div><div class="teacher-tools"><button class="btn btn-primary" data-export-progress>Progressni eksport qilish (.json)</button><button class="btn btn-secondary" data-import-progress>Progressni import qilish</button><input type="file" id="import-progress-file" accept="application/json,.json" class="hidden"><button class="btn btn-ghost" data-edit-profile>Profilni o‘zgartirish</button></div><div class="teacher-note"><strong>Saqlash haqida:</strong> bu versiyada login, server va umumiy sinf reytingi yo‘q. Progress faqat o‘quvchining o‘z brauzerida saqlanadi. O‘quvchi qurilmasi almashtirilsa, JSON eksport/import orqali progressni ko‘chirish mumkin. Butun sinf bo‘yicha umumiy reyting va mentorning markaziy paneli uchun keyingi bosqichda backend kerak bo‘ladi.</div><div style="margin-top:18px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:var(--muted)">Xavfli amal: barcha lokal progressni o‘chirish</span><button class="btn btn-ghost" data-reset-progress>Progressni tiklash</button></div></section>`;
   }
 
-  function makeMissionGameState(index) {
+  function makeMissionGameState(index,replay=false) {
     const g=missionGames[index]||{};
     const order=(g.steps||[]).map((_,i)=>i);
     for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
     if(order.length>1&&order.every((v,i)=>v===i)){const first=order.shift();order.push(first);}
-    return {index,selected:null,picked:[],order,assignments:{},selectedItem:null,marked:[],minValue:g.start??g.min??0,flag:!!g.startFlag,feedback:'',solved:isDone(index)};
+    return {index,selected:null,picked:[],order,assignments:{},selectedItem:null,marked:[],minValue:g.start??g.min??0,flag:!!g.startFlag,surveyRows:[],surveySubject:g.subjects?.[0]||'',surveyHours:2,feedback:'',solved:isDone(index)&&!replay};
   }
   function missionGameMatches(g,state) {
     return (g.rows||[]).filter(r=>Number(r.value)>=Number(state.minValue)&&(!g.flagLabel||!state.flag||!!r.flag));
@@ -310,6 +310,11 @@
     } else if(g.type==='clean'){
       const rows=g.rows.map((row,i)=>'<button class="clean-row '+(s.marked.includes(i)?'marked':'')+'" data-game-row="'+i+'"><span class="clean-check">'+(s.marked.includes(i)?'✓':'')+'</span>'+row.map(cell=>'<span>'+esc(cell||'∅ bo‘sh')+'</span>').join('')+'</button>').join('');
       play='<div class="clean-table"><div class="clean-row clean-head"><span></span>'+g.headers.map(h=>'<span>'+esc(h)+'</span>').join('')+'</div>'+rows+'</div><div class="game-instruction">Shubhali qatorlarni belgila. Bir nechta qatorni tanlash mumkin.</div>';
+    } else if(g.type==='survey'){
+      const counts=(g.subjects||[]).map(subject=>({subject,count:s.surveyRows.filter(row=>row.subject===subject).length}));
+      const max=Math.max(1,...counts.map(x=>x.count));
+      const rows=s.surveyRows.map((row,i)=>'<tr><td>Anonim #'+(i+1)+'</td><td>'+esc(row.subject)+'</td><td>'+Number(row.hours)+' soat</td></tr>').join('');
+      play='<div class="survey-privacy">🔒 Ism, telefon yoki manzilni kiritma. Sinfdoshlaringdan faqat rozilik olgan holda anonim javob so‘ra.</div><div class="survey-form"><label>Sevimli fan<select id="survey-subject">'+g.subjects.map(subject=>'<option '+(subject===s.surveySubject?'selected':'')+'>'+esc(subject)+'</option>').join('')+'</select></label><label>Kunlik mustaqil o‘qish vaqti <b><span id="survey-hours-value">'+Number(s.surveyHours)+'</span> soat</b><input id="survey-hours" type="range" min="0" max="8" step="0.5" value="'+Number(s.surveyHours)+'"></label><button class="btn btn-secondary" data-game-survey-add>＋ Anonim javobni qo‘sh</button></div><div class="survey-progress"><b>'+s.surveyRows.length+' ta javob yig‘ildi</b><span>Missiya uchun kamida '+Number(g.minimum||3)+' ta javob kerak</span></div><div class="survey-table-wrap"><table class="survey-table"><thead><tr><th>Ishtirokchi</th><th>Sevimli fan</th><th>O‘qish vaqti</th></tr></thead><tbody>'+(rows||'<tr><td colspan="3">Hali javob yo‘q. Birinchi anonim yozuvni qo‘sh.</td></tr>')+'</tbody></table></div><div class="survey-chart">'+counts.map(x=>'<div class="survey-chart-row"><span>'+esc(x.subject)+'</span><div><i style="width:'+(x.count/max*100)+'%"></i></div><b>'+x.count+'</b></div>').join('')+'</div>';
     } else if(g.type==='filter'){
       const matches=missionGameMatches(g,s);
       const preview=matches.map(r=>'<span class="filter-result-chip">'+esc(r.name)+' <b>'+Number(r.value)+(g.unit||'')+'</b></span>').join('')||'<span class="filter-empty">Hozircha mos signal yo‘q</span>';
@@ -329,9 +334,9 @@
         return '<button class="game-choice '+(s.selected===i?'selected':'')+'" data-game-choice="'+i+'"><span class="choice-mark">'+mark+'</span><span>'+esc(text)+'</span><i>'+(s.selected===i?'Tanlandi':'')+'</i></button>';
       }).join('')+'</div>';
     }
-    const solved=s.solved?'<div class="game-feedback success"><strong>✦ Signal topildi!</strong><span>Endi “Aha!” izohini ochib, bu usul nima uchun ishlashini ko‘r.</span></div>':'';
+    const solved=s.solved?'<div class="game-feedback success"><strong>✦ Signal topildi!</strong><span>Endi “Aha!” izohini ochib, bu usul nima uchun ishlashini ko‘r.</span><button class="btn btn-ghost" data-game-replay>↻ Qayta o‘ynash</button></div>':'');
     const feedback=s.feedback?'<div class="game-feedback '+(s.solved?'success':'retry')+'"><strong>'+(s.solved?'To‘g‘ri!':'Yana bir urinish!')+'</strong><span>'+esc(s.feedback)+'</span></div>':'';
-    const canCheck=g.type==='sort'?Object.keys(s.assignments).length===g.items.length:g.type==='sequence'?s.picked.length===g.steps.length:g.type==='clean'?s.marked.length>0:g.type==='filter'?true:s.selected!==null;
+    const canCheck=g.type==='sort'?Object.keys(s.assignments).length===g.items.length:g.type==='sequence'?s.picked.length===g.steps.length:g.type==='clean'?s.marked.length>0:g.type==='filter'?true:g.type==='survey'?s.surveyRows.length>=Number(g.minimum||3):s.selected!==null;
     return '<section class="mission-game card"><div class="game-topline"><span class="game-badge">🎮 '+esc(g.badge||'MISSION GAME')+'</span><span class="game-duration">2–5 DAQIQA</span></div><h2>'+esc(g.title)+'</h2><p class="game-brief">'+esc(g.brief)+'</p><div class="game-play-area">'+play+'</div><div class="game-controls"><button class="btn btn-primary" data-game-check '+(!canCheck||s.solved?'disabled':'')+'>Tekshir va signal yubor →</button><span>'+((g.type==='sequence')?s.picked.length+'/'+g.steps.length+' bo‘lak':g.type==='sort'?Object.keys(s.assignments).length+'/'+g.items.length+' signal':g.type==='clean'?s.marked.length+' qator belgilandi':s.solved?'Bajarildi':'Missiyani yech')+'</span></div>'+feedback+solved+'</section>';
   }
   function checkMissionGame(index) {
@@ -342,6 +347,7 @@
     else if(g.type==='sequence')ok=s.picked.length===g.steps.length&&s.picked.every((n,i)=>n===i);
     else if(g.type==='clean')ok=s.marked.length===g.bad.length&&g.bad.every(n=>s.marked.includes(n));
     else if(g.type==='filter')ok=Number(s.minValue)===Number(g.target)&&(!g.flagLabel||!!s.flag===!!g.targetFlag);
+    else if(g.type==='survey')ok=s.surveyRows.length>=Number(g.minimum||3);
     else ok=Number(s.selected)===Number(g.correct);
     if(ok){s.solved=true;s.feedback='Zo‘r! Vazifani o‘zing hal qilding. Endi qisqa izoh va XP seni kutmoqda.';toast('Mini-o‘yin bajarildi! “Aha!” izohi ochildi.','success');}
     else{s.feedback=g.type==='sort'?'Har bir signalni uning ma’no turiga qarab joylashtir.':g.type==='sequence'?'Kod yuqoridan pastga bajariladi. Avval ma’lumot tayyorlanadi, keyin amal ishlaydi.':g.type==='clean'?'Bo‘sh katak, takroriy ID yoki noto‘g‘ri formatni izla.':g.type==='filter'?'Slayder chegarasi va qo‘shimcha belgini vazifa bilan solishtir.':'Tanlovni yana bir bor tekshir. Qaysi javob vazifadagi maqsadga olib boradi?';toast('Hali to‘g‘ri emas. Yana urinib ko‘r!','warning');}
@@ -365,6 +371,8 @@
       el.addEventListener('dragover',e=>e.preventDefault());
       el.addEventListener('drop',e=>{e.preventDefault();const item=Number(e.dataTransfer.getData('text/plain'));if(Number.isInteger(item)){missionGameState.assignments[item]=Number(el.dataset.gameBin);missionGameState.selectedItem=null;renderLesson();}});
     });
+    const hours=root.querySelector('#survey-hours');
+    if(hours)hours.addEventListener('input',()=>{const label=root.querySelector('#survey-hours-value');if(label)label.textContent=hours.value;});
     const range=root.querySelector('[data-game-range]');
     if(range)range.addEventListener('input',()=>{missionGameState.minValue=Number(range.value);updateMissionFilterPreview();});
     const flag=root.querySelector('[data-game-flag]');
@@ -670,7 +678,16 @@
       const gameSeq=e.target.closest('[data-game-seq-item]');
       if(gameSeq){const n=Number(gameSeq.dataset.gameSeqItem);if(!missionGameState.picked.includes(n)){missionGameState.picked.push(n);renderLesson();}return;}
       if(e.target.closest('[data-game-undo]')){missionGameState?.picked.pop();renderLesson();return;}
-      if(e.target.closest('[data-game-reset]')){missionGameState=makeMissionGameState(activeLessonIndex);renderLesson();return;}
+      if(e.target.closest('[data-game-reset]')||e.target.closest('[data-game-replay]')){missionGameState=makeMissionGameState(activeLessonIndex,true);renderLesson();return;}
+      if(e.target.closest('[data-game-survey-add]')){
+        const subject=document.getElementById('survey-subject')?.value||'';
+        const hours=Number(document.getElementById('survey-hours')?.value??2);
+        if(!subject||!Number.isFinite(hours)||hours<0||hours>8){toast('Javob qiymatlarini tekshir.','warning');return;}
+        if(missionGameState.surveyRows.length>=12){toast('Bu kichik namuna uchun 12 ta javob yetarli.','warning');return;}
+        missionGameState.surveyRows.push({subject,hours});
+        missionGameState.surveySubject=subject;missionGameState.surveyHours=hours;
+        renderLesson();return;
+      }
       const gameChoice=e.target.closest('[data-game-choice]');
       if(gameChoice){missionGameState.selected=Number(gameChoice.dataset.gameChoice);renderLesson();return;}
       const gameRow=e.target.closest('[data-game-row]');
