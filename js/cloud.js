@@ -22,22 +22,45 @@ function normalizeResult(result, label) {
   return result?.data ?? result ?? null;
 }
 
-async function getToken() {
-  // createAuthClient() returns the Better Auth adapter; its session carries
-  // the Neon JWT injected from the set-auth-jwt response header.
-  const result = await auth.getSession();
-  const data = normalizeResult(result, "Sessiya tokenini olish imkoni bo‘lmadi.");
-  const token = data?.session?.token || null;
+async function getToken({ allowAnonymous = false } = {}) {
+  // session.token is the opaque cookie/session identifier, not a Data API JWT.
+  // The JWT plugin's token() action returns the signed Bearer token in data.token.
+  if (allowAnonymous) {
+    const user = await currentUser();
+    if (!user) {
+      const anonymousResult = await auth.getAnonymousToken();
+      const anonymousData = normalizeResult(
+        anonymousResult,
+        "Ommaviy reyting uchun anonim token olinmadi."
+      );
+      const anonymousToken = anonymousData?.token || anonymousData?.jwt || null;
+      if (typeof anonymousToken !== "string" || !anonymousToken.trim()) {
+        throw new Error("Ommaviy reyting uchun anonim JWT topilmadi.");
+      }
+      return anonymousToken.trim();
+    }
+  }
+
+  const result = await auth.token();
+  const data = normalizeResult(result, "Data API JWT tokenini olish imkoni bo‘lmadi.");
+  const token = data?.token || data?.jwt || data?.access_token || null;
   if (typeof token !== "string" || !token.trim()) {
-    throw new Error("Sessiya JWT tokeni topilmadi. Qayta kiring.");
+    throw new Error("Data API uchun JWT token topilmadi. Qayta kiring.");
   }
   return token.trim();
 }
 
-async function requestData(path, { method = "GET", body, authenticated = false } = {}) {
+async function requestData(path, {
+  method = "GET",
+  body,
+  authenticated = false,
+  allowAnonymous = false
+} = {}) {
   const headers = new Headers({ Accept: "application/json" });
   if (body !== undefined) headers.set("Content-Type", "application/json");
-  if (authenticated) headers.set("Authorization", `Bearer ${await getToken()}`);
+  if (authenticated) {
+    headers.set("Authorization", `Bearer ${await getToken({ allowAnonymous })}`);
+  }
   const response = await fetch(`${DATA_API_URL}/${path}`, {
     method,
     headers,
@@ -51,7 +74,9 @@ async function requestData(path, { method = "GET", body, authenticated = false }
       const parsed = JSON.parse(raw);
       message = parsed.message || parsed.details || parsed.hint || raw;
     } catch (_) {}
-    if (response.status === 401) message = "Sessiya muddati tugagan. Qayta kiring.";
+    if (response.status === 401 && path.startsWith("rpc/")) {
+      message = "Sessiya tasdiqlanmadi. Qayta kiring.";
+    }
     if (response.status === 409) message = "Bu username band. Boshqasini tanlang.";
     const endpoint = path.split("?")[0];
     const error = new Error(`${message || "Server xatosi"} — ${method} /rest/v1/${endpoint} (HTTP ${response.status})`);
@@ -250,6 +275,9 @@ export async function claimArcadeReward(score) {
 
 export async function getLeaderboard() {
   const query = "dataspace_leaderboard?select=username,display_name,avatar,character_class,xp,streak,completed_count,created_at&order=xp.desc,created_at.asc&limit=1000";
-  const result = await requestData(query);
+  const result = await requestData(query, {
+    authenticated: true,
+    allowAnonymous: true
+  });
   return Array.isArray(result) ? result : (result ? [result] : []);
 }
