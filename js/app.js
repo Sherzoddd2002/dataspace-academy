@@ -324,7 +324,12 @@
       if(g.table){
         play+='<div class="formula-table"><table><thead><tr>'+g.table.headers.map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr></thead><tbody>'+g.table.rows.map(row=>'<tr>'+row.map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
       }
-      if(g.values){
+      if(g.values&&g.type==='forecast'){
+        const min=Math.min(...g.values),span=Math.max(...g.values)-min||1;
+        const coords=g.values.map((v,i)=>({x:24+i*312/Math.max(1,g.values.length-1),y:98-(Number(v)-min)/span*72}));
+        const points=coords.map(p=>p.x+','+p.y).join(' ');
+        play+='<div class="forecast-chart"><svg viewBox="0 0 360 130" role="img" aria-label="Oylik o‘sish trendi"><line x1="18" y1="100" x2="342" y2="100" class="forecast-axis"/><polyline points="'+points+'" class="forecast-line"/>'+coords.map(p=>'<circle cx="'+p.x+'" cy="'+p.y+'" r="5" class="forecast-point"/>').join('')+'<circle cx="360" cy="2" r="0" /></svg><div class="forecast-labels">'+g.labels.map(x=>'<span>'+esc(x)+'</span>').join('')+'<span class="forecast-next">May ?</span></div><div class="forecast-hint">Keyingi nuqta hali yashirilgan — trendni davom ettir.</div></div>';
+      }else if(g.values){
         const max=Math.max(...g.values,1);
         play+='<div class="game-chart-preview">'+g.values.map((v,i)=>'<div class="game-chart-col"><div class="game-chart-bar" style="height:'+Math.max(8,Number(v)/max*100)+'%"></div><b>'+esc(v)+'</b><small>'+esc(g.labels?.[i]||String(i+1))+'</small></div>').join('')+'</div>';
       }
