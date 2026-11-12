@@ -307,6 +307,12 @@
       if(check){
         if(!l.testCode) throw new Error('Bu missiya uchun test qoidasi topilmadi.');
         await engine.runPythonAsync(l.testCode);
+        if(l.title==="Python o'rnatish, print() va o'zgaruvchilar"){
+          const student=engine.globals.get('student');
+          const expected='Salom, '+String(student);
+          const printed=output.split(/\\r?\\n/).some(line=>line.trim()===expected);
+          if(!printed) throw new Error(`Ekranga "${expected}" natijasini print() orqali chiqar. O'zgaruvchi ichida faqat ism bo'lishi kerak.`);
+        }
         setRuntimeStatus('Testlar muvaffaqiyatli ✓');setConsole((output.trim()?output.trim()+'\n\n':'')+'✓ Barcha tekshiruvlardan o‘tdi. Missiya bajarildi.');completeLesson(activeLessonIndex);
       } else setRuntimeStatus('Tayyor ✓');
     } catch(e) {
