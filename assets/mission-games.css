@@ -125,3 +125,21 @@ button.clean-row.marked{background:#3b2938;border-color:#d8879a}
   .lesson-bottom-nav{align-items:flex-start;flex-direction:column}
 }
 @media(prefers-reduced-motion:reduce){.mission-story:after,.game-chart-bar,.aha-card,.game-feedback{animation:none!important}}
+
+
+/* Collectible mission rewards */
+.aha-mission-badge{display:flex;align-items:center;gap:10px;margin-top:14px;padding:10px 12px;border:1px solid #816e4f66;border-radius:9px;background:#392f2644}
+.aha-mission-badge>span:first-child{font-size:23px;filter:drop-shadow(0 0 9px #ffd47755)}
+.aha-mission-badge>div{display:grid;gap:3px;flex:1}
+.aha-mission-badge strong{font-size:10px;color:#f7db9a}
+.aha-mission-badge small{font-size:9px;color:#b9c6dc}
+.mission-badge-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 22px}
+.mission-badge-card{display:flex;align-items:center;gap:9px;min-width:0;padding:10px;border:1px solid #2c3c58;border-radius:9px;background:#111d31;opacity:.68}
+.mission-badge-card.unlocked{opacity:1;border-color:#4b9b83;background:linear-gradient(120deg,#17332f,#14263a);box-shadow:inset 0 0 18px #45c59b09}
+.mission-badge-card>span{font-size:19px}
+.mission-badge-card>div{display:grid;gap:3px;min-width:0}
+.mission-badge-card strong{font-size:9px;color:#dce7fa;overflow-wrap:anywhere}
+.mission-badge-card small{font-size:8px;color:#8294b2}
+.mission-badge-card.unlocked small{color:#9ce2c1}
+@media(max-width:780px){.mission-badge-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:460px){.mission-badge-grid{grid-template-columns:1fr}}
