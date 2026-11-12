@@ -11,17 +11,25 @@ function usernameEmail(username) {
 
 function normalizeResult(result, label) {
   if (result?.error) {
-    const message = result.error.message || result.error.statusText || label;
-    throw new Error(message);
+    const source = result.error;
+    const message = source.message || source.statusText || label;
+    const error = new Error(message);
+    error.status = source.status || source.statusCode || null;
+    error.code = source.code || null;
+    error.responseBody = source.body || null;
+    throw error;
   }
   return result?.data ?? result ?? null;
 }
 
 async function getToken() {
-  // Neon Auth exposes the Data API JWT through getJWTToken(), not token().
-  const token = await auth.getJWTToken?.();
+  // createAuthClient() returns the Better Auth adapter; its session carries
+  // the Neon JWT injected from the set-auth-jwt response header.
+  const result = await auth.getSession();
+  const data = normalizeResult(result, "Sessiya tokenini olish imkoni bo‘lmadi.");
+  const token = data?.session?.token || null;
   if (typeof token !== "string" || !token.trim()) {
-    throw new Error("Sessiya tasdiqlanmadi. Qayta kiring.");
+    throw new Error("Sessiya JWT tokeni topilmadi. Qayta kiring.");
   }
   return token.trim();
 }
@@ -45,8 +53,11 @@ async function requestData(path, { method = "GET", body, authenticated = false }
     } catch (_) {}
     if (response.status === 401) message = "Sessiya muddati tugagan. Qayta kiring.";
     if (response.status === 409) message = "Bu username band. Boshqasini tanlang.";
-    const error = new Error(message || `Server xatosi: ${response.status}`);
+    const endpoint = path.split("?")[0];
+    const error = new Error(`${message || "Server xatosi"} — ${method} /rest/v1/${endpoint} (HTTP ${response.status})`);
     error.status = response.status;
+    error.endpoint = endpoint;
+    error.responseBody = raw.slice(0, 500);
     error.code = (() => { try { return JSON.parse(raw).code; } catch (_) { return null; } })();
     throw error;
   }
@@ -179,16 +190,39 @@ export async function signUp({ username, password, displayName, avatar, characte
 export async function signIn({ username, password }) {
   const clean = String(username || "").trim().toLowerCase();
   if (!/^[a-z0-9_]{3,20}$/.test(clean)) throw new Error("Username formatini tekshiring.");
-  const result = await auth.signIn.email({
-    email: usernameEmail(clean),
-    password
-  });
-  normalizeResult(result, "Username yoki parol noto‘g‘ri.");
-  await getToken();
-  const user = await currentUser();
-  let profile = await getMyProfile();
-  if (!profile) {
-    profile = await completeProfile(clean, user?.name || clean);
+  let result;
+  try {
+    result = await auth.signIn.email({
+      email: usernameEmail(clean),
+      password
+    });
+    normalizeResult(result, "Username yoki parol noto‘g‘ri.");
+  } catch (error) {
+    error.stage = "Neon Auth sign-in";
+    throw error;
+  }
+  try {
+    await getToken();
+  } catch (error) {
+    error.stage = "Neon Auth session JWT";
+    throw error;
+  }
+  let user;
+  try {
+    user = await currentUser();
+  } catch (error) {
+    error.stage = "Neon Auth current session";
+    throw error;
+  }
+  let profile;
+  try {
+    profile = await getMyProfile();
+    if (!profile) {
+      profile = await completeProfile(clean, user?.name || clean);
+    }
+  } catch (error) {
+    error.stage = error.stage || "Data API profile lookup";
+    throw error;
   }
   return { user, profile };
 }
