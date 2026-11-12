@@ -948,19 +948,42 @@
     "aha": "SUM diapazondagi sonlarni qo‘shadi. AVERAGE o‘rtacha, MIN eng kichik, MAX eng katta qiymatni qaytaradi."
   },
   {
-    "type": "choose",
-    "title": "Jadvalni tartibga sol",
-    "badge": "SORT & FILTER",
-    "brief": "O‘quvchilarni eng yuqori Math balli tepadan boshlanadigan qilib joylashtir. Qaysi amalni tanlaysan?",
-    "prompt": "Ball bo‘yicha kamayish tartibida saralash nima qiladi?",
-    "choices": [
-      "Eng katta ballarni yuqoriga chiqaradi",
-      "Faqat bo‘sh kataklarni o‘chiradi",
-      "Ustun nomini o‘zgartiradi",
-      "Jadvalni rasmga aylantiradi"
-    ],
-    "correct": 0,
-    "aha": "Sort qatorlarning tartibini o‘zgartiradi. Filter esa shartga mos qatorlarni ko‘rsatadi, qolgan ma’lumotni o‘chirib yubormaydi."
+    "type": "filter",
+    "title": "Excel xazina qidiruvi",
+    "badge": "SPREADSHEET TREASURE",
+    "brief": "Omborda yashirin xazina bor. Narxi kamida 50 ming so‘m va omborda mavjud bo‘lgan yozuvni filtrlab top.",
+    "aha": "Excel Filter ustun qiymatlarini shart bo‘yicha ko‘rsatadi, Sort esa yozuvlarning tartibini o‘zgartiradi. Filtr yashirin qatorni topadi, lekin boshqa yozuvlarni o‘chirib yubormaydi.",
+    "metric": "Narx chegarasi",
+    "unit": " ming so‘m",
+    "min": 0,
+    "max": 100,
+    "start": 0,
+    "target": 50,
+    "flagLabel": "Omborda mavjud",
+    "startFlag": false,
+    "targetFlag": true,
+    "rows": [
+      {
+        "name": "Dasturlash atlas",
+        "value": 55,
+        "flag": true
+      },
+      {
+        "name": "Robot kitobi",
+        "value": 70,
+        "flag": false
+      },
+      {
+        "name": "Matematika daftari",
+        "value": 45,
+        "flag": true
+      },
+      {
+        "name": "Kosmik poster",
+        "value": 60,
+        "flag": false
+      }
+    ]
   },
   {
     "type": "choose",
@@ -1104,34 +1127,30 @@
     ]
   },
   {
-    "type": "chart",
-    "title": "Tahlildan hikoya yarat",
-    "badge": "INSIGHT BUILDER",
-    "brief": "Senda oylar bo‘yicha natijalar bor. Savol — ko‘rsatkich vaqt o‘tishi bilan qanday o‘zgargan?",
-    "prompt": "Yanvardan iyungacha bo‘lgan trendni ko‘rsatish uchun qaysi grafik mos?",
+    "type": "forecast",
+    "title": "Keyingi nuqtani top",
+    "badge": "TREND PREDICTOR",
+    "brief": "Grafikda so‘nggi to‘rt oy natijalari 12 → 15 → 18 → 21 bo‘ldi. Shu oddiy o‘sish davom etsa, keyingi oy qiymatini top.",
+    "aha": "Oddiy trend prognozi avvalgi qiymatlar yo‘nalishini davom ettirib taxmin qiladi. Bu boshlang‘ich trend mashqi, haqiqiy ML modeli emas: real prognoz noaniqlik, ko‘proq ma’lumot va sinov talab qiladi.",
+    "prompt": "Agar har oy +3 birlik o‘sish davom etsa, May oyida qiymat qancha bo‘ladi?",
     "choices": [
-      "Chiziqli grafik · vaqt trendi",
-      "Doiraviy grafik · bitta paytdagi ulush",
-      "Ustunli grafik · faqat nomlar",
-      "Faqat rangli fon"
+      "22",
+      "23",
+      "24",
+      "25"
     ],
-    "correct": 0,
-    "aha": "EDA ma’lumotni dastlabki o‘rganadi. Savolga mos statistik ko‘rsatkich va grafik tanlash naqshni ko‘rishga yordam beradi.",
+    "correct": 2,
     "values": [
       12,
       15,
-      14,
-      19,
-      22,
-      25
+      18,
+      21
     ],
     "labels": [
       "Yan",
       "Fev",
       "Mar",
-      "Apr",
-      "May",
-      "Iyun"
+      "Apr"
     ]
   },
   {
