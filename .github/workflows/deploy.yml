@@ -32,7 +32,7 @@ jobs:
       - name: Validate 54-lesson curriculum
         run: node -e "const c=require('./data/curriculum.json');if(c.length!==54)throw new Error('Expected 54 lessons');const w=new Set(c.map(x=>x.week));if(w.size!==18)throw new Error('Expected 18 weeks');for(let n=1;n<=18;n++){if(c.filter(x=>x.week===n).length!==3)throw new Error('Week '+n+' must contain 3 lessons')}"
       - name: Validate 54 interactive mission games
-        run: node -e "const g=require('./data/mission-games.json');if(g.length!==54)throw new Error('Expected 54 mission games');for(let i=0;i<g.length;i++){if(!g[i].title||!g[i].brief||!g[i].aha)throw new Error('Incomplete mission game '+i);if(!['sort','sequence','choose','filter','clean','formula','chart','survey'].includes(g[i].type))throw new Error('Unknown game type '+i)}"
+        run: node -e "const g=require('./data/mission-games.json');if(g.length!==54)throw new Error('Expected 54 mission games');for(let i=0;i<g.length;i++){if(!g[i].title||!g[i].brief||!g[i].aha)throw new Error('Incomplete mission game '+i);if(!['sort','sequence','choose','filter','clean','formula','chart','survey','forecast'].includes(g[i].type))throw new Error('Unknown game type '+i)}"
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload site
