@@ -23,6 +23,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate JavaScript
+        run: node --check js/app.js
+      - name: Validate 54-lesson curriculum
+        run: node -e "const c=require('./data/curriculum.json');if(c.length!==54)throw new Error('Expected 54 lessons');const w=new Set(c.map(x=>x.week));if(w.size!==18)throw new Error('Expected 18 weeks');for(let n=1;n<=18;n++){if(c.filter(x=>x.week===n).length!==3)throw new Error('Week '+n+' must contain 3 lessons')}"
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload site
