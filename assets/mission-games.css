@@ -143,3 +143,15 @@ button.clean-row.marked{background:#3b2938;border-color:#d8879a}
 .mission-badge-card.unlocked small{color:#9ce2c1}
 @media(max-width:780px){.mission-badge-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:460px){.mission-badge-grid{grid-template-columns:1fr}}
+
+
+/* Trend predictor line chart */
+.forecast-chart{max-width:620px;margin:0 auto 12px;padding:10px 12px 12px;background:#101e32;border:1px solid #2e4261;border-radius:10px}
+.forecast-chart svg{display:block;width:100%;height:auto;overflow:visible}
+.forecast-axis{stroke:#465a78;stroke-width:1.5;stroke-dasharray:4 5}
+.forecast-line{fill:none;stroke:#6cdbca;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px #5ed7ca77);stroke-dasharray:500;stroke-dashoffset:500;animation:forecast-draw 1s ease forwards}
+@keyframes forecast-draw{to{stroke-dashoffset:0}}
+.forecast-point{fill:#a79aff;stroke:#e5e1ff;stroke-width:2}
+.forecast-labels{display:grid;grid-template-columns:repeat(5,1fr);text-align:center;color:#92a6c5;font-size:8px;gap:3px}
+.forecast-next{color:#ffdb8b;font-weight:800}
+.forecast-hint{text-align:center;margin-top:9px;color:#7fe1d1;font-size:9px}
