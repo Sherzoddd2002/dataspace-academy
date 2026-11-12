@@ -18,11 +18,12 @@ function normalizeResult(result, label) {
 }
 
 async function getToken() {
-  const result = await auth.token();
-  const data = normalizeResult(result, "Sessiya tokenini olish imkoni bo‘lmadi.");
-  const token = data?.token || data?.jwt || null;
-  if (!token) throw new Error("Sessiya tasdiqlanmadi. Qayta kiring.");
-  return token;
+  // Neon Auth exposes the Data API JWT through getJWTToken(), not token().
+  const token = await auth.getJWTToken?.();
+  if (typeof token !== "string" || !token.trim()) {
+    throw new Error("Sessiya tasdiqlanmadi. Qayta kiring.");
+  }
+  return token.trim();
 }
 
 async function requestData(path, { method = "GET", body, authenticated = false } = {}) {
