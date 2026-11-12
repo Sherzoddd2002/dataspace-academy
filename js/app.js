@@ -2,6 +2,23 @@
   'use strict';
   const STORAGE_KEY = 'dataspace-academy-v1';
   const AVATARS = ['🚀','🧑‍🚀','🦊','🐼','🐸','🐯','🦄','🐙'];
+  const CHARACTER_CLASSES = [
+    {id:'navigator',name:'Kosmik navigator',icon:'🧭',short:'NAVIGATOR'},
+    {id:'coder',name:'Kod sehrgari',icon:'💻',short:'CODE WIZARD'},
+    {id:'scientist',name:'Data olimi',icon:'🧪',short:'DATA SCIENTIST'},
+    {id:'detective',name:'SQL detektiv',icon:'🔎',short:'QUERY DETECTIVE'}
+  ];
+  const GAME_ZONES = [
+    {name:'Signal Harbor',tag:'DATA PORT',props:['🛰️','💎','🪐'],npc:'Signalni tutib ol!'},
+    {name:'Neon Code City',tag:'PYTHONIA',props:['🏙️','🧩','⚡'],npc:'Kod bloklarini ishga tushir!'},
+    {name:'Logic Jungle',tag:'LOGICARA',props:['🌴','🦎','💠'],npc:'Mantiq yo‘lni ochadi!'},
+    {name:'FileForge Factory',tag:'FILEFORGE',props:['⚙️','📦','🔥'],npc:'Fayllarni joyiga qo‘y!'},
+    {name:'Pandoria Wilds',tag:'PANDORIA',props:['🌿','🧬','🪷'],npc:'Kerakli datani filtrlab ol!'},
+    {name:'SQL Depths',tag:'SQL-BASE',props:['🌊','🛸','🐚'],npc:'To‘g‘ri query yoz!'},
+    {name:'Queryon Towers',tag:'QUERYON',props:['🏰','🔗','💜'],npc:'Jadvallarni bog‘la!'},
+    {name:'Excelia Vault',tag:'EXCELIA',props:['🏛️','💰','📊'],npc:'Xazina katakda yashiringan!'},
+    {name:'Project Nebula',tag:'FINAL WORLD',props:['🌌','🚀','🏆'],npc:'O‘z loyihangni himoya qil!'}
+  ];
   const WORLDS = [
     {name:'DataPort',emoji:'🛰️',subtitle:'Ma’lumotlar olamiga kirish',weeks:'1-hafta',from:0,to:2,theme:'Birinchi signalni tut'},
     {name:'Pythonia',emoji:'🐍',subtitle:'Python asoslari',weeks:'2-hafta',from:3,to:5,theme:'Kodning ilk kuchi'},
@@ -45,7 +62,7 @@
   let arcadeState = {phase:'ready',round:0,score:0,streak:0,selected:null,questions:[],reward:''};
 
   function defaultProfile() {
-    return {name:'',avatar:'🚀',xp:0,streak:0,lastActive:'',completed:[],createdAt:new Date().toISOString(),projectChoice:'',projectNotes:'',projectChecks:{},preferences:{},arcadeBest:0,arcadeDailyReward:''};
+    return {name:'',avatar:'🚀',characterClass:'navigator',xp:0,streak:0,lastActive:'',completed:[],createdAt:new Date().toISOString(),projectChoice:'',projectNotes:'',projectChecks:{},preferences:{},arcadeBest:0,arcadeDailyReward:''};
   }
   function loadProfile() {
     try {
@@ -123,22 +140,71 @@
     render();
     window.scrollTo({top:0,behavior:'smooth'});
   }
+
+  function getCharacterClass() {
+    return CHARACTER_CLASSES.find(x=>x.id===profile.characterClass)||CHARACTER_CLASSES[0];
+  }
+  function renderVoxelCharacter(size='game',mood='idle') {
+    const role=getCharacterClass();
+    return '<div class="voxel-character voxel-'+size+' role-'+role.id+' mood-'+mood+' '+(mood==='win'?'player-win':'')+'" aria-label="'+esc(profile.name||'Data Explorer')+' qahramoni">'+
+      '<div class="voxel-nameplate">'+esc(profile.name||'EXPLORER')+'</div>'+
+      '<div class="voxel-head"><span class="voxel-cap">'+esc(profile.avatar||'🚀')+'</span><div class="voxel-face"><i></i><i></i><b></b></div></div>'+
+      '<div class="voxel-neck"></div>'+
+      '<div class="voxel-arm arm-left"><i></i></div><div class="voxel-arm arm-right"><i></i></div>'+
+      '<div class="voxel-torso"><span class="voxel-emblem">'+role.icon+'</span><b>DS</b></div>'+
+      '<div class="voxel-leg leg-left"><i></i></div><div class="voxel-leg leg-right"><i></i></div>'+
+      '<div class="voxel-shadow"></div></div>';
+  }
+  function renderGameWorldStage(g,index,state) {
+    const worldIndex=WORLDS.findIndex(w=>index>=w.from&&index<=w.to);
+    const world=WORLDS[Math.max(0,worldIndex)];
+    const zone=GAME_ZONES[Math.max(0,worldIndex)];
+    const done=!!state.solved;
+    const props=zone.props.map((p,i)=>'<span class="world-prop prop-'+(i+1)+'">'+p+'</span>').join('');
+    const progress=done?100:Math.min(84,16+Math.round((index%6)*8));
+    return '<section class="game-world biome-'+worldIndex+' '+(done?'is-cleared':'')+'">'+
+      '<div class="world-sky"><span class="world-moon"></span><i class="world-star star-a">✦</i><i class="world-star star-b">✧</i><i class="world-star star-c">·</i><span class="world-nebula"></span></div>'+
+      '<div class="world-hud"><div><small>WORLD '+String(worldIndex+1).padStart(2,'0')+' / 09</small><strong>'+esc(zone.name)+'</strong></div><span class="world-level-tag">'+esc(zone.tag)+'</span><span class="world-mission-tag">MISSION '+String(index+1).padStart(2,'0')+'</span></div>'+
+      '<div class="world-props">'+props+'</div>'+
+      '<div class="obby-platform platform-back"></div><div class="obby-platform platform-mid"></div><div class="obby-platform platform-front"></div>'+
+      '<div class="obby-route"><i class="route-node node-one '+(done?'lit':'')+'">1</i><i class="route-node node-two '+(done?'lit':'')+'">2</i><i class="route-node node-three '+(done?'lit':'')+'">3</i><span class="route-bridge"></span></div>'+
+      '<div class="voxel-player">'+renderVoxelCharacter('game',done?'win':'idle')+'</div>'+
+      '<div class="world-companion"><div class="companion-cube"><i></i><i></i><b></b></div><strong>BYTE</strong></div>'+
+      '<div class="npc-speech"><span>🤖 BYTE · MENTOR</span><p>'+(done?'Ajoyib, '+esc(profile.name||'Explorer')+'! Portal ochildi. Keyingi orolga tayyormisan?':esc(zone.npc)+' Avval vazifani bajar, portalni och!')+'</p></div>'+
+      '<div class="world-portal '+(done?'portal-open':'')+'"><span>'+(done?'✦':'🔒')+'</span><b>'+(done?'PORTAL OPEN':'DATA PORTAL')+'</b><small>'+(done?'NEXT ISLAND':'CHECKPOINT')+'</small></div>'+
+      '<div class="world-bottom-hud"><span>OBBY QUEST <b>'+Math.round(progress)+'%</b></span><div class="world-progress"><i style="width:'+progress+'%"></i></div><span class="world-xp">✦ +20 XP</span></div>'+
+      '<div class="avatar-action-bar"><span>Qahramonni boshqar:</span><button data-player-action="jump" title="Space">⤴ JUMP</button><button data-player-action="wave" title="W">👋 WAVE</button><button data-player-action="dance" title="D">✦ DANCE</button><small>SPACE · W · D</small></div>'+
+    '</section>';
+  }
+  function triggerCharacterAction(action) {
+    const character=document.querySelector('.voxel-player .voxel-character');
+    if(!character)return;
+    character.classList.remove('action-jump','action-wave','action-dance');
+    void character.offsetWidth;
+    character.classList.add('action-'+action);
+    setTimeout(()=>character.classList.remove('action-'+action),900);
+  }
+
   function openProfileModal(first=false) {
     const modal=document.getElementById('modal-card');
     const picked=profile.avatar || '🚀';
+    let characterClass=profile.characterClass||'navigator';
     modal.innerHTML=`<div class="eyebrow">${first?'SAYOHATNI BOSHLASH':'PROFIL SOZLAMALARI'}</div>
       <h2 id="modal-title">${first?'Kim Data Explorer bo‘ladi?':'Profilingni sozla'}</h2>
       <p>Ism yoki taxallus yoz. Bu profil faqat shu brauzerda saqlanadi — parol va elektron pochta talab qilinmaydi.</p>
       <label for="profile-name-input">Ism yoki taxallus</label><input id="profile-name-input" maxlength="24" placeholder="Masalan: Ali" value="${esc(profile.name)}">
-      <label>Qahramoningni tanla</label><div class="avatar-picker">${AVATARS.map(a=>`<button class="avatar-choice ${a===picked?'selected':''}" type="button" data-avatar-choice="${a}">${a}</button>`).join('')}</div>
+      <label>Hamrohingni tanla</label><div class="avatar-picker">${AVATARS.map(a=>`<button class="avatar-choice ${a===picked?'selected':''}" type="button" data-avatar-choice="${a}">${a}</button>`).join('')}</div>
+      <label class="character-class-label">O‘yin qahramoningning kasbi</label><div class="character-class-picker">${CHARACTER_CLASSES.map(c=>`<button class="character-class-option ${c.id===characterClass?'selected':''}" type="button" data-character-class="${c.id}"><span>${c.icon}</span><b>${c.name}</b><small>${c.short}</small></button>`).join('')}</div>
+      <div class="character-preview-row"><span>Qahramoning:</span>${renderVoxelCharacter('preview','idle')}</div>
       <div class="modal-actions">${first?'':'<button class="btn btn-ghost" data-close-modal>Bekor qilish</button>'}<button class="btn btn-primary" id="save-profile">${first?'Galaktikaga kirish':'Saqlash'} <span>→</span></button></div>`;
     document.getElementById('modal-backdrop').classList.remove('hidden');
     let avatar=picked;
     modal.querySelectorAll('[data-avatar-choice]').forEach(btn=>btn.addEventListener('click',()=>{avatar=btn.dataset.avatarChoice;modal.querySelectorAll('[data-avatar-choice]').forEach(x=>x.classList.toggle('selected',x===btn));}));
+    modal.querySelectorAll('[data-character-class]').forEach(btn=>btn.addEventListener('click',()=>{characterClass=btn.dataset.characterClass;modal.querySelectorAll('[data-character-class]').forEach(x=>x.classList.toggle('selected',x===btn));modal.querySelector('.character-preview-row').innerHTML='<span>Qahramoning:</span>'+renderVoxelCharacter('preview','idle');}));
     modal.querySelector('#save-profile').addEventListener('click',()=>{
       const name=modal.querySelector('#profile-name-input').value.trim();
       if(!name){toast('Ism yoki taxallus kiriting.','warning');return;}
-      profile.name=name;profile.avatar=avatar;saveProfile();closeModal();render();if(first)toast(`Xush kelibsan, ${name}! Birinchi missiyang tayyor.`,'success');
+      profile.name=name;profile.avatar=avatar;profile.characterClass=characterClass;saveProfile();closeModal();render();if(first)toast(`Xush kelibsan, ${name}! Birinchi missiyang tayyor.`,'success');
     });
     modal.querySelector('#profile-name-input').addEventListener('keydown',e=>{if(e.key==='Enter')modal.querySelector('#save-profile').click();});
   }
@@ -169,7 +235,7 @@
       return `<article class="world-mini card ${unlocked?'':'locked'}" data-world="${i}"><span class="world-emoji">${w.emoji}</span><strong>${w.name}</strong><small>${p.done}/${p.total} missiya · ${w.weeks}</small><div class="mini-progress"><i style="width:${p.pct}%"></i></div></article>`;
     }).join('');
     const nextText=next===null?'Barcha missiyalar tugadi!':`#${next+1} · ${lessons[next].title}`;
-    return `<section class="hero-panel"><div class="hero-copy"><span class="eyebrow">YANGI AVLOD DATA ANALYTICS AKADEMIYASI</span><h1>Ma’lumotlar olamiga<br><span>xush kelibsan, ${esc(profile.name||'Explorer')}!</span></h1><p>54 ta missiya. 9 ta olam. Python, Pandas, SQL va Excel. Har bir kod — yangi kuch, har bir tahlil — yangi kashfiyot.</p><div class="hero-buttons"><button class="btn btn-primary" data-open-next>${done?'Davom etish':'Sayohatni boshlash'} <span>→</span></button><button class="btn btn-secondary" data-view="map">Galaktikani ko‘r</button></div></div><div class="hero-art"><div class="planet-orb"><span class="planet-moon"></span></div></div></section>
+    return `<section class="hero-panel"><div class="hero-copy"><span class="eyebrow">YANGI AVLOD DATA ANALYTICS AKADEMIYASI</span><h1>Ma’lumotlar olamiga<br><span>xush kelibsan, ${esc(profile.name||'Explorer')}!</span></h1><p>54 ta missiya. 9 ta olam. Python, Pandas, SQL va Excel. Har bir kod — yangi kuch, har bir tahlil — yangi kashfiyot.</p><div class="hero-buttons"><button class="btn btn-primary" data-open-next>${done?'Davom etish':'Sayohatni boshlash'} <span>→</span></button><button class="btn btn-secondary" data-view="map">Galaktikani ko‘r</button></div></div><div class="hero-art hero-character-showcase"><div class="planet-orb"><span class="planet-moon"></span></div><div class="hero-character-card">${renderVoxelCharacter('showcase','idle')}<span class="hero-character-caption">${esc(getCharacterClass().name)}</span></div></div></section>
       <section class="hero-stats"><div class="stat-card card"><span class="stat-icon">🎯</span><div><strong>${done}<small style="display:inline;color:#8b9ab7;font-size:10px"> / 54</small></strong><small>Tugallangan missiya</small></div></div><div class="stat-card card"><span class="stat-icon cyan">⚡</span><div><strong>${profile.xp||0}</strong><small>Yig‘ilgan XP</small></div></div><div class="stat-card card"><span class="stat-icon gold">🏅</span><div><strong>${currentLevel()}</strong><small>Explorer darajasi</small></div></div><div class="stat-card card"><span class="stat-icon green">🔥</span><div><strong>${profile.streak||0}</strong><small>Kunlik seriya</small></div></div></section>
       ${renderJourneyTrack()}
       <div class="section-heading"><div><span class="eyebrow">PLAY ZONE · MINI O‘YIN</span><h2>Data Signal Hunt</h2><p>Hozir o‘ynab ko‘r — 5 raund, kamida 3 ta to‘g‘ri javob uchun kunlik 15 XP.</p></div><span class="tag gold">🎮 ARCADE</span></div>
@@ -343,7 +409,7 @@
     const solved=s.solved?'<div class="game-feedback success"><strong>✦ Signal topildi!</strong><span>Endi “Aha!” izohini ochib, bu usul nima uchun ishlashini ko‘r.</span><button class="btn btn-ghost" data-game-replay>↻ Qayta o‘ynash</button></div>':'';
     const feedback=s.feedback?'<div class="game-feedback '+(s.solved?'success':'retry')+'"><strong>'+(s.solved?'To‘g‘ri!':'Yana bir urinish!')+'</strong><span>'+esc(s.feedback)+'</span></div>':'';
     const canCheck=g.type==='sort'?Object.keys(s.assignments).length===g.items.length:g.type==='sequence'?s.picked.length===g.steps.length:g.type==='clean'?s.marked.length>0:g.type==='filter'?true:g.type==='survey'?s.surveyRows.length>=Number(g.minimum||3):s.selected!==null;
-    return '<section class="mission-game card"><div class="game-topline"><span class="game-badge">🎮 '+esc(g.badge||'MISSION GAME')+'</span><span class="game-duration">2–5 DAQIQA</span></div><h2>'+esc(g.title)+'</h2><p class="game-brief">'+esc(g.brief)+'</p><div class="game-play-area">'+play+'</div><div class="game-controls"><button class="btn btn-primary" data-game-check '+(!canCheck||s.solved?'disabled':'')+'>Tekshir va signal yubor →</button><span>'+((g.type==='sequence')?s.picked.length+'/'+g.steps.length+' bo‘lak':g.type==='sort'?Object.keys(s.assignments).length+'/'+g.items.length+' signal':g.type==='clean'?s.marked.length+' qator belgilandi':s.solved?'Bajarildi':'Missiyani yech')+'</span></div>'+feedback+solved+'</section>';
+    return '<section class="mission-game card"><div class="game-topline"><span class="game-badge">🎮 '+esc(g.badge||'MISSION GAME')+'</span><span class="game-duration">2–5 DAQIQA</span></div><h2>'+esc(g.title)+'</h2><p class="game-brief">'+esc(g.brief)+'</p>'+renderGameWorldStage(g,index,s)+'<div class="game-play-area"><div class="obby-quest-label"><span>🚩 OBBY CHALLENGE</span><b>PORTALNI OCHISH UCHUN TOPSHIRIQNI BAJAR</b></div>'+play+'</div><div class="game-controls"><button class="btn btn-primary" data-game-check '+(!canCheck||s.solved?'disabled':'')+'>Tekshir va signal yubor →</button><span>'+((g.type==='sequence')?s.picked.length+'/'+g.steps.length+' bo‘lak':g.type==='sort'?Object.keys(s.assignments).length+'/'+g.items.length+' signal':g.type==='clean'?s.marked.length+' qator belgilandi':s.solved?'Bajarildi':'Missiyani yech')+'</span></div>'+feedback+solved+'</section>';
   }
   function checkMissionGame(index) {
     const g=missionGames[index],s=missionGameState;
@@ -677,6 +743,8 @@
   }
   function bindGlobalEvents() {
     document.addEventListener('click',e=>{
+      const playerAction=e.target.closest('[data-player-action]');
+      if(playerAction){triggerCharacterAction(playerAction.dataset.playerAction);return;}
       const gameSortItem=e.target.closest('[data-game-sort-item]');
       if(gameSortItem){missionGameState.selectedItem=Number(gameSortItem.dataset.gameSortItem);renderLesson();return;}
       const gameBin=e.target.closest('[data-game-bin]');
@@ -722,7 +790,12 @@
     document.getElementById('mobile-menu').addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
     document.getElementById('modal-backdrop').addEventListener('click',e=>{if(e.target.id==='modal-backdrop')closeModal();});
     document.addEventListener('change',e=>{if(e.target.id==='import-progress-file'&&e.target.files[0])importProgress(e.target.files[0]);});
-    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape'){closeModal();return;}
+      if(activeView!=='lesson'||e.repeat||e.target?.matches('input,textarea,select,[contenteditable="true"]')||e.target?.closest('button,a'))return;
+      const key=e.code==='Space'?'jump':e.key.toLowerCase()==='w'?'wave':e.key.toLowerCase()==='d'?'dance':null;
+      if(key){e.preventDefault();triggerCharacterAction(key);}
+    });
   }
   function renderCourseIntoPage() {
     const root=document.getElementById('app-content');root.innerHTML=renderCourse();
