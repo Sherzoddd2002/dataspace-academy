@@ -181,9 +181,11 @@
   function triggerCharacterAction(action) {
     if(!missionGameState)return;
     if(action==='forward'||action==='back'){
-      missionGameState.playerStep=Math.max(0,Math.min(3,Number(missionGameState.playerStep||0)+(action==='forward'?1:-1)));
+      if(missionGameState.solved){toast('Portal allaqachon ochilgan! Keyingi missiyaga o‘t.','success');return;}
+      const previousStep=Number(missionGameState.playerStep||0);
+      missionGameState.playerStep=Math.max(0,Math.min(3,previousStep+(action==='forward'?1:-1)));
       const player=document.querySelector('.voxel-player');
-      if(player&&!missionGameState.solved)player.style.left=(7+missionGameState.playerStep*18)+'%';
+      if(player)player.style.left=(7+missionGameState.playerStep*18)+'%';
       document.querySelectorAll('.route-node').forEach((node,i)=>node.classList.toggle('lit',missionGameState.playerStep>=i+1));
       const routeProgress=document.querySelector('.world-progress i');
       if(routeProgress)routeProgress.style.width=Math.min(82,12+missionGameState.playerStep*22)+'%';
@@ -194,7 +196,7 @@
         hero?.classList.remove('action-jump');void hero?.offsetWidth;hero?.classList.add('action-jump');
         setTimeout(()=>hero?.classList.remove('action-jump'),760);
       }
-      if(missionGameState.playerStep===3&&action==='forward')toast('Checkpointga yetding! Endi vazifani yechib portalni och.','success');
+      if(previousStep<3&&missionGameState.playerStep===3&&action==='forward')toast('Checkpointga yetding! Endi vazifani yechib portalni och.','success');
       return;
     }
     const character=document.querySelector('.voxel-player .voxel-character');
