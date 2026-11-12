@@ -313,12 +313,12 @@
 
   async function signOutFromApp() {
     if(!cloud)return;
+    const lastUsername=profile.username||'';
     try{await cloud.signOut();}catch(error){toast(error.message||'Chiqishda xatolik.','warning');return;}
-    cloudUser=null;profile=defaultProfile();saveProfile();closeModal();render();openAuthModal('signin',true);
+    cloudUser=null;profile=defaultProfile();profile.username=lastUsername;saveProfile();closeModal();render();openAuthModal('signin',true);
   }
 
   function closeModal(){document.getElementById('modal-backdrop').classList.add('hidden');}
-{document.getElementById('modal-backdrop').classList.add('hidden');}
   function render() {
     updateChrome();
     const root=document.getElementById('app-content');
@@ -903,8 +903,6 @@
   }
   function bindGlobalEvents() {
     document.addEventListener('click',e=>{
-      const authMode=e.target.closest('[data-auth-mode]');
-      if(authMode){openAuthModal(authMode.dataset.authMode);return;}
       if(e.target.closest('[data-cloud-signout]')){signOutFromApp();return;}
       if(e.target.closest('[data-refresh-leaderboard]')){refreshLeaderboard();return;}
       if(e.target.closest('[data-open-auth]')){openAuthModal(cloudUser?'signin':'signup');return;}
@@ -974,20 +972,27 @@
       [lessons,missionGames]=await Promise.all([res.json(),gameRes.json()]);
       if(lessons.length!==54)throw new Error(`Kurs 54 dars bo‘lishi kerak, hozir ${lessons.length}.`);
       if(missionGames.length!==54)throw new Error(`Har bir dars uchun mini-o‘yin kerak: ${missionGames.length}/54.`);
+      let hadAuthSession=false;
       try{
         cloud=await import('./cloud.js');
         cloudUser=await cloud.currentUser();
+        hadAuthSession=!!cloudUser;
         if(cloudUser){
           let row=await cloud.getMyProfile();
           if(!row){
             const username=String(cloudUser.email||'').split('@')[0].toLowerCase();
-            row=await cloud.signIn({username,password:sessionStorage.getItem('dataspace-last-password')||''}).then(x=>x.profile).catch(()=>null);
+            if(!/^[a-z0-9_]{3,20}$/.test(username))throw new Error('Akkaunt username ma’lumoti noto‘g‘ri.');
+            row=await cloud.ensureProfile({username,displayName:cloudUser.name||username});
           }
           if(row)applyCloudProfile(row,cloudUser);
           else throw new Error('Akkaunt profilingiz topilmadi. Qayta kiring.');
         }
-      }catch(error){cloudError=error.message||'Cloud serverga ulanib bo‘lmadi.';console.error('DataSpace cloud error:',error);}
-      if(!cloudUser){profile=loadProfile();openAuthModal('signup',true);}
+      }catch(error){
+        cloudError=error.message||'Cloud serverga ulanib bo‘lmadi.';
+        console.error('DataSpace cloud error:',error);
+        cloudUser=null;
+      }
+      if(!cloudUser){profile=loadProfile();openAuthModal(hadAuthSession?'signin':'signup',true);}
       render();
     } catch (e) {
       document.getElementById('app-content').innerHTML='<div class="error-state"><strong>Galaktikani yuklab bo‘lmadi</strong><p>'+esc(e.message)+'</p><button class="btn btn-primary" onclick="location.reload()">Qayta urinish</button></div>';
