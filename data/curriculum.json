@@ -1,0 +1,871 @@
+[
+  {
+    "week": 1,
+    "title": "Ma'lumot nima? Kundalik hayotda data",
+    "kind": "quiz",
+    "objective": "Ma'lumotni tanish va kundalik misollarda data tushunchasini ko'rish.",
+    "story": "DataPort orbital stansiyasida barcha signallar tartibsiz. Kapitan bo'lish uchun avval ma'lumotni ajrata olishing kerak.",
+    "concept": "Data — kuzatish, o'lchash yoki qayd etish orqali olingan fakt. Harorat, baho, xaridlar tarixi va sport natijalari data bo'lishi mumkin.",
+    "challenge": "Quyidagilardan qaysi biri strukturali ma'lumotlar to'plamiga eng yaxshi misol?",
+    "options": [
+      "Tartibsiz ovozli xabar",
+      "Ustunlari ID, ism va baho bo'lgan jadval",
+      "Faqat bitta rasm",
+      "Tasodifiy ranglar aralashmasi"
+    ],
+    "correct": 1,
+    "explanation": "Jadvaldagi ustun va qatorlar ma'lumotni tartibli saqlaydi.",
+    "example": "Talaba | Baho\nAli | 86\nMadina | 92"
+  },
+  {
+    "week": 1,
+    "title": "Kompyuter savodxonligi: fayl va papkalar",
+    "kind": "quiz",
+    "objective": "Fayl, papka, kengaytma va loyiha papkasi farqini tushunish.",
+    "story": "Stansiya arxivida fayllar yo'qolib qolgan. Ularni to'g'ri papkalarga joylashtir.",
+    "concept": "Fayl — ma'lumot saqlanadigan obyekt; papka esa fayllarni guruhlaydi. .csv jadval, .py Python kodi, .xlsx Excel fayli bo'lishi mumkin.",
+    "challenge": "CSV faylni topish uchun qaysi kengaytmaga qaraysan?",
+    "options": [
+      ".mp3",
+      ".csv",
+      ".exe",
+      ".png"
+    ],
+    "correct": 1,
+    "explanation": ".csv — vergul bilan ajratilgan qiymatlar ko'rinishidagi jadval fayli.",
+    "example": "data/\n  students.csv\n  sales.csv\nnotebooks/\n  first_steps.py"
+  },
+  {
+    "week": 1,
+    "title": "Python o'rnatish, print() va o'zgaruvchilar",
+    "kind": "python",
+    "runtime": "python",
+    "objective": "print(), o'zgaruvchi va oddiy qiymatlarni ishlatish.",
+    "story": "Pythonia darvozasini ochish uchun kompyuterga birinchi buyruqni yubor.",
+    "concept": "print() natijani chiqaradi. O'zgaruvchi qiymatga nom beradi: student = 'Ali'. Python brauzer ichida Pyodide orqali ishlaydi.",
+    "challenge": "student o'zgaruvchisiga ismingni yoz va ekranga 'Salom, ' bilan birga chiqar.",
+    "starter": "student = 'Data Explorer'\n# Quyida salomlashuvni chiqar\nprint('Salom, ' + student)",
+    "testCode": "assert 'Salom' in str(student)\nassert student != ''",
+    "hint": "Matnni qo'shish uchun + operatoridan foydalan.",
+    "explanation": "O'zgaruvchi qiymatni qayta ishlatish va keyin o'zgartirish imkonini beradi."
+  },
+  {
+    "week": 2,
+    "title": "Sonlar, matn va input()",
+    "kind": "python",
+    "runtime": "python",
+    "objective": "int, float, str va input() vazifalarini tushunish.",
+    "story": "Energia stansiyasi hisoblagichlarni ishga tushirmaydi. Son va matn turlarini farqlab, energiyani hisobla.",
+    "concept": "int — butun son, float — kasr son, str — matn. input() foydalanuvchi kiritgan qiymatni matn sifatida qaytaradi; son kerak bo'lsa int() yoki float() bilan aylantir.",
+    "challenge": "price va quantity qiymatlaridan foydalanib total nomli jami qiymatni hisobla.",
+    "starter": "price = 12.5\nquantity = 4\n# total qiymatini hisobla\ntotal = price * quantity\nprint(total)",
+    "testCode": "assert total == 50",
+    "hint": "Narxni miqdorga ko'paytir.",
+    "explanation": "Turga mos amallar dastur xatolarini kamaytiradi."
+  },
+  {
+    "week": 2,
+    "title": "Mantiq: if / else",
+    "kind": "python",
+    "runtime": "python",
+    "objective": "Shartga qarab turli kod yo'llarini bajarish.",
+    "story": "Termis sayyorasidagi robot faqat to'g'ri ruxsat darajasida eshikni ochadi.",
+    "concept": "if shart rost bo'lsa bir blok, else esa aks holda boshqa blokni bajaradi. Taqqoslash: ==, !=, >, <, >=, <=.",
+    "challenge": "score 60 yoki undan yuqori bo'lsa result='O'tdi', aks holda result='Qayta urin'.",
+    "starter": "score = 74\nif score >= 60:\n    result = \"O'tdi\"\nelse:\n    result = \"Qayta urin\"\nprint(result)",
+    "testCode": "assert result == \"O'tdi\" if score >= 60 else result == \"Qayta urin\"",
+    "hint": "if qatoridan keyin ikki nuqta va ichkariga surilgan blok kerak.",
+    "explanation": "Shartlar dasturga vaziyatga qarab qaror qabul qilish imkonini beradi."
+  },
+  {
+    "week": 2,
+    "title": "Ro'yxatlar: list",
+    "kind": "python",
+    "runtime": "python",
+    "objective": "Ro'yxat yaratish, indeks, append va len bilan ishlash.",
+    "story": "Listara omborida ballar ketma-ketligini tikla va yangi natijani qo'sh.",
+    "concept": "List bir nechta qiymatni tartib bilan saqlaydi. Indeks 0 dan boshlanadi. append() oxiriga element qo'shadi.",
+    "challenge": "scores ro'yxatiga 95 ball qo'sh va ro'yxat uzunligini chiqar.",
+    "starter": "scores = [72, 88, 91]\nscores.append(95)\nprint(len(scores))",
+    "testCode": "assert 95 in scores\nassert len(scores) == 4",
+    "hint": "scores.append(95) buyrug'ini ishlat.",
+    "explanation": "Ro'yxatlar data bilan ishlashda ko'p uchraydigan ketma-ket qiymatlarni saqlaydi."
+  },
+  {
+    "week": 3,
+    "title": "Sikllar: for va while",
+    "kind": "python",
+    "runtime": "python",
+    "objective": "Takrorlanuvchi amallarni sikllar yordamida bajarish.",
+    "story": "Chronos vaqt darvozasi bir xil buyruqni qayta-qayta bajarishni so'rayapti.",
+    "concept": "for ketma-ketlik elementlari bo'yicha aylanadi. while shart rost ekan takrorlaydi.",
+    "challenge": "numbers ro'yxatidagi barcha sonlar yig'indisini total o'zgaruvchisiga yoz.",
+    "starter": "numbers = [3, 5, 7, 9]\ntotal = 0\nfor number in numbers:\n    total += number\nprint(total)",
+    "testCode": "assert total == sum(numbers)",
+    "hint": "total = 0 dan boshla, har aylanishda number ni qo'sh.",
+    "explanation": "Sikllar minglab qator ma'lumotni bitta qoida bilan qayta ishlashga yordam beradi."
+  },
+  {
+    "week": 3,
+    "title": "Lug'atlar: dict",
+    "kind": "python",
+    "runtime": "python",
+    "objective": "Kalit-qiymat tuzilmasini yaratish va undan qiymat olish.",
+    "story": "Lug'atlar observatoriyasida har bir sayyora o'z kodi va tavsifiga ega.",
+    "concept": "dict ma'lumotni kalit: qiymat juftlari ko'rinishida saqlaydi. Masalan, student['name'].",
+    "challenge": "student lug'atini yarat: name='Ali', score=90; keyin score qiymatini chiqar.",
+    "starter": "student = {\n    'name': 'Ali',\n    'score': 90\n}\nprint(student['score'])",
+    "testCode": "assert student['name'] == 'Ali'\nassert student['score'] == 90",
+    "hint": "Har bir kalitdan keyin ikki nuqta qo'yiladi.",
+    "explanation": "Lug'atlar ustun nomi yoki obyekt xususiyatlarini aniq kalitlar bilan bog'laydi."
+  },
+  {
+    "week": 3,
+    "title": "Funksiyalar",
+    "kind": "python",
+    "runtime": "python",
+    "objective": "def, parametr va return bilan qayta ishlatiladigan kod yozish.",
+    "story": "Chronos yadrosiga bir xil hisobni qayta-qayta yozmasdan bitta funksiya o'rnat.",
+    "concept": "Funksiya — nomlangan kod bloki. Parametr kiruvchi qiymat, return esa natijani qaytaradi.",
+    "challenge": "double(x) funksiyasini yoz: u x ning ikki baravarini qaytarsin.",
+    "starter": "def double(x):\n    return x * 2\n\nprint(double(7))",
+    "testCode": "assert double(7) == 14\nassert double(0) == 0",
+    "hint": "def double(x): deb boshlang va return x * 2 yozing.",
+    "explanation": "Funksiya kodni ixcham, tekshiriladigan va qayta ishlatiladigan qiladi."
+  },
+  {
+    "week": 4,
+    "title": "Fayl bilan ishlash",
+    "kind": "python",
+    "runtime": "python",
+    "objective": "Matn faylini yozish va o'qish.",
+    "story": "FileForge arxivida yo'qolgan missiya hisobotini yarat.",
+    "concept": "open() faylni ochadi. 'w' yozish, 'r' o'qish, 'a' oxiriga qo'shish rejimi. with blok faylni xavfsiz yopadi.",
+    "challenge": "report.txt fayliga 'DataSpace tayyor!' yoz va uni qayta o'qib content o'zgaruvchisiga saqla.",
+    "starter": "with open('report.txt', 'w', encoding='utf-8') as file:\n    file.write('DataSpace tayyor!')\n\nwith open('report.txt', 'r', encoding='utf-8') as file:\n    content = file.read()\nprint(content)",
+    "testCode": "assert content == 'DataSpace tayyor!'",
+    "hint": "Yozish uchun 'w', qayta o'qish uchun 'r' rejimi kerak.",
+    "explanation": "CSV kabi ma'lumot fayllari bilan ishlash shu tushunchaga asoslanadi."
+  },
+  {
+    "week": 4,
+    "title": "Kichik o'yin dasturi",
+    "kind": "python",
+    "runtime": "python",
+    "objective": "O'zgaruvchi, shart va funksiyani birlashtirish.",
+    "story": "Robotni boshqar: to'g'ri javob bersang, u keyingi darajaga o'tadi.",
+    "concept": "Kichik dastur ham bir nechta asosiy tushunchani birlashtiradi: qiymat, funksiya va shart.",
+    "challenge": "check_answer(answer) funksiyasini yarat: javob 42 bo'lsa True qaytarsin.",
+    "starter": "def check_answer(answer):\n    return answer == 42\n\nresult = check_answer(42)\nprint(result)",
+    "testCode": "assert check_answer(42) is True\nassert check_answer(7) is False",
+    "hint": "Funksiya ichida answer == 42 ifodasi yetarli.",
+    "explanation": "Kichik o'yinlar kodni kontekstda mashq qilishga yordam beradi."
+  },
+  {
+    "week": 4,
+    "title": "Pandas: birinchi DataFrame",
+    "kind": "python",
+    "runtime": "pandas",
+    "objective": "Pandas DataFrame yaratish va qator-ustunlarni tushunish.",
+    "story": "Pandoria sayyorasida tarqoq yozuvlarni ilmiy jadvalga aylantir.",
+    "concept": "DataFrame — qator va ustunlardan iborat jadval. Pandas ma'lumotlarni tozalash va tahlil qilishda yordam beradi.",
+    "challenge": "students DataFrame yarat: name va score ustunlari bo'lsin; 2 ta o'quvchi qo'sh.",
+    "starter": "import pandas as pd\nstudents = pd.DataFrame({\n    'name': ['Ali', 'Madina'],\n    'score': [85, 92]\n})\nprint(students)",
+    "testCode": "assert students.shape == (2, 2)\nassert 'score' in students.columns",
+    "hint": "pd.DataFrame({'ustun': [qiymatlar]}) ko'rinishidan foydalan.",
+    "explanation": "DataFrame Excel jadvaliga o'xshaydi, lekin Python orqali dasturiy boshqariladi."
+  },
+  {
+    "week": 5,
+    "title": "CSV faylni o'qish",
+    "kind": "python",
+    "runtime": "pandas",
+    "objective": "CSV matnini DataFrame ga yuklash.",
+    "story": "Pandoria ma'lumot omboridan CSV kapsulasini och.",
+    "concept": "pd.read_csv() CSV faylini DataFrame ga aylantiradi. Brauzer laboratoriyasida namuna matnini StringIO orqali o'qish mumkin.",
+    "challenge": "csv_text ni pd.read_csv() bilan o'qib, df nomli DataFrame yarat.",
+    "starter": "import pandas as pd\nfrom io import StringIO\ncsv_text = 'name,score\\nAli,80\\nMadina,95'\ndf = pd.read_csv(StringIO(csv_text))\nprint(df.head())",
+    "testCode": "assert df.shape == (2, 2)\nassert list(df.columns) == ['name', 'score']",
+    "hint": "from io import StringIO importini qoldir va StringIO(csv_text) ni uzat.",
+    "explanation": "CSV ma'lumot almashishning eng sodda va keng tarqalgan formatlaridan biri."
+  },
+  {
+    "week": 5,
+    "title": "Ustun va qatorlarni tanlash",
+    "kind": "python",
+    "runtime": "pandas",
+    "objective": "Ustun, qator va loc/iloc bilan ishlash.",
+    "story": "Jadvaldan faqat kerakli sensorlarni tanla.",
+    "concept": "df['score'] bitta ustunni tanlaydi. loc yorliq, iloc esa pozitsiya bo'yicha qator tanlaydi.",
+    "challenge": "df jadvalidan faqat score ustunini scores o'zgaruvchisiga ol.",
+    "starter": "import pandas as pd\ndf = pd.DataFrame({'name': ['Ali', 'Madina'], 'score': [80, 95]})\nscores = df['score']\nprint(scores)",
+    "testCode": "assert list(scores) == [80, 95]",
+    "hint": "Ustun nomini kvadrat qavs ichida yoz.",
+    "explanation": "Kerakli ustun va qatorlarni tanlash katta jadvallar bilan ishlashni tezlashtiradi."
+  },
+  {
+    "week": 5,
+    "title": "Filtrlash va saralash",
+    "kind": "python",
+    "runtime": "pandas",
+    "objective": "Shartli filtr va sort_values() ni qo'llash.",
+    "story": "Filtrona skanerida faqat yuqori natijali o'quvchilarni top.",
+    "concept": "df[df['score'] >= 80] qatorlarni shart bo'yicha tanlaydi. sort_values() saralaydi.",
+    "challenge": "score 80 dan katta yoki teng bo'lgan qatorlarni filtered o'zgaruvchisiga saqla.",
+    "starter": "import pandas as pd\ndf = pd.DataFrame({'name': ['Ali', 'Madina', 'Bobur'], 'score': [70, 95, 82]})\nfiltered = df[df['score'] >= 80]\nprint(filtered)",
+    "testCode": "assert len(filtered) == 2\nassert set(filtered['name']) == {'Madina', 'Bobur'}",
+    "hint": "Shartni df ichida qo'shimcha kvadrat qavs bilan qo'lla.",
+    "explanation": "Filtrlash savolga tegishli qatorlarni ajratib beradi."
+  },
+  {
+    "week": 6,
+    "title": "Bo'sh qiymat va dublikatlar",
+    "kind": "python",
+    "runtime": "pandas",
+    "objective": "isna(), fillna() va drop_duplicates() bilan tozalash.",
+    "story": "Insighta laboratoriyasiga kelgan sensor yozuvlarida bo'sh va takroriy ma'lumot bor.",
+    "concept": "isna() bo'sh qiymatni aniqlaydi, fillna() qiymat bilan to'ldiradi, drop_duplicates() takroriy qatorni o'chiradi.",
+    "challenge": "df jadvalidagi score bo'sh qiymatlarini 0 bilan to'ldirib, clean_df yarat.",
+    "starter": "import pandas as pd\ndf = pd.DataFrame({'name': ['Ali', 'Madina', 'Bobur'], 'score': [80, None, 90]})\nclean_df = df.fillna({'score': 0})\nprint(clean_df)",
+    "testCode": "assert clean_df['score'].isna().sum() == 0\nassert clean_df.loc[1, 'score'] == 0",
+    "hint": "fillna({'score': 0}) ustun bo'yicha to'ldiradi.",
+    "explanation": "Noto'g'ri yoki bo'sh qiymatlar tahlil natijasini buzishi mumkin."
+  },
+  {
+    "week": 6,
+    "title": "Yangi ustun yaratish",
+    "kind": "python",
+    "runtime": "pandas",
+    "objective": "Mavjud ustunlardan yangi hisoblangan ustun yaratish.",
+    "story": "Pandoria muhandisi ballardan yangi reyting ustunini yasashni so'radi.",
+    "concept": "DataFrame ga yangi ustun nomi bilan qiymat biriktirish mumkin. Masalan df['total'] = df['math'] + df['science'].",
+    "challenge": "math va science ustunlarini qo'shib total nomli yangi ustun yarat.",
+    "starter": "import pandas as pd\ndf = pd.DataFrame({'math': [80, 90], 'science': [70, 95]})\ndf['total'] = df['math'] + df['science']\nprint(df)",
+    "testCode": "assert list(df['total']) == [150, 185]",
+    "hint": "df['total'] = df['math'] + df['science'].",
+    "explanation": "Yangi ustunlar tahlil uchun kerakli ko'rsatkichlarni hosil qiladi."
+  },
+  {
+    "week": 6,
+    "title": "groupby: guruhlash",
+    "kind": "python",
+    "runtime": "pandas",
+    "objective": "Ma'lumotni guruhlash va agregatsiya qilish.",
+    "story": "Ikki shahar natijalarini alohida jamla.",
+    "concept": "groupby() bir xil qiymatli qatorlarni guruhlaydi; mean(), sum() yoki count() bilan umumlashtiradi.",
+    "challenge": "city bo'yicha score o'rtachasini hisoblab, average nomli natija yarat.",
+    "starter": "import pandas as pd\ndf = pd.DataFrame({'city': ['Qarshi', 'Toshkent', 'Qarshi'], 'score': [80, 90, 100]})\naverage = df.groupby('city')['score'].mean()\nprint(average)",
+    "testCode": "assert average['Qarshi'] == 90\nassert average['Toshkent'] == 90",
+    "hint": "df.groupby('city')['score'].mean() dan foydalan.",
+    "explanation": "Guruhlash shahar, mahsulot yoki sinf kesimida natijani taqqoslashga yordam beradi."
+  },
+  {
+    "week": 7,
+    "title": "Statistika: o'rtacha, median va moda",
+    "kind": "python",
+    "runtime": "pandas",
+    "objective": "mean, median va mode statistikalarini hisoblash.",
+    "story": "Statistika observatoriyasi sinf natijalarining markaziy qiymatini aniqlamoqchi.",
+    "concept": "Mean — arifmetik o'rtacha; median — tartiblangan qatorning o'rtadagi qiymati; mode — eng ko'p uchraydigan qiymat.",
+    "challenge": "scores ro'yxatidan mean_value, median_value va mode_value qiymatlarini hisobla.",
+    "starter": "import pandas as pd\nscores = pd.Series([70, 80, 80, 90, 100])\nmean_value = scores.mean()\nmedian_value = scores.median()\nmode_value = scores.mode().iloc[0]\nprint(mean_value, median_value, mode_value)",
+    "testCode": "assert mean_value == 84\nassert median_value == 80\nassert mode_value == 80",
+    "hint": "Pandas Series da mean(), median() va mode() metodlari bor.",
+    "explanation": "Uchala o'lchov ma'lumot markazini turlicha ifodalaydi."
+  },
+  {
+    "week": 7,
+    "title": "Matplotlib: birinchi grafik",
+    "kind": "python",
+    "runtime": "pandas",
+    "objective": "Matplotlib yordamida ustunli grafik chizish.",
+    "story": "Grafik stansiyasida sonlarni ko'rinadigan hikoyaga aylantir.",
+    "concept": "Grafik katta jadvaldagi trend va farqlarni tez ko'rsatadi. plt.bar() ustunli diagramma chizadi.",
+    "challenge": "months va sales ro'yxatlaridan ustunli grafik yarat va /home/pyodide/plot.svg ga saqla.",
+    "starter": "import matplotlib\nmatplotlib.use('svg')\nimport matplotlib.pyplot as plt\nmonths = ['Yan', 'Fev', 'Mar']\nsales = [12, 18, 15]\nplt.bar(months, sales)\nplt.title('Oylik savdo')\nplt.savefig('/home/pyodide/plot.svg')\nprint('Grafik tayyor')",
+    "testCode": "assert len(months) == len(sales)\nassert sum(sales) == 45",
+    "hint": "plt.bar(x, y) va plt.savefig('/home/pyodide/plot.svg') dan foydalan.",
+    "explanation": "Matplotlib tahlil natijalarini grafik ko'rinishida taqdim etadi."
+  },
+  {
+    "week": 7,
+    "title": "Seaborn va grafik turini tanlash",
+    "kind": "quiz",
+    "objective": "Vazifaga mos grafik turini tanlash.",
+    "story": "Vizualizatsiya kengashida noto'g'ri grafik tanlansa, auditoriya xulosani adashtiradi.",
+    "concept": "Bar — kategoriyalarni solishtirish; line — vaqt bo'yicha trend; scatter — ikki sonli o'zgaruvchi munosabati; histogram — taqsimot. Seaborn statistik grafiklarni chiroyli va ixcham chizishga yordam beradi.",
+    "challenge": "Bir yil davomida oyma-oy daromad o'zgarishini ko'rsatish uchun qaysi grafik mos?",
+    "options": [
+      "Line chart",
+      "Pie chart",
+      "Faqat jadval sarlavhasi",
+      "Tasodifiy scatter"
+    ],
+    "correct": 0,
+    "explanation": "Vaqt bo'yicha o'zgarishni chiziqli grafik aniq ko'rsatadi.",
+    "example": "Matplotlib: plt.plot(months, revenue)\nSeaborn: sns.lineplot(data=df, x='month', y='revenue')"
+  },
+  {
+    "week": 8,
+    "title": "Ma'lumotlar bazasi: jadval, qator, ustun",
+    "kind": "quiz",
+    "objective": "Relatsion ma'lumotlar bazasi tuzilishini tushunish.",
+    "story": "SQL-Base stansiyasiga kirishdan oldin ma'lumotlar bazasi xaritasini o'rgan.",
+    "concept": "Database bir nechta jadvalni saqlaydi. Jadval ustunlardan va qatorlardan iborat. Har bir qator bitta yozuvni bildiradi.",
+    "challenge": "Students jadvalidagi bitta qator nimani anglatadi?",
+    "options": [
+      "Bitta talaba yozuvini",
+      "Butun bazani",
+      "Faqat ustun nomini",
+      "SQL dasturini"
+    ],
+    "correct": 0,
+    "explanation": "Qator — jadvaldagi bitta yozuv, masalan bitta talaba."
+  },
+  {
+    "week": 8,
+    "title": "SQL muhiti va birinchi SELECT",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "SQL jadvalidan barcha yozuvlarni olish.",
+    "story": "SQL-Base terminalini ishga tushir va studentlar jadvaliga so'rov yubor.",
+    "concept": "SELECT ma'lumot o'qiydi, FROM qaysi jadvaldan olishni bildiradi. Nuqtali vergul so'rovni tugatadi.",
+    "challenge": "students jadvalidagi barcha ustun va qatorlarni chiqar.",
+    "starter": "SELECT *\nFROM students;",
+    "hint": "Yulduzcha barcha ustunlarni anglatadi.",
+    "sqlCheck": {
+      "minRows": 5,
+      "columns": [
+        "name",
+        "age",
+        "city",
+        "score"
+      ],
+      "contains": [
+        "Ali"
+      ]
+    },
+    "explanation": "SELECT — ma'lumotni so'rash uchun SQLning asosiy buyrug'i."
+  },
+  {
+    "week": 8,
+    "title": "Ustunlarni tanlash",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "SELECT orqali faqat kerakli ustunlarni chiqarish.",
+    "story": "Keng jadvaldan faqat ism va ball ustunlarini ajrat.",
+    "concept": "SELECT name, score FROM students; kabi yozuv faqat tanlangan ustunlarni qaytaradi.",
+    "challenge": "students jadvalidan name va score ustunlarini tanla.",
+    "starter": "SELECT name, score\nFROM students;",
+    "hint": "Ustun nomlarini vergul bilan ajrat.",
+    "sqlCheck": {
+      "minRows": 5,
+      "columns": [
+        "name",
+        "score"
+      ],
+      "contains": [
+        "Madina"
+      ]
+    }
+  },
+  {
+    "week": 9,
+    "title": "WHERE: shart bo'yicha tanlash",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "WHERE orqali ma'lumotni filtrlash.",
+    "story": "Faqat 16 yoshdan katta stajyorlarni top.",
+    "concept": "WHERE qatorlarni shart bo'yicha cheklaydi. Masalan WHERE age > 16.",
+    "challenge": "Yoshi 16 dan katta bo'lgan talabalarni chiqar.",
+    "starter": "SELECT name, age\nFROM students\nWHERE age > 16;",
+    "hint": "WHERE dan keyin ustun, operator va qiymat yoziladi.",
+    "sqlCheck": {
+      "minRows": 2,
+      "columns": [
+        "name",
+        "age"
+      ],
+      "contains": [
+        "Madina"
+      ]
+    }
+  },
+  {
+    "week": 9,
+    "title": "AND, OR va IN",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "Bir nechta mantiqiy shartlarni birlashtirish.",
+    "story": "Qarshi yoki Toshkent shahridagi, yuqori ball olgan o'quvchilarni qidir.",
+    "concept": "AND ikki shart ham rost bo'lishini, OR kamida bittasi rost bo'lishini, IN esa ro'yxatdagi qiymatlardan birini tekshiradi.",
+    "challenge": "Qarshi yoki Toshkent shahridagi talabalarni chiqar.",
+    "starter": "SELECT name, city\nFROM students\nWHERE city IN ('Qarshi', 'Toshkent');",
+    "hint": "IN ('Qarshi', 'Toshkent') ko'rinishidan foydalan.",
+    "sqlCheck": {
+      "minRows": 3,
+      "columns": [
+        "name",
+        "city"
+      ]
+    }
+  },
+  {
+    "week": 9,
+    "title": "ORDER BY va LIMIT",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "Natijani saralash va qator sonini cheklash.",
+    "story": "Eng yuqori ball olgan uch nafar o'quvchini reytingga chiqar.",
+    "concept": "ORDER BY score DESC kamayish tartibi, ASC o'sish tartibi; LIMIT qaytariladigan qatorlarni cheklaydi.",
+    "challenge": "Eng yuqori ball olgan 3 talabani chiqar.",
+    "starter": "SELECT name, score\nFROM students\nORDER BY score DESC\nLIMIT 3;",
+    "hint": "DESC kamayish tartibi, LIMIT 3 uchta qator.",
+    "sqlCheck": {
+      "exactRows": 3,
+      "columns": [
+        "name",
+        "score"
+      ],
+      "firstContains": [
+        "Madina"
+      ]
+    }
+  },
+  {
+    "week": 10,
+    "title": "LIKE, BETWEEN va NULL",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "Matn qidirish, oraliq va bo'sh qiymatni aniqlash.",
+    "story": "Ma'lumotlar bazasida ism naqshi va ball oraliqlarini qidir.",
+    "concept": "LIKE matn naqshini qidiradi; BETWEEN oraliqni tekshiradi; IS NULL bo'sh qiymatni aniqlaydi.",
+    "challenge": "Balli 80 va 95 oralig'ida bo'lgan talabalarni top.",
+    "starter": "SELECT name, score\nFROM students\nWHERE score BETWEEN 80 AND 95;",
+    "hint": "BETWEEN past AND yuqori ko'rinishida yoziladi.",
+    "sqlCheck": {
+      "minRows": 3,
+      "columns": [
+        "name",
+        "score"
+      ]
+    }
+  },
+  {
+    "week": 10,
+    "title": "DISTINCT va alias",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "Takrorlanmas qiymatlar va ustun nomini o'zgartirish.",
+    "story": "Shaharlar ro'yxatini takrorlarsiz chiqar va sarlavhani o'quvchiga tushunarli qil.",
+    "concept": "DISTINCT takroriy qiymatlarni olib tashlaydi. AS alias ustun yoki jadvalga vaqtinchalik nom beradi.",
+    "challenge": "students jadvalidagi noyob shaharlarni city_name aliasi bilan chiqar.",
+    "starter": "SELECT DISTINCT city AS city_name\nFROM students;",
+    "hint": "DISTINCT dan keyin ustun, AS dan keyin alias yoz.",
+    "sqlCheck": {
+      "minRows": 3,
+      "columns": [
+        "city_name"
+      ]
+    }
+  },
+  {
+    "week": 10,
+    "title": "SQL mini-topshiriqlar",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "SELECT, WHERE, ORDER BY va LIMIT ni birlashtirish.",
+    "story": "SQL-Base darvozasidagi mini-boss uchta shartni birlashtirishni talab qiladi.",
+    "concept": "Murakkab so'rovlar oddiy operatorlarni ketma-ket ishlatishdan tuziladi.",
+    "challenge": "Qarshidagi talabalarni score bo'yicha kamayish tartibida chiqar.",
+    "starter": "SELECT name, score\nFROM students\nWHERE city = 'Qarshi'\nORDER BY score DESC;",
+    "hint": "FROM, WHERE, ORDER BY tartibini saqla.",
+    "sqlCheck": {
+      "minRows": 2,
+      "columns": [
+        "name",
+        "score"
+      ],
+      "firstContains": [
+        "Bobur"
+      ]
+    }
+  },
+  {
+    "week": 11,
+    "title": "COUNT, SUM va AVG",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "Agregat funksiyalar bilan umumlashtirish.",
+    "story": "Queryon hisoblagichi nechta yozuv, jami va o'rtacha qiymatni so'rayapti.",
+    "concept": "COUNT qatorlar soni, SUM yig'indi, AVG o'rtacha qiymatni qaytaradi.",
+    "challenge": "students jadvalidagi talabalar sonini COUNT(*) bilan hisobla.",
+    "starter": "SELECT COUNT(*) AS student_count\nFROM students;",
+    "hint": "COUNT(*) barcha yozuvlarni sanaydi.",
+    "sqlCheck": {
+      "exactRows": 1,
+      "columns": [
+        "student_count"
+      ],
+      "minValue": 5
+    }
+  },
+  {
+    "week": 11,
+    "title": "MIN va MAX",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "Eng kichik va eng katta qiymatni topish.",
+    "story": "Reytingdagi eng past va eng yuqori ballarni aniqlab, musobaqa jadvalini tekshir.",
+    "concept": "MIN ustundagi minimum, MAX esa maksimum qiymatni qaytaradi.",
+    "challenge": "students jadvalidagi eng yuqori ballni MAX(score) orqali top.",
+    "starter": "SELECT MAX(score) AS top_score\nFROM students;",
+    "hint": "MAX() ichiga sonli ustunni yoz.",
+    "sqlCheck": {
+      "exactRows": 1,
+      "columns": [
+        "top_score"
+      ],
+      "minValue": 95
+    }
+  },
+  {
+    "week": 11,
+    "title": "GROUP BY",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "Guruhlar kesimida agregat hisoblash.",
+    "story": "Har bir shahardagi talabalar sonini hisobla.",
+    "concept": "GROUP BY bir xil qiymatlarni guruhlaydi. SELECT da guruh ustuni va agregat funksiya bo'ladi.",
+    "challenge": "Shaharlar kesimida talabalar sonini hisobla.",
+    "starter": "SELECT city, COUNT(*) AS total_students\nFROM students\nGROUP BY city;",
+    "hint": "GROUP BY city ni qo'sh.",
+    "sqlCheck": {
+      "minRows": 3,
+      "columns": [
+        "city",
+        "total_students"
+      ]
+    }
+  },
+  {
+    "week": 12,
+    "title": "HAVING",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "Guruhlangan natijaga shart qo'yish.",
+    "story": "Faqat kamida ikki talabasi bor shaharlarni top.",
+    "concept": "WHERE guruhlashdan oldin qatorlarni, HAVING esa GROUP BY dan keyin guruhlarni filtrlash uchun ishlatiladi.",
+    "challenge": "Kamida 2 nafar talabasi bor shaharlarni chiqar.",
+    "starter": "SELECT city, COUNT(*) AS total_students\nFROM students\nGROUP BY city\nHAVING COUNT(*) >= 2;",
+    "hint": "HAVING qatori GROUP BY dan keyin yoziladi.",
+    "sqlCheck": {
+      "minRows": 1,
+      "columns": [
+        "city",
+        "total_students"
+      ]
+    }
+  },
+  {
+    "week": 12,
+    "title": "JOIN g'oyasi",
+    "kind": "quiz",
+    "objective": "Bog'langan jadvallar nima uchun kerakligini tushunish.",
+    "story": "Talabalar va kurslar alohida jadvallarda. Ularni umumiy kalit orqali birlashtir.",
+    "concept": "JOIN jadvaldagi bog'liq yozuvlarni umumiy ustun orqali birlashtiradi. Masalan students.course_id = courses.id.",
+    "challenge": "Talaba nomi va kurs nomini bitta natijada ko'rsatish uchun qaysi amal kerak?",
+    "options": [
+      "JOIN",
+      "DROP",
+      "UPDATE",
+      "CREATE"
+    ],
+    "correct": 0,
+    "explanation": "JOIN bog'langan jadvallarni bir so'rovda birlashtiradi."
+  },
+  {
+    "week": 12,
+    "title": "INNER JOIN",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "Ikki jadvaldagi mos yozuvlarni birlashtirish.",
+    "story": "Faqat kursga ulangan talabalarni kurs nomi bilan ko'rsat.",
+    "concept": "INNER JOIN faqat ikkala jadvalda mos kelgan yozuvlarni qaytaradi.",
+    "challenge": "students va courses jadvallarini course_id=id bo'yicha birlashtir.",
+    "starter": "SELECT students.name, courses.title\nFROM students\nINNER JOIN courses ON students.course_id = courses.id;",
+    "hint": "ON ikki jadvaldagi bog'lovchi ustunlarni tenglashtiradi.",
+    "sqlCheck": {
+      "minRows": 5,
+      "columns": [
+        "name",
+        "title"
+      ],
+      "contains": [
+        "Python"
+      ]
+    }
+  },
+  {
+    "week": 13,
+    "title": "LEFT JOIN",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "Chap jadvaldagi barcha yozuvlarni saqlab birlashtirish.",
+    "story": "Kursga ulanmagan talabalar ham hisobotda ko'rinishi kerak.",
+    "concept": "LEFT JOIN chap jadvaldagi barcha yozuvlarni qaytaradi. O'ng tomonda mos yozuv topilmasa NULL chiqadi.",
+    "challenge": "Barcha students yozuvlarini courses bilan LEFT JOIN orqali birlashtir.",
+    "starter": "SELECT students.name, courses.title\nFROM students\nLEFT JOIN courses ON students.course_id = courses.id;",
+    "hint": "INNER JOIN o'rniga LEFT JOIN yoz.",
+    "sqlCheck": {
+      "minRows": 5,
+      "columns": [
+        "name",
+        "title"
+      ]
+    }
+  },
+  {
+    "week": 13,
+    "title": "CASE WHEN",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "Shart asosida yangi natija ustunini yaratish.",
+    "story": "Ballarni Bronze, Silver va Gold darajalariga ajrat.",
+    "concept": "CASE WHEN shartni tekshiradi va natijaga qarab yangi qiymat qaytaradi.",
+    "challenge": "score 90+ bo'lsa Gold, aks holda Standard deb belgilaydigan level ustunini yarat.",
+    "starter": "SELECT name,\n       CASE WHEN score >= 90 THEN 'Gold' ELSE 'Standard' END AS level\nFROM students;",
+    "hint": "CASE WHEN ... THEN ... ELSE ... END AS level.",
+    "sqlCheck": {
+      "minRows": 5,
+      "columns": [
+        "name",
+        "level"
+      ],
+      "contains": [
+        "Gold"
+      ]
+    }
+  },
+  {
+    "week": 13,
+    "title": "Mini-loyiha: kino bazasi",
+    "kind": "sql",
+    "runtime": "sql",
+    "objective": "SQL orqali kino jadvalidan tahliliy hisobot olish.",
+    "story": "Queryon kinosaroyida eng yuqori reytingli filmlarni aniqlash — final boss.",
+    "concept": "Amaliy loyihada SELECT, WHERE, ORDER BY, LIMIT va agregatlar birgalikda qo'llanadi.",
+    "challenge": "movies jadvalidan rating bo'yicha eng yuqori uchta filmni chiqar.",
+    "starter": "SELECT title, rating\nFROM movies\nORDER BY rating DESC\nLIMIT 3;",
+    "hint": "rating ustunini DESC tartibida saralab, 3 ta yozuv bilan chekla.",
+    "sqlCheck": {
+      "exactRows": 3,
+      "columns": [
+        "title",
+        "rating"
+      ],
+      "firstContains": [
+        "Inception"
+      ]
+    }
+  },
+  {
+    "week": 14,
+    "title": "Excel bilan tanishuv: katak, qator, ustun",
+    "kind": "excel",
+    "objective": "Elektron jadval tuzilishini tushunish va katakni tanlash.",
+    "story": "Excelia laboratoriyasida har bir qiymat o'z katagiga joylashishi kerak.",
+    "concept": "Ustunlar harflar, qatorlar sonlar bilan belgilanadi. B3 — B ustunining 3-qatori.",
+    "challenge": "Quyidagi jadvalda katak manzilini tanla va tanlangan katakka qiymat kirit.",
+    "excelAction": "cell",
+    "hint": "Katak ustiga bosib, formula qatorida qiymat kiriting.",
+    "explanation": "Elektron jadvallar ma'lumotlarni saqlash, hisoblash va taqdim etishga yordam beradi."
+  },
+  {
+    "week": 14,
+    "title": "Oddiy formulalar",
+    "kind": "excel",
+    "objective": "Formula yozish va kataklar orasida arifmetik hisoblash.",
+    "story": "Excelia kalkulyatorini oddiy formula bilan ishga tushir.",
+    "concept": "Excel formulalari = belgisi bilan boshlanadi. Masalan =B2+C2 yoki =B2*2.",
+    "challenge": "E2 katagiga =B2+C2 formulasini yoz.",
+    "excelAction": "formula",
+    "expectedFormula": "=B2+C2",
+    "hint": "Formula doimo = belgisi bilan boshlanadi."
+  },
+  {
+    "week": 14,
+    "title": "SUM, AVERAGE, MIN va MAX",
+    "kind": "excel",
+    "objective": "Eng ko'p ishlatiladigan agregat formulalarni qo'llash.",
+    "story": "O'quvchilar ballarining yig'indisi va o'rtachasini hisobla.",
+    "concept": "SUM yig'adi, AVERAGE o'rtacha, MIN eng kichik, MAX eng katta qiymatni topadi.",
+    "challenge": "E2 katagiga =SUM(B2:B6) formulasini yoz.",
+    "excelAction": "formula",
+    "expectedFormula": "=SUM(B2:B6)",
+    "hint": "Oraliq B2:B6 ko'rinishida yoziladi."
+  },
+  {
+    "week": 15,
+    "title": "Formatlash, saralash va filtr",
+    "kind": "excel",
+    "objective": "Jadvalni o'qishga qulay qilish, saralash va filtrlash.",
+    "story": "Excelia jadvalini tartibga keltir: eng katta qiymatlar tepada bo'lsin.",
+    "concept": "Formatlash ko'rinishni yaxshilaydi. Sort tartiblaydi, Filter esa shartga mos qatorlarni ko'rsatadi.",
+    "challenge": "Laboratoriyadagi 'Ball bo'yicha saralash' tugmasidan foydalan.",
+    "excelAction": "sort",
+    "hint": "Ustun sarlavhasiga bosib saralashni sinab ko'r."
+  },
+  {
+    "week": 15,
+    "title": "IF, COUNTIF va SUMIF",
+    "kind": "excel",
+    "objective": "Shartli hisoblash funksiyalaridan foydalanish.",
+    "story": "Reyting tizimi 80 dan yuqori ballarni 'Yaxshi' deb ajratadi.",
+    "concept": "IF shartga qarab qiymat qaytaradi. COUNTIF shartga mos kataklarni sanaydi. SUMIF shartga mos sonlarni yig'adi.",
+    "challenge": "E2 katagiga =IF(B2>=80,\"Yaxshi\",\"Mashq qil\") formulasini yoz.",
+    "excelAction": "formula",
+    "expectedFormula": "=IF(B2>=80,\"Yaxshi\",\"Mashq qil\")",
+    "hint": "IF(shart, rost bo'lsa, yolg'on bo'lsa)."
+  },
+  {
+    "week": 15,
+    "title": "VLOOKUP va XLOOKUP asoslari",
+    "kind": "excel",
+    "objective": "Kalit bo'yicha boshqa jadvaldan qiymat topish.",
+    "story": "Kurs kodi orqali kurs nomini top va hisobotni to'ldir.",
+    "concept": "VLOOKUP jadvalning birinchi ustunidan qidiradi. XLOOKUP qidiruv va natija ustunlarini alohida ko'rsatadi.",
+    "challenge": "E2 katagiga =XLOOKUP(A2,$G$2:$G$4,$H$2:$H$4) formulasini yoz.",
+    "excelAction": "formula",
+    "expectedFormula": "=XLOOKUP(A2,$G$2:$G$4,$H$2:$H$4)",
+    "hint": "XLOOKUP(qidiriladigan qiymat, qidiruv oralig'i, natija oralig'i)."
+  },
+  {
+    "week": 16,
+    "title": "Pivot Table",
+    "kind": "excel",
+    "objective": "Ma'lumotni kategoriyalar bo'yicha jamlash.",
+    "story": "Savdo kosmik stansiyasida shaharlar kesimida jami daromadni hisobla.",
+    "concept": "Pivot Table — katta jadvalni guruhlab, yig'indi, son yoki o'rtacha kabi ko'rsatkichlarni tez hisoblaydi.",
+    "challenge": "'Pivot yaratish' tugmasini bosib, shaharlar kesimidagi jami ballarni ko'r.",
+    "excelAction": "pivot",
+    "hint": "Pivot jadval guruh va qiymat ustunlarini tanlash orqali tuziladi."
+  },
+  {
+    "week": 16,
+    "title": "Diagrammalar",
+    "kind": "excel",
+    "objective": "Jadvaldan mos diagramma yaratish.",
+    "story": "Natijalarni sinfdoshlarga ko'rsatish uchun grafik tayyorla.",
+    "concept": "Ustunli diagramma kategoriyalarni, chiziqli diagramma vaqt trendini, doiraviy diagramma ulushlarni ko'rsatadi.",
+    "challenge": "'Diagramma chizish' tugmasini bosib, ballar taqqoslanishini ko'r.",
+    "excelAction": "chart",
+    "hint": "Grafikdan oldin qaysi savolga javob kerakligini aniqlang."
+  },
+  {
+    "week": 16,
+    "title": "Python, SQL va Excel: natijani eksport qilish",
+    "kind": "python",
+    "runtime": "pandas",
+    "objective": "Pandas DataFrame natijasini Excel formatiga tayyorlash.",
+    "story": "Excelia va Pandoria o'rtasida yakuniy hisobotni yetkaz.",
+    "concept": "Python ma'lumotni tozalashi va tahlil qilishi, SQL saqlashi, Excel esa natijani taqdim etishi mumkin. Pandas to_excel() Excel fayl yaratadi.",
+    "challenge": "df DataFrame yarat va natijani Excelga yozish qatorini qo'sh.",
+    "starter": "import pandas as pd\ndf = pd.DataFrame({'city': ['Qarshi', 'Toshkent'], 'sales': [120, 180]})\n# Excel fayl yaratish\ndf.to_excel('report.xlsx', index=False)\nprint('Excel hisobot tayyor')",
+    "testCode": "assert list(df.columns) == ['city', 'sales']\nassert df['sales'].sum() == 300",
+    "hint": "df.to_excel('report.xlsx', index=False) dan foydalan.",
+    "explanation": "Bu bosqich uchta vositani bitta ish jarayoniga bog'laydi."
+  },
+  {
+    "week": 17,
+    "title": "Loyiha tanlash va rejalash",
+    "kind": "project",
+    "objective": "Yakuniy loyiha savoli, maqsadi va ma'lumot manbasini aniqlash.",
+    "story": "Project Nebula uchun o'z missiyangni tanla: kino, ta'lim yoki savdo ma'lumotlari.",
+    "concept": "Yaxshi loyiha aniq savoldan boshlanadi. Masalan: qaysi mahsulot ko'proq sotiladi yoki o'quvchi natijasiga nima ta'sir qiladi?",
+    "challenge": "Quyidagi loyihalardan birini tanla va tadqiqot savolini yoz.",
+    "projectOptions": [
+      "Kino reytinglari tahlili",
+      "O'quvchilar natijasi tahlili",
+      "Do'kon savdosi tahlili"
+    ],
+    "hint": "Loyiha savoli o'lchanadigan va ma'lumot bilan javob beriladigan bo'lsin."
+  },
+  {
+    "week": 17,
+    "title": "Ma'lumot yig'ish va tozalash",
+    "kind": "project",
+    "objective": "Ma'lumot manbasini yozish, xatolarni aniqlash va tozalash rejasini tuzish.",
+    "story": "Nebula missiyasi uchun xom ma'lumotlarni yig'ib, tahlilga tayyorla.",
+    "concept": "Data cleaning: noto'g'ri tur, bo'sh qiymat, takroriy qator, nomuvofiq formatlarni tekshirish.",
+    "challenge": "Loyiha rejangdagi uchta tozalash ishini belgila.",
+    "checklist": [
+      "Ustun nomlari va ma'lumot turlarini tekshirdim",
+      "Bo'sh qiymatlarni tekshirdim",
+      "Dublikatlarni tekshirdim"
+    ],
+    "hint": "Avval ma'lumot sifati haqida xulosa yoz, keyin tozala."
+  },
+  {
+    "week": 17,
+    "title": "Tahlil va grafiklar",
+    "kind": "project",
+    "objective": "Savolga mos statistik ko'rsatkich va grafik tanlash.",
+    "story": "Nebula missiyasida dalillarni top: raqamlar va grafiklar hikoya qilsin.",
+    "concept": "EDA — ma'lumotni dastlabki o'rganish. O'rtacha, median, guruhlash va grafiklar muhim naqshlarni ko'rsatadi.",
+    "challenge": "Loyihang uchun bitta asosiy ko'rsatkich va mos grafik turini tanla.",
+    "projectOptions": [
+      "O'rtacha qiymat + ustunli grafik",
+      "Vaqt trendi + chiziqli grafik",
+      "Taqsimot + histogram"
+    ],
+    "hint": "Grafik bezak emas, aniq savolga javob beruvchi vosita."
+  },
+  {
+    "week": 18,
+    "title": "Loyihani yakunlash",
+    "kind": "project",
+    "objective": "Tahlilni xulosa, cheklov va tavsiyaga aylantirish.",
+    "story": "Nebula boshqaruv markazi yakuniy hisobotni kutmoqda.",
+    "concept": "Yakuniy hisobot: muammo, ma'lumot, tozalash, tahlil, natija, cheklov va tavsiya.",
+    "challenge": "Yakuniy hisobot uchun barcha bo'limlarni belgila.",
+    "checklist": [
+      "Muammo va maqsad yozildi",
+      "Ma'lumot manbasi ko'rsatildi",
+      "Tozalash va tahlil bajarildi",
+      "Kamida bitta grafik qo'shildi",
+      "Xulosa va tavsiya yozildi"
+    ],
+    "hint": "Natijani sabab-oqibat sifatida ortiqcha talqin qilma."
+  },
+  {
+    "week": 18,
+    "title": "Guruh oldida taqdimot",
+    "kind": "project",
+    "objective": "Tahlil natijasini qisqa va tushunarli himoya qilish.",
+    "story": "Akademiya kengashi oldida missiyangni taqdim et.",
+    "concept": "Yaxshi taqdimot bitta asosiy xabar atrofida quriladi: savol, dalil, xulosa va tavsiya.",
+    "challenge": "Taqdimot rejasini tayyorla va uchta bandni belgila.",
+    "checklist": [
+      "Muammo va savolni tushuntirdim",
+      "Eng muhim grafikni izohladim",
+      "Xulosa va tavsiyani aytdim"
+    ],
+    "hint": "Har bir grafik uchun 'Bu nimani anglatadi?' savoliga javob tayyorla."
+  },
+  {
+    "week": 18,
+    "title": "Sertifikat va keyingi yo'l",
+    "kind": "project",
+    "objective": "Kurs bo'yicha bilimlarni mustahkamlash va keyingi rivojlanish rejasini tuzish.",
+    "story": "54 missiya yakunlandi. Endi sen DataSpace Explorer sertifikatini olishga tayyorsan.",
+    "concept": "Keyingi bosqich: SQL murakkab so'rovlari, Python avtomatlashtirish, statistika, Power BI va mashinaviy o'rganish.",
+    "challenge": "Kursdan keyin chuqurlashtirmoqchi bo'lgan yo'nalishni tanla.",
+    "projectOptions": [
+      "Data Analyst: SQL + Power BI",
+      "Python Developer: avtomatlashtirish",
+      "Data Scientist: statistika + Machine Learning"
+    ],
+    "hint": "Sertifikatni olish uchun oldingi 53 missiyaning barchasi tugallangan bo'lishi kerak."
+  }
+]
