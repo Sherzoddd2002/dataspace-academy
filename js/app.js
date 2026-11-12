@@ -60,9 +60,14 @@
     {emoji:'🔗',topic:'SQL ANALYTICS',prompt:'Har bir shahar bo‘yicha nechta o‘quvchi borligini hisoblashda qaysi juftlik kerak?',options:['GROUP BY city va COUNT(*)','ORDER BY city va DROP(*)','LIMIT city va SUM(*)','DISTINCT city va DELETE'],answer:0,why:'GROUP BY shaharlar bo‘yicha guruhlaydi, COUNT(*) esa yozuvlarni sanaydi.'}
   ];
   let arcadeState = {phase:'ready',round:0,score:0,streak:0,selected:null,questions:[],reward:''};
+  let cloud = null;
+  let cloudUser = null;
+  let cloudError = null;
+  let leaderboardCache = [];
+  let authModalBusy = false;
 
   function defaultProfile() {
-    return {name:'',avatar:'🚀',characterClass:'navigator',xp:0,streak:0,lastActive:'',completed:[],createdAt:new Date().toISOString(),projectChoice:'',projectNotes:'',projectChecks:{},preferences:{},arcadeBest:0,arcadeDailyReward:''};
+    return {name:'',username:'',cloudUserId:'',avatar:'🚀',characterClass:'navigator',xp:0,streak:0,lastActive:'',completed:[],createdAt:new Date().toISOString(),projectChoice:'',projectNotes:'',projectChecks:{},preferences:{},arcadeBest:0,arcadeDailyReward:''};
   }
   function loadProfile() {
     try {
@@ -134,10 +139,11 @@
   function setView(view) {
     activeView=view; activeLessonIndex=null;
     document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
-    const labels={dashboard:'Bosh sahifa',map:'Galaktika xaritasi',course:'54 ta dars',arena:'Musobaqa maydoni',achievements:'Mukofotlarim',teacher:'Mentor paneli'};
+    const labels={dashboard:'Bosh sahifa',map:'Galaktika xaritasi',course:'54 ta dars',arena:'Musobaqa maydoni',leaderboard:'Reyting / O‘quvchilar',achievements:'Mukofotlarim',teacher:'Mentor paneli'};
     const crumb=document.getElementById('breadcrumb-current'); if(crumb) crumb.textContent=labels[view]||'Bosh sahifa';
     document.getElementById('sidebar').classList.remove('open');
     render();
+    if(view==='leaderboard'||view==='teacher') refreshLeaderboard();
     window.scrollTo({top:0,behavior:'smooth'});
   }
 
@@ -207,30 +213,112 @@
     setTimeout(()=>character.classList.remove('action-'+action),900);
   }
 
-  function openProfileModal(first=false) {
+  function openAuthModal(mode='signup',first=false) {
     const modal=document.getElementById('modal-card');
-    const picked=profile.avatar || '🚀';
+    const signup=mode==='signup';
+    authModalBusy=false;
+    modal.innerHTML=`<div class="eyebrow">DATASPACE ACCOUNT · GALAKTIKAGA KIRISH</div>
+      <h2 id="modal-title">${signup?'Yangi Explorer yarat':'Akkauntingga kir'}</h2>
+      <p class="auth-intro">Har bir o‘quvchining XP va missiyalari alohida saqlanadi. Email kerak emas.</p>
+      <div class="auth-mode-switch"><button type="button" class="${signup?'active':''}" data-auth-mode="signup">Ro‘yxatdan o‘tish</button><button type="button" class="${!signup?'active':''}" data-auth-mode="signin">Kirish</button></div>
+      <label for="auth-username">Username</label><input id="auth-username" maxlength="20" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Masalan: ali_data" value="${esc(profile.username||'')}">
+      ${signup?'<label for="auth-display-name">Ko‘rinadigan ism</label><input id="auth-display-name" maxlength="24" autocomplete="nickname" placeholder="Masalan: Ali">':''}
+      <label for="auth-password">Parol</label><input id="auth-password" type="password" minlength="8" maxlength="72" autocomplete="${signup?'new-password':'current-password'}" placeholder="${signup?'Kamida 8 belgi':'Parolingiz'}">
+      ${signup?'<small class="auth-hint">Username 3–20 belgi: lotin harflari, raqamlar va pastki chiziq. Parolingizni eslab qoling — email orqali tiklash yo‘q.</small>':''}
+      <p class="auth-error" id="auth-error" role="alert">${cloudError?esc(cloudError):''}</p>
+      <div class="modal-actions">${first?'':'<button class="btn btn-ghost" data-close-modal>Bekor qilish</button>'}<button class="btn btn-primary" id="auth-submit">${signup?'Akkaunt yaratish':'Kirish'} <span>→</span></button></div>`;
+    document.getElementById('modal-backdrop').classList.remove('hidden');
+    modal.querySelectorAll('[data-auth-mode]').forEach(btn=>btn.addEventListener('click',()=>openAuthModal(btn.dataset.authMode,first)));
+    const submit=async()=>{
+      if(authModalBusy)return;
+      const username=modal.querySelector('#auth-username').value.trim().toLowerCase();
+      const password=modal.querySelector('#auth-password').value;
+      const displayName=modal.querySelector('#auth-display-name')?.value.trim()||username;
+      const errorEl=modal.querySelector('#auth-error');
+      const button=modal.querySelector('#auth-submit');
+      if(!/^[a-z0-9_]{3,20}$/.test(username)){errorEl.textContent='Username 3–20 belgidan iborat bo‘lsin: a-z, 0-9 va _. ';return;}
+      if(signup&&password.length<8){errorEl.textContent='Parol kamida 8 belgidan iborat bo‘lishi kerak.';return;}
+      if(!password){errorEl.textContent='Parolni kiriting.';return;}
+      if(!cloud){errorEl.textContent='Serverga ulanish tayyor emas. Sahifani yangilab ko‘ring.';return;}
+      authModalBusy=true;button.disabled=true;button.textContent=signup?'Akkaunt yaratilmoqda...':'Tekshirilmoqda...';errorEl.textContent='';
+      try{
+        const result=signup
+          ?await cloud.signUp({username,password,displayName,avatar:profile.avatar||'🚀',characterClass:profile.characterClass||'navigator'})
+          :await cloud.signIn({username,password});
+        cloudUser=result.user;
+        applyCloudProfile(result.profile,result.user);
+        closeModal();render();
+        toast(signup?'Akkaunt yaratildi! Galaktikaga xush kelibsan.':'Xush kelibsan! Progressing tiklandi.','success');
+      }catch(error){
+        errorEl.textContent=error?.message||'Kirishda xatolik yuz berdi.';
+        button.disabled=false;button.innerHTML=(signup?'Akkaunt yaratish':'Kirish')+' <span>→</span>';
+        authModalBusy=false;
+      }
+    };
+    modal.querySelector('#auth-submit').addEventListener('click',submit);
+    modal.querySelector('#auth-password').addEventListener('keydown',e=>{if(e.key==='Enter')submit();});
+    modal.querySelector('#auth-username').addEventListener('keydown',e=>{if(e.key==='Enter')modal.querySelector('#auth-password').focus();});
+  }
+
+  function applyCloudProfile(row,user=cloudUser) {
+    if(!row)throw new Error('O‘quvchi profili topilmadi.');
+    cloudUser=user||cloudUser;
+    if(profile.name&&!profile.cloudUserId&&profile.name!==row.display_name){
+      try{localStorage.setItem(STORAGE_KEY+'-legacy-backup',JSON.stringify(profile));}catch(_){}
+    }
+    profile={
+      ...defaultProfile(),
+      username:String(row.username||''),
+      name:String(row.display_name||row.username||'Explorer'),
+      cloudUserId:String(row.user_id||cloudUser?.id||''),
+      avatar:row.avatar||'🚀',
+      characterClass:row.character_class||'navigator',
+      xp:Number(row.xp||0),
+      streak:Number(row.streak||0),
+      lastActive:row.last_active||'',
+      completed:Array.isArray(row.completed_lessons)?row.completed_lessons.map(Number).filter(n=>Number.isInteger(n)&&n>=0&&n<54).sort((a,b)=>a-b):[],
+      arcadeBest:Number(row.arcade_best||0),
+      arcadeDailyReward:row.arcade_daily_reward||''
+    };
+    saveProfile();
+  }
+
+  function openProfileModal() {
+    if(!cloudUser){openAuthModal('signup');return;}
+    const modal=document.getElementById('modal-card');
+    const picked=profile.avatar||'🚀';
     let characterClass=profile.characterClass||'navigator';
-    modal.innerHTML=`<div class="eyebrow">${first?'SAYOHATNI BOSHLASH':'PROFIL SOZLAMALARI'}</div>
-      <h2 id="modal-title">${first?'Kim Data Explorer bo‘ladi?':'Profilingni sozla'}</h2>
-      <p>Ism yoki taxallus yoz. Bu profil faqat shu brauzerda saqlanadi — parol va elektron pochta talab qilinmaydi.</p>
-      <label for="profile-name-input">Ism yoki taxallus</label><input id="profile-name-input" maxlength="24" placeholder="Masalan: Ali" value="${esc(profile.name)}">
+    modal.innerHTML=`<div class="eyebrow">DATASPACE ACCOUNT</div>
+      <h2 id="modal-title">Explorer profiling</h2>
+      <p class="auth-intro">Username: <strong>@${esc(profile.username)}</strong>. Natijalaring barcha qurilmalarda saqlanadi.</p>
+      <label for="profile-name-input">Ko‘rinadigan ism</label><input id="profile-name-input" maxlength="24" placeholder="Masalan: Ali" value="${esc(profile.name)}">
       <label>Hamrohingni tanla</label><div class="avatar-picker">${AVATARS.map(a=>`<button class="avatar-choice ${a===picked?'selected':''}" type="button" data-avatar-choice="${a}">${a}</button>`).join('')}</div>
       <label class="character-class-label">O‘yin qahramoningning kasbi</label><div class="character-class-picker">${CHARACTER_CLASSES.map(c=>`<button class="character-class-option ${c.id===characterClass?'selected':''}" type="button" data-character-class="${c.id}"><span>${c.icon}</span><b>${c.name}</b><small>${c.short}</small></button>`).join('')}</div>
       <div class="character-preview-row"><span>Qahramoning:</span>${renderVoxelCharacter('preview','idle',characterClass)}</div>
-      <div class="modal-actions">${first?'':'<button class="btn btn-ghost" data-close-modal>Bekor qilish</button>'}<button class="btn btn-primary" id="save-profile">${first?'Galaktikaga kirish':'Saqlash'} <span>→</span></button></div>`;
+      <div class="modal-actions"><button class="btn btn-ghost" data-cloud-signout>Chiqish</button><button class="btn btn-primary" id="save-profile">Saqlash <span>→</span></button></div>`;
     document.getElementById('modal-backdrop').classList.remove('hidden');
     let avatar=picked;
     modal.querySelectorAll('[data-avatar-choice]').forEach(btn=>btn.addEventListener('click',()=>{avatar=btn.dataset.avatarChoice;modal.querySelectorAll('[data-avatar-choice]').forEach(x=>x.classList.toggle('selected',x===btn));}));
     modal.querySelectorAll('[data-character-class]').forEach(btn=>btn.addEventListener('click',()=>{characterClass=btn.dataset.characterClass;modal.querySelectorAll('[data-character-class]').forEach(x=>x.classList.toggle('selected',x===btn));modal.querySelector('.character-preview-row').innerHTML='<span>Qahramoning:</span>'+renderVoxelCharacter('preview','idle',characterClass);}));
-    modal.querySelector('#save-profile').addEventListener('click',()=>{
+    modal.querySelector('#save-profile').addEventListener('click',async()=>{
       const name=modal.querySelector('#profile-name-input').value.trim();
-      if(!name){toast('Ism yoki taxallus kiriting.','warning');return;}
-      profile.name=name;profile.avatar=avatar;profile.characterClass=characterClass;saveProfile();closeModal();render();if(first)toast(`Xush kelibsan, ${name}! Birinchi missiyang tayyor.`,'success');
+      if(!name){toast('Ko‘rinadigan ism kiriting.','warning');return;}
+      const button=modal.querySelector('#save-profile');button.disabled=true;button.textContent='Saqlanmoqda...';
+      try{
+        const row=await cloud.updateProfile({displayName:name,avatar,characterClass});
+        applyCloudProfile(row,cloudUser);closeModal();render();toast('Profil yangilandi.','success');
+      }catch(error){button.disabled=false;button.textContent='Saqlash';toast(error.message||'Profil saqlanmadi.','warning');}
     });
-    modal.querySelector('#profile-name-input').addEventListener('keydown',e=>{if(e.key==='Enter')modal.querySelector('#save-profile').click();});
   }
+
+  async function signOutFromApp() {
+    if(!cloud)return;
+    try{await cloud.signOut();}catch(error){toast(error.message||'Chiqishda xatolik.','warning');return;}
+    cloudUser=null;profile=defaultProfile();saveProfile();closeModal();render();openAuthModal('signin',true);
+  }
+
   function closeModal(){document.getElementById('modal-backdrop').classList.add('hidden');}
+{document.getElementById('modal-backdrop').classList.add('hidden');}
   function render() {
     updateChrome();
     const root=document.getElementById('app-content');
@@ -239,6 +327,7 @@
     else if(activeView==='course') root.innerHTML=renderCourse();
     else if(activeView==='arena') root.innerHTML=renderArena();
     else if(activeView==='achievements') root.innerHTML=renderAchievements();
+    else if(activeView==='leaderboard') root.innerHTML=renderLeaderboard();
     else if(activeView==='teacher') root.innerHTML=renderTeacher();
     else root.innerHTML=renderDashboard();
   }
@@ -250,6 +339,50 @@
     }).join('');
     return '<section class="orbit-journey card"><div class="journey-heading"><div><span class="eyebrow">LIVE GALAXY MAP</span><h2>Galaktika bo‘ylab yo‘ling</h2><p>Sayyorani tanla — keyingi missiyang shu yerda kutmoqda.</p></div><span class="tag cyan">'+WORLDS.filter((w,i)=>isWorldUnlocked(i)).length+'/9 olam ochiq</span></div><div class="journey-route">'+stops+'</div></section>';
   }
+  function renderLeaderboard() {
+    return `<div class="section-heading" style="margin-top:0"><div><span class="eyebrow">GLOBAL EXPLORER RANKING</span><h2>🏆 Galaktika reytingi</h2><p>Barcha Data Explorerlar bir maydonda. Kim ko‘proq XP to‘plaganini ko‘r!</p></div><button class="btn btn-secondary" data-refresh-leaderboard>↻ Yangilash</button></div>
+      <section class="leaderboard-overview"><div class="leaderboard-overview-copy"><span class="eyebrow">DATASPACE COMMUNITY</span><h3>Eng kuchli Explorer kim?</h3><p>XP, tugallangan missiyalar va daraja bo‘yicha jonli reyting.</p></div><div class="leaderboard-total"><strong id="leaderboard-count">—</strong><span>RO‘YXATDAGI O‘QUVCHI</span></div></section>
+      <section class="leaderboard-podium" id="leaderboard-podium"><div class="leaderboard-loading">Reyting yuklanmoqda...</div></section>
+      <section class="card leaderboard-table-card"><div class="leaderboard-table-heading"><div><h3>O‘quvchilar ro‘yxati</h3><p>XP ko‘p bo‘lgan o‘quvchi yuqorida turadi.</p></div><span class="tag cyan" id="leaderboard-me-rank">Mening o‘rnim: —</span></div><div id="leaderboard-list" class="leaderboard-list"><div class="leaderboard-loading">Serverdan ma’lumot olinmoqda...</div></div></section>`;
+  }
+
+  function leaderboardRowMarkup(user,index,compact=false) {
+    const isMe=String(user.username||'').toLowerCase()===String(profile.username||'').toLowerCase()&&!!profile.username;
+    const xp=Number(user.xp||0), done=Number(user.completed_count||0);
+    const role=CHARACTER_CLASSES.find(x=>x.id===user.character_class)||CHARACTER_CLASSES[0];
+    return `<div class="leaderboard-row ${isMe?'is-me':''} ${index<3?'top-rank':''}">
+      <span class="leaderboard-rank rank-${index+1}">${index===0?'🥇':index===1?'🥈':index===2?'🥉':'#'+(index+1)}</span>
+      <span class="leaderboard-avatar">${esc(user.avatar||'🚀')}</span>
+      <span class="leaderboard-player"><strong>${esc(user.display_name||user.username||'Explorer')}${isMe?'<i>SEN</i>':''}</strong><small>@${esc(user.username||'explorer')} · ${esc(role.name)}</small></span>
+      <strong class="leaderboard-xp">${xp.toLocaleString('uz-UZ')} <small>XP</small></strong>
+      ${compact?'':`<span class="leaderboard-stat"><b>${Math.floor(xp/100)+1}</b><small>daraja</small></span><span class="leaderboard-stat"><b>${done}/54</b><small>missiya</small></span><span class="leaderboard-stat"><b>🔥 ${Number(user.streak||0)}</b><small>streak</small></span>`}
+    </div>`;
+  }
+
+  async function refreshLeaderboard() {
+    const targets=['leaderboard-list','teacher-users-list'];
+    targets.forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="leaderboard-loading">O‘quvchilar ro‘yxati yuklanmoqda...</div>';});
+    try{
+      if(!cloud)throw new Error(cloudError||'Reyting serveriga ulanish imkoni yo‘q.');
+      const users=await cloud.getLeaderboard();
+      leaderboardCache=users;
+      const html=users.length?users.map((u,i)=>leaderboardRowMarkup(u,i)).join(''):'<div class="leaderboard-empty"><span>🪐</span><strong>Hozircha o‘quvchilar yo‘q</strong><small>Birinchi bo‘lib akkaunt yarat va reytingni boshlang!</small></div>';
+      targets.forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html;});
+      const count=document.getElementById('leaderboard-count');if(count)count.textContent=users.length.toLocaleString('uz-UZ');
+      const rank=users.findIndex(u=>String(u.username||'').toLowerCase()===String(profile.username||'').toLowerCase());
+      const rankLabel=document.getElementById('leaderboard-me-rank');if(rankLabel)rankLabel.textContent=rank>=0?'Mening o‘rnim: #'+(rank+1):'Hali reytingda yo‘q';
+      const podium=document.getElementById('leaderboard-podium');
+      if(podium){
+        podium.innerHTML=users.length?users.slice(0,3).map((u,i)=>`<article class="podium-card podium-${i+1}">${leaderboardRowMarkup(u,i,true)}<span class="podium-caption">${i===0?'GALAKTIKA CHEMPIONI':i===1?'KUMUSH EXPLORER':'BRONZA EXPLORER'}</span></article>`).join(''):'<div class="leaderboard-empty">Birinchi o‘rinni sen egalla!</div>';
+      }
+      const teacherCount=document.getElementById('teacher-user-count');if(teacherCount)teacherCount.textContent=users.length+' ta';
+    }catch(error){
+      const msg=esc(error.message||'Reytingni yuklab bo‘lmadi.');
+      targets.forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="leaderboard-error">'+msg+'</div>';});
+      const podium=document.getElementById('leaderboard-podium');if(podium)podium.innerHTML='<div class="leaderboard-error">'+msg+'</div>';
+    }
+  }
+
   function renderDashboard() {
     const done=completedCount(), pct=percent(done,54), next=getNextLesson();
     const wCards=WORLDS.slice(0,6).map((w,i)=>{
@@ -330,20 +463,19 @@
     arcadeState.phase='answered';
     render();
   }
-  function nextSignalQuestion() {
+  async function nextSignalQuestion() {
     if(arcadeState.phase!=='answered')return;
     if(arcadeState.round<arcadeState.questions.length-1){
       arcadeState.round++;arcadeState.selected=null;arcadeState.phase='playing';render();return;
     }
     arcadeState.phase='done';
-    profile.arcadeBest=Math.max(Number(profile.arcadeBest||0),arcadeState.score);
-    if(arcadeState.score>=3&&profile.arcadeDailyReward!==todayKey()){
-      profile.arcadeDailyReward=todayKey();profile.xp=(profile.xp||0)+15;arcadeState.reward='🎁 +15 XP — bugungi arcade mukofoti olindi!';
-    }else{
-      arcadeState.reward=arcadeState.score>=3?'Bugungi XP mukofoti allaqachon olingan. Rekording yangilandi!':'3 ta to‘g‘ri javob topsang, kunlik XP olasan.';
-    }
-    saveProfile();
-    if(arcadeState.score>=3)toast(arcadeState.reward,'success');
+    if(!cloudUser){arcadeState.reward='Rekordni saqlash uchun akkauntingga kir.';render();return;}
+    try{
+      const row=await cloud.claimArcadeReward(arcadeState.score);
+      if(row)applyCloudProfile(row,cloudUser);
+      arcadeState.reward=arcadeState.score>=3?'🎁 Natijang saqlandi. Kunlik XP mukofoti tekshirildi!':'Natijang rekordingga saqlandi. 3+ javob uchun XP olasan.';
+      if(arcadeState.score>=3)toast(arcadeState.reward,'success');
+    }catch(error){arcadeState.reward=error.message||'Natijani saqlashda xatolik.';toast(arcadeState.reward,'warning');}
     render();
   }
   function renderArena() {
@@ -367,11 +499,11 @@
   }
   function renderTeacher() {
     const p=percent(completedCount(),54);
-    return `<div class="section-heading" style="margin-top:0"><div><span class="eyebrow">MENTOR UCHUN</span><h2>Mentor paneli</h2><p>Ushbu brauzerda saqlangan o‘quvchi progressini boshqarish.</p></div><span class="tag violet">Local classroom mode</span></div>
-      <div class="teacher-grid"><div class="teacher-metric card"><strong>${completedCount()}/54</strong><small>Tugallangan missiyalar</small></div><div class="teacher-metric card"><strong>${p}%</strong><small>Kurs taraqqiyoti</small></div><div class="teacher-metric card"><strong>${profile.xp||0}</strong><small>Jami XP</small></div></div>
-      <section class="card" style="padding:19px"><h3 style="font-size:14px">O‘quvchi profili</h3><p class="muted" style="font-size:10px">${esc(profile.name||'Profil yaratilmagan')} · ${profile.avatar||'🚀'} · ${currentLevel()}-daraja</p><div class="progress-track" style="height:8px"><i style="width:${p}%"></i></div><div class="teacher-tools"><button class="btn btn-primary" data-export-progress>Progressni eksport qilish (.json)</button><button class="btn btn-secondary" data-import-progress>Progressni import qilish</button><input type="file" id="import-progress-file" accept="application/json,.json" class="hidden"><button class="btn btn-ghost" data-edit-profile>Profilni o‘zgartirish</button></div><div class="teacher-note"><strong>Saqlash haqida:</strong> bu versiyada login, server va umumiy sinf reytingi yo‘q. Progress faqat o‘quvchining o‘z brauzerida saqlanadi. O‘quvchi qurilmasi almashtirilsa, JSON eksport/import orqali progressni ko‘chirish mumkin. Butun sinf bo‘yicha umumiy reyting va mentorning markaziy paneli uchun keyingi bosqichda backend kerak bo‘ladi.</div><div style="margin-top:18px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:10px;color:var(--muted)">Xavfli amal: barcha lokal progressni o‘chirish</span><button class="btn btn-ghost" data-reset-progress>Progressni tiklash</button></div></section>`;
+    return `<div class="section-heading" style="margin-top:0"><div><span class="eyebrow">MENTOR UCHUN</span><h2>Mentor paneli</h2><p>DataSpace’ga ro‘yxatdan o‘tgan barcha o‘quvchilar va ularning natijalari.</p></div><span class="tag violet">GLOBAL CLASSROOM</span></div>
+      <div class="teacher-grid"><div class="teacher-metric card"><strong>${completedCount()}/54</strong><small>Mening missiyalarim</small></div><div class="teacher-metric card"><strong>${p}%</strong><small>Mening taraqqiyotim</small></div><div class="teacher-metric card"><strong>${profile.xp||0}</strong><small>Mening XP</small></div></div>
+      <section class="card teacher-user-list-card"><div class="leaderboard-table-heading"><div><h3>👥 Ro‘yxatdan o‘tgan o‘quvchilar</h3><p>Hamma userlar shu yerda ko‘rinadi. Ro‘yxat XP bo‘yicha saralangan.</p></div><span class="tag cyan" id="teacher-user-count">Yuklanmoqda</span></div><div id="teacher-users-list" class="leaderboard-list"><div class="leaderboard-loading">O‘quvchilar olinmoqda...</div></div><div class="teacher-list-actions"><button class="btn btn-secondary" data-refresh-leaderboard>↻ Ro‘yxatni yangilash</button></div></section>
+      <section class="card" style="padding:19px"><h3 style="font-size:14px">Mening profilim</h3><p class="muted" style="font-size:10px">@${esc(profile.username||'')} · ${esc(profile.name||'Explorer')} · ${profile.avatar||'🚀'} · ${currentLevel()}-daraja</p><div class="progress-track" style="height:8px"><i style="width:${p}%"></i></div><div class="teacher-tools"><button class="btn btn-primary" data-export-progress>Progressni eksport qilish (.json)</button><button class="btn btn-secondary" data-edit-profile>Profilni sozlash</button><button class="btn btn-ghost" data-cloud-signout>Akkauntdan chiqish</button></div><small class="muted">Eksport qilingan JSON faqat lokal zaxira nusxasi; global reyting serverdagi natijadan hisoblanadi.</small></section>`;
   }
-
   function makeMissionGameState(index,replay=false) {
     const g=missionGames[index]||{};
     const order=(g.steps||[]).map((_,i)=>i);
@@ -743,13 +875,19 @@
     document.body.appendChild(layer);
     setTimeout(()=>layer.remove(),2200);
   }
-  function completeLesson(index) {
+  async function completeLesson(index) {
+    if(!cloudUser){toast('XP yig‘ish uchun akkauntingga kir.','warning');openAuthModal('signin');return;}
     if(isDone(index)){toast('Bu missiya avval bajarilgan. Davom et!','success');return;}
     if(missionGames[index]&&(!missionGameState||missionGameState.index!==index||!missionGameState.solved)){toast('Avval dars ichidagi mini-o‘yinni yakunla. Keyin XP ochiladi.','warning');return;}
-    profile.completed.push(index);profile.completed.sort((a,b)=>a-b);profile.xp=(profile.xp||0)+20;profile.lastActive=todayKey();profile.streak=Math.max(1,profile.streak||0);saveProfile();celebrateMission();
-    const newBadges=[];if(profile.completed.length===1)newBadges.push('Birinchi signal nishoni ochildi!');if(profile.completed.length===54)newBadges.push('Barcha missiyalar tugadi — sertifikating tayyor!');
-    toast(`Missiya bajarildi! +20 XP · Jami ${profile.xp} XP`,'success');
-    renderLesson();
+    try{
+      const row=await cloud.completeLesson(index);
+      if(!row)throw new Error('Natijani serverga saqlab bo‘lmadi. Qayta urinib ko‘r.');
+      applyCloudProfile(row,cloudUser);celebrateMission();
+      if(profile.completed.length===1)toast('Birinchi signal nishoni ochildi!','success');
+      if(profile.completed.length===54)toast('Barcha missiyalar tugadi — sertifikating tayyor!','success');
+      toast(`Missiya bajarildi! +20 XP · Jami ${profile.xp} XP`,'success');
+      renderLesson();
+    }catch(error){toast(error.message||'Progressni saqlab bo‘lmadi.','warning');}
   }
   function showCertificate() {
     if(completedCount()!==54){toast(`Sertifikat uchun yana ${54-completedCount()} ta missiya qoldi.`,'warning');return;}
@@ -765,6 +903,11 @@
   }
   function bindGlobalEvents() {
     document.addEventListener('click',e=>{
+      const authMode=e.target.closest('[data-auth-mode]');
+      if(authMode){openAuthModal(authMode.dataset.authMode);return;}
+      if(e.target.closest('[data-cloud-signout]')){signOutFromApp();return;}
+      if(e.target.closest('[data-refresh-leaderboard]')){refreshLeaderboard();return;}
+      if(e.target.closest('[data-open-auth]')){openAuthModal(cloudUser?'signin':'signup');return;}
       const playerAction=e.target.closest('[data-player-action]');
       if(playerAction){triggerCharacterAction(playerAction.dataset.playerAction);return;}
       const gameSortItem=e.target.closest('[data-game-sort-item]');
@@ -803,12 +946,12 @@
       if(e.target.closest('[data-certificate]')){showCertificate();return;}
       if(e.target.closest('[data-export-progress]')){exportProgress();return;}
       if(e.target.closest('[data-import-progress]')){document.getElementById('import-progress-file')?.click();return;}
-      if(e.target.closest('[data-edit-profile]')){openProfileModal(false);return;}
+      if(e.target.closest('[data-edit-profile]')){openProfileModal();return;}
       if(e.target.closest('[data-reset-progress]')){if(confirm('Shu brauzerdagi barcha DataSpace progressini o‘chirishni xohlaysanmi?')){profile=defaultProfile();saveProfile();render();toast('Lokal progress qayta tiklandi.','warning');}return;}
       if(e.target.closest('[data-close-modal]')){closeModal();return;}
     });
-    document.getElementById('profile-button').addEventListener('click',()=>openProfileModal(false));
-    document.getElementById('top-profile').addEventListener('click',()=>openProfileModal(false));
+    document.getElementById('profile-button').addEventListener('click',()=>openProfileModal());
+    document.getElementById('top-profile').addEventListener('click',()=>openProfileModal());
     document.getElementById('mobile-menu').addEventListener('click',()=>document.getElementById('sidebar').classList.toggle('open'));
     document.getElementById('modal-backdrop').addEventListener('click',e=>{if(e.target.id==='modal-backdrop')closeModal();});
     document.addEventListener('change',e=>{if(e.target.id==='import-progress-file'&&e.target.files[0])importProgress(e.target.files[0]);});
@@ -831,10 +974,23 @@
       [lessons,missionGames]=await Promise.all([res.json(),gameRes.json()]);
       if(lessons.length!==54)throw new Error(`Kurs 54 dars bo‘lishi kerak, hozir ${lessons.length}.`);
       if(missionGames.length!==54)throw new Error(`Har bir dars uchun mini-o‘yin kerak: ${missionGames.length}/54.`);
-      updateStreak();render();
-      if(!profile.name)openProfileModal(true);
-    } catch(e) {
-      document.getElementById('app-content').innerHTML=`<div class="card empty-state"><h2>Akademiyani yuklab bo‘lmadi</h2><p>${esc(e.message)}</p><p>Saytni lokal server yoki GitHub Pages orqali och. index.html ni to‘g‘ridan-to‘g‘ri file:// rejimida ochish JSON fetch'ni cheklashi mumkin.</p></div>`;
+      try{
+        cloud=await import('./cloud.js');
+        cloudUser=await cloud.currentUser();
+        if(cloudUser){
+          let row=await cloud.getMyProfile();
+          if(!row){
+            const username=String(cloudUser.email||'').split('@')[0].toLowerCase();
+            row=await cloud.signIn({username,password:sessionStorage.getItem('dataspace-last-password')||''}).then(x=>x.profile).catch(()=>null);
+          }
+          if(row)applyCloudProfile(row,cloudUser);
+          else throw new Error('Akkaunt profilingiz topilmadi. Qayta kiring.');
+        }
+      }catch(error){cloudError=error.message||'Cloud serverga ulanib bo‘lmadi.';console.error('DataSpace cloud error:',error);}
+      if(!cloudUser){profile=loadProfile();openAuthModal('signup',true);}
+      render();
+    } catch (e) {
+      document.getElementById('app-content').innerHTML='<div class="error-state"><strong>Galaktikani yuklab bo‘lmadi</strong><p>'+esc(e.message)+'</p><button class="btn btn-primary" onclick="location.reload()">Qayta urinish</button></div>';
     }
   }
   init();
