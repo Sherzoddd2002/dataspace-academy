@@ -44,7 +44,10 @@ async function requestData(path, { method = "GET", body, authenticated = false }
     } catch (_) {}
     if (response.status === 401) message = "Sessiya muddati tugagan. Qayta kiring.";
     if (response.status === 409) message = "Bu username band. Boshqasini tanlang.";
-    throw new Error(message || `Server xatosi: ${response.status}`);
+    const error = new Error(message || `Server xatosi: ${response.status}`);
+    error.status = response.status;
+    error.code = (() => { try { return JSON.parse(raw).code; } catch (_) { return null; } })();
+    throw error;
   }
   if (response.status === 204) return null;
   const text = await response.text();
@@ -81,14 +84,30 @@ export async function ensureProfile({ username, displayName, avatar = "🚀", ch
 }
 
 async function completeProfile(username, displayName, avatar = "🚀", characterClass = "navigator") {
-  const row = await rpc("create_my_profile", {
+  const args = {
     p_username: String(username).trim().toLowerCase(),
     p_display_name: String(displayName || username).trim().slice(0, 24),
     p_avatar: avatar,
     p_character_class: characterClass
-  });
-  if (!row) throw new Error("Bu username avval ro‘yxatdan o‘tgan yoki profilni yaratib bo‘lmadi.");
-  return row;
+  };
+  let lastError = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const row = await rpc("create_my_profile", args);
+      if (row) return row;
+      lastError = new Error("Profil serverdan bo‘sh javob oldi.");
+    } catch (error) {
+      lastError = error;
+      const retryable = error?.status === 503 || error?.status === 502 || error?.status === 504 ||
+        error?.code === "42501" || /42501|jwt claim|session identity/i.test(error?.message || "");
+      if (!retryable) throw error;
+    }
+    if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 250 * (attempt + 1)));
+  }
+  throw new Error(
+    "Akkaunt yaratildi, lekin profilni saqlash vaqtincha amalga oshmadi. Endi shu username bilan «Kirish» bo‘limidan kiring — profilingizni tiklashga urinadi." +
+    (lastError?.message ? " (" + lastError.message.slice(0, 180) + ")" : "")
+  );
 }
 
 async function createSessionIfNeeded(username, password) {
@@ -111,15 +130,34 @@ export async function signUp({ username, password, displayName, avatar, characte
   }
   if (String(password || "").length < 8) throw new Error("Parol kamida 8 belgidan iborat bo‘lishi kerak.");
   const shownName = String(displayName || clean).trim().slice(0, 24) || clean;
-  const result = await auth.signUp.email({
-    email: usernameEmail(clean),
-    password,
-    name: shownName
-  });
-  normalizeResult(result, "Ro‘yxatdan o‘tish muvaffaqiyatsiz.");
+  let registrationError = null;
+  try {
+    const result = await auth.signUp.email({
+      email: usernameEmail(clean),
+      password,
+      name: shownName
+    });
+    normalizeResult(result, "Ro‘yxatdan o‘tish muvaffaqiyatsiz.");
+  } catch (error) {
+    registrationError = error;
+    const alreadyExists = /already exists|already registered|user exists|email.*taken|duplicate|USER_ALREADY_EXISTS/i
+      .test([error?.message, error?.code].filter(Boolean).join(" "));
+    if (!alreadyExists) throw error;
+    try {
+      const login = await auth.signIn.email({ email: usernameEmail(clean), password });
+      normalizeResult(login, "Username yoki parol noto‘g‘ri.");
+    } catch (_) {
+      throw new Error("Bu username avval ro‘yxatdan o‘tgan. «Kirish» bo‘limini tanlab, shu username va parol bilan kiring.");
+    }
+  }
+
   await createSessionIfNeeded(clean, password);
   const user = await currentUser();
-  const profile = await completeProfile(clean, shownName, avatar, characterClass);
+  let profile = await getMyProfile();
+  if (!profile) {
+    profile = await completeProfile(clean, shownName, avatar, characterClass);
+  }
+  if (!profile && registrationError) throw registrationError;
   return { user, profile };
 }
 
