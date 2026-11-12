@@ -263,7 +263,7 @@
   function applyCloudProfile(row,user=cloudUser) {
     if(!row)throw new Error('O‘quvchi profili topilmadi.');
     cloudUser=user||cloudUser;
-    if(profile.name&&!profile.cloudUserId&&profile.name!==row.display_name){
+    if(profile.name&&!profile.cloudUserId){
       try{localStorage.setItem(STORAGE_KEY+'-legacy-backup',JSON.stringify(profile));}catch(_){}
     }
     profile={
