@@ -135,19 +135,19 @@
     ]
   },
   {
-    "type": "choose",
+    "type": "sequence",
     "title": "Robotga qaror qildirish",
     "badge": "LOGIC CONTROL",
-    "brief": "Termis darvozasida robot faqat 60 yoki undan yuqori ball bilan o‘tadi. To‘g‘ri boshqaruv signalini yubor.",
-    "prompt": "score = 74. Robot qaysi yo‘lni tanlashi kerak?",
-    "choices": [
-      "if score > 60: → O‘tdi",
-      "if score >= 60: → O‘tdi",
-      "if score = 60: → O‘tdi",
-      "else: → O‘tdi"
-    ],
-    "correct": 1,
-    "aha": "if shart rost bo‘lsa, uning ichidagi kod bajariladi; aks holda else ishlaydi. >= belgisi 60 ning o‘zini ham qabul qiladi."
+    "brief": "Termis darvozasida robot faqat 60 yoki undan yuqori ball bilan o‘tadi. Shart va ikki yo‘lni to‘g‘ri tartibga joylashtir.",
+    "aha": "if shart rost bo‘lsa, uning ichidagi kod bajariladi; aks holda else ishlaydi. >= belgisi 60 ning o‘zini ham qabul qiladi.",
+    "steps": [
+      "score = 74",
+      "if score >= 60:",
+      "    result = 'O‘tdi'",
+      "else:",
+      "    result = 'Qayta urin'",
+      "print(result)"
+    ]
   },
   {
     "type": "sequence",
@@ -306,19 +306,15 @@
     ]
   },
   {
-    "type": "choose",
+    "type": "sequence",
     "title": "Kerakli ustunni skanerla",
     "badge": "COLUMN SCAN",
-    "brief": "Katta jadvaldan faqat o‘quvchi ballarini ajrat. Qaysi buyruq to‘g‘ri?",
-    "prompt": "df jadvalidan faqat score ustunini scores nomiga ol.",
-    "choices": [
+    "brief": "Katta jadvaldan faqat o‘quvchi ballarini ajrat. Kod bo‘laklarini yig‘ib, ustunni konsolga chiqar.",
+    "aha": "df['score'] bitta ustunni tanlaydi. loc yorliq bo‘yicha, iloc esa qator yoki ustun pozitsiyasi bo‘yicha tanlaydi.",
+    "steps": [
       "scores = df['score']",
-      "scores = df.score()",
-      "scores = df['name']",
-      "scores = df.iloc['score']"
-    ],
-    "correct": 0,
-    "aha": "df['score'] bitta ustunni tanlaydi. loc yorliq bo‘yicha, iloc esa qator yoki ustun pozitsiyasi bo‘yicha tanlaydi."
+      "print(scores)"
+    ]
   },
   {
     "type": "filter",
@@ -458,19 +454,16 @@
     "correct": 0
   },
   {
-    "type": "choose",
+    "type": "sequence",
     "title": "Shaharlar bo‘yicha guruhla",
     "badge": "GROUP LAB",
-    "brief": "Ikki shahardagi natijalarni alohida ko‘rmoqchisan. Qaysi amal shaharlar kesimida o‘rtacha ballni hisoblaydi?",
-    "prompt": "Har bir city guruhi uchun score o‘rtachasini chiqar.",
-    "choices": [
-      "df.groupby('city')['score'].mean()",
-      "df.sort_values('city')",
-      "df['score'].sum()",
-      "df.drop('city')"
-    ],
-    "correct": 0,
-    "aha": "groupby() bir xil qiymatli qatorlarni guruhlaydi. mean() har bir guruhning o‘rtacha qiymatini hisoblaydi."
+    "brief": "Ikki shahardagi natijalarni alohida ko‘rmoqchisan. Guruhlash va o‘rtacha qiymat hisobini tartibla.",
+    "aha": "groupby() bir xil qiymatli qatorlarni guruhlaydi. mean() har bir guruhning o‘rtacha qiymatini hisoblaydi.",
+    "steps": [
+      "# Har bir shahar uchun score o‘rtachasi",
+      "average = df.groupby('city')['score'].mean()",
+      "print(average)"
+    ]
   },
   {
     "type": "choose",
@@ -538,19 +531,42 @@
     ]
   },
   {
-    "type": "choose",
+    "type": "sort",
     "title": "Database xaritasini tuz",
     "badge": "DATABASE MAP",
-    "brief": "Students jadvalidagi yozuvlarni tahlil qil. Bitta qator nimani ifodalaydi?",
-    "prompt": "students jadvalidagi bitta qator nima?",
-    "choices": [
-      "Bitta talaba haqidagi yozuv",
-      "Butun ma’lumotlar bazasi",
-      "Faqat ustun nomlari",
-      "SQL dasturining o‘zi"
+    "brief": "Students jadvalidagi yozuvlarni uch tushunchaga ajrat: jadval, qator va ustun.",
+    "aha": "Relatsion bazada jadval qatorlari yozuvlarni, ustunlari esa atributlarni ifodalaydi. Bir nechta jadval bir bazada saqlanishi mumkin.",
+    "buckets": [
+      "Jadval",
+      "Qator · yozuv",
+      "Ustun · atribut"
     ],
-    "correct": 0,
-    "aha": "Relatsion bazada jadval qatorlari yozuvlarni, ustunlari esa atributlarni ifodalaydi. Bir nechta jadval bir bazada saqlanishi mumkin."
+    "items": [
+      [
+        "students",
+        0
+      ],
+      [
+        "courses",
+        0
+      ],
+      [
+        "Ali | 15 | Qarshi",
+        1
+      ],
+      [
+        "Madina | 17 | Toshkent",
+        1
+      ],
+      [
+        "age",
+        2
+      ],
+      [
+        "city",
+        2
+      ]
+    ]
   },
   {
     "type": "sequence",
@@ -575,34 +591,45 @@
     ]
   },
   {
-    "type": "choose",
+    "type": "sequence",
     "title": "WHERE skaneri",
     "badge": "SQL FILTER",
-    "brief": "Stansiyada faqat 16 yoshdan katta talabalar qolishi kerak. Qaysi filtr ishlaydi?",
-    "prompt": "age qiymati 16 dan katta bo‘lgan yozuvlarni top.",
-    "choices": [
-      "WHERE age > 16",
-      "WHERE age < 16",
-      "ORDER BY age",
-      "LIMIT 16"
-    ],
-    "correct": 0,
-    "aha": "WHERE qatorlarni shart bo‘yicha tanlaydi. > 16 sharti 17 va undan yuqori qiymatlarni qaytaradi, 16 ning o‘zini emas."
+    "brief": "Stansiyada faqat 16 yoshdan katta talabalar qolishi kerak. SQL so‘rovini to‘g‘ri tartibga keltir.",
+    "aha": "WHERE qatorlarni shart bo‘yicha tanlaydi. > 16 sharti 17 va undan yuqori qiymatlarni qaytaradi, 16 ning o‘zini emas.",
+    "steps": [
+      "SELECT name, age",
+      "FROM students",
+      "WHERE age > 16;"
+    ]
   },
   {
-    "type": "choose",
+    "type": "sort",
     "title": "AND yoki OR?",
     "badge": "LOGIC DETECTIVE",
-    "brief": "Qarshi yoki Toshkentdagi barcha o‘quvchilarni top. Shahar qiymati ikkidan biri bo‘lishi yetarli.",
-    "prompt": "Shahar Qarshi YOKI Toshkent bo‘lishi uchun qaysi shart to‘g‘ri?",
-    "choices": [
-      "city = 'Qarshi' AND city = 'Toshkent'",
-      "city = 'Qarshi' OR city = 'Toshkent'",
-      "city = 'Qarshi' NOT city = 'Toshkent'",
-      "city IN age"
+    "brief": "Shartlarni mantiqiy operatoriga ko‘ra ajrat. AND — ikkala shart kerak, OR — kamida bittasi yetarli.",
+    "aha": "OR kamida bitta shart rost bo‘lsa natijani qabul qiladi. AND esa ikkala shart bir vaqtda rost bo‘lishini talab qiladi. IN ixcham ro‘yxat tekshiruvini beradi.",
+    "buckets": [
+      "AND · ikkalasi",
+      "OR · bittasi yetarli"
     ],
-    "correct": 1,
-    "aha": "OR kamida bitta shart rost bo‘lsa natijani qabul qiladi. AND esa ikkala shart bir vaqtda rost bo‘lishini talab qiladi. IN ixcham ro‘yxat tekshiruvini beradi."
+    "items": [
+      [
+        "city='Qarshi' AND score>80",
+        0
+      ],
+      [
+        "city='Qarshi' OR city='Toshkent'",
+        1
+      ],
+      [
+        "age>=16 AND age<=18",
+        0
+      ],
+      [
+        "city='Buxoro' OR city='Samarqand'",
+        1
+      ]
+    ]
   },
   {
     "type": "sequence",
@@ -618,34 +645,41 @@
     ]
   },
   {
-    "type": "choose",
+    "type": "sort",
     "title": "SQL qidiruv detektivi",
     "badge": "PATTERN HUNTER",
-    "brief": "Uchta turli vazifa bor: ism A bilan boshlansin, ball 80–95 oralig‘ida bo‘lsin, yoki shahar qiymati bo‘sh bo‘lsin.",
-    "prompt": "Balli 80 dan 95 gacha bo‘lganlarni (ikkala chegara ham qo‘shiladi) qaysi shart topadi?",
-    "choices": [
-      "score BETWEEN 80 AND 95",
-      "score LIKE '80-95'",
-      "score IS NULL",
-      "score > 95"
+    "brief": "Uch xil vazifani mos SQL operatoriga biriktir: ism naqshi, sonlar oralig‘i va bo‘sh qiymat.",
+    "aha": "BETWEEN oraliqning ikkala chegarasini ham o‘z ichiga oladi. LIKE matn naqshini, IS NULL esa bo‘sh qiymatni tekshiradi.",
+    "buckets": [
+      "LIKE · naqsh",
+      "BETWEEN · oraliq",
+      "IS NULL · bo‘sh"
     ],
-    "correct": 0,
-    "aha": "BETWEEN oraliqning ikkala chegarasini ham o‘z ichiga oladi. LIKE matn naqshini, IS NULL esa bo‘sh qiymatni tekshiradi."
+    "items": [
+      [
+        "name LIKE 'A%'",
+        0
+      ],
+      [
+        "score BETWEEN 80 AND 95",
+        1
+      ],
+      [
+        "city IS NULL",
+        2
+      ]
+    ]
   },
   {
-    "type": "choose",
+    "type": "sequence",
     "title": "Takrorlarni yo‘qot",
     "badge": "DISTINCT SCAN",
-    "brief": "Shahar nomlari ko‘p takrorlangan. Har bir shaharni bir martadan, city_name sarlavhasi bilan chiqar.",
-    "prompt": "Qaysi so‘rov takrorlanmas shaharlar ro‘yxatini beradi?",
-    "choices": [
-      "SELECT DISTINCT city AS city_name FROM students;",
-      "SELECT ALL city FROM students;",
-      "SELECT city_name FROM students;",
-      "DROP city FROM students;"
-    ],
-    "correct": 0,
-    "aha": "DISTINCT takroriy qiymatlarni olib tashlaydi. AS natija ustuniga tushunarli vaqtinchalik nom beradi."
+    "brief": "Shahar nomlarini takrorlarsiz chiqar va ustun nomini tushunarli qil. So‘rovni yig‘.",
+    "aha": "DISTINCT takroriy qiymatlarni olib tashlaydi. AS natija ustuniga tushunarli vaqtinchalik nom beradi.",
+    "steps": [
+      "SELECT DISTINCT city AS city_name",
+      "FROM students;"
+    ]
   },
   {
     "type": "sequence",
@@ -661,19 +695,30 @@
     ]
   },
   {
-    "type": "choose",
+    "type": "sort",
     "title": "Hisoblagichni ishga tushir",
     "badge": "AGGREGATE LAB",
-    "brief": "Students jadvalidagi yozuvlar soni, ballar yig‘indisi va o‘rtachasini topish kerak.",
-    "prompt": "Faqat talabalar sonini hisoblash uchun qaysi funksiya ishlaydi?",
-    "choices": [
-      "COUNT(*)",
-      "SUM(*)",
-      "AVG(*)",
-      "MAX(*)"
+    "brief": "Natijalarni ular bajaradigan agregat vazifaga ajrat: sanash, yig‘ish yoki o‘rtacha olish.",
+    "aha": "COUNT qatorlarni sanaydi, SUM qiymatlarni qo‘shadi, AVG o‘rtacha qiymatni hisoblaydi. Ular agregat funksiyalar deyiladi.",
+    "buckets": [
+      "COUNT · sanash",
+      "SUM · yig‘indi",
+      "AVG · o‘rtacha"
     ],
-    "correct": 0,
-    "aha": "COUNT qatorlarni sanaydi, SUM qiymatlarni qo‘shadi, AVG o‘rtacha qiymatni hisoblaydi. Ular agregat funksiyalar deyiladi."
+    "items": [
+      [
+        "6 ta yozuv",
+        0
+      ],
+      [
+        "450 jami ball",
+        1
+      ],
+      [
+        "82.5 o‘rtacha ball",
+        2
+      ]
+    ]
   },
   {
     "type": "choose",
@@ -734,19 +779,17 @@
     ]
   },
   {
-    "type": "choose",
+    "type": "sequence",
     "title": "JOIN ko‘prigini qur",
     "badge": "TABLE CONNECTOR",
-    "brief": "Talaba nomi va kurs nomi ikki xil jadvalda turibdi. Ularni bog‘lash uchun qaysi amal kerak?",
-    "prompt": "students va courses jadvallarini course_id=id kaliti orqali birlashtir.",
-    "choices": [
-      "JOIN",
-      "ORDER BY",
-      "DISTINCT",
-      "LIMIT"
-    ],
-    "correct": 0,
-    "aha": "JOIN bog‘langan jadvallardagi ma’lumotni bir natijada ko‘rsatadi. Odatda umumiy kalit orqali mos yozuvlar topiladi."
+    "brief": "Talaba nomi va kurs nomi ikki jadvalda. Ularni umumiy kalit bo‘yicha birlashtiradigan so‘rovni yig‘.",
+    "aha": "JOIN bog‘langan jadvallardagi ma’lumotni bir natijada ko‘rsatadi. Odatda umumiy kalit orqali mos yozuvlar topiladi.",
+    "steps": [
+      "SELECT students.name, courses.title",
+      "FROM students",
+      "JOIN courses",
+      "ON students.course_id = courses.id;"
+    ]
   },
   {
     "type": "sequence",
@@ -762,64 +805,81 @@
     ]
   },
   {
-    "type": "choose",
+    "type": "sequence",
     "title": "Hech kimni yo‘qotma",
     "badge": "LEFT JOIN RESCUE",
-    "brief": "Kursga yozilmagan talabalar ham hisobotda qolishi kerak. Qaysi birlashuvni tanlaysan?",
-    "prompt": "Barcha students qatorlarini saqlab, mos kurs bo‘lsa qo‘sh.",
-    "choices": [
-      "INNER JOIN",
-      "LEFT JOIN",
-      "RIGHT FILTER",
-      "CROSS DELETE"
-    ],
-    "correct": 1,
-    "aha": "LEFT JOIN chap jadvaldagi barcha yozuvlarni saqlaydi. O‘ng tomonda mos yozuv bo‘lmasa, uning ustunlari NULL bo‘ladi."
+    "brief": "Kursga yozilmagan talabalar ham hisobotda qolishi kerak. LEFT JOIN so‘rovini tartibla.",
+    "aha": "LEFT JOIN chap jadvaldagi barcha yozuvlarni saqlaydi. O‘ng tomonda mos yozuv bo‘lmasa, uning ustunlari NULL bo‘ladi.",
+    "steps": [
+      "SELECT students.name, courses.title",
+      "FROM students",
+      "LEFT JOIN courses",
+      "ON students.course_id = courses.id;"
+    ]
   },
   {
-    "type": "choose",
+    "type": "sequence",
     "title": "Daraja beruvchi CASE",
     "badge": "CASE ENGINE",
-    "brief": "Robot ballga qarab Gold yoki Standard yorlig‘ini berishi kerak.",
-    "prompt": "90 va undan yuqori ballga Gold, qolganlariga Standard beradigan ifoda qaysi?",
-    "choices": [
-      "CASE WHEN score >= 90 THEN 'Gold' ELSE 'Standard' END",
-      "IF score = 90 SELECT Gold",
-      "CASE score DESC Gold",
-      "WHEN score < 90 THEN Gold"
-    ],
-    "correct": 0,
-    "aha": "CASE WHEN SQL ichida shartli natija yaratadi. WHEN shartni tekshiradi, THEN mos qiymatni, ELSE esa boshqa holatni beradi."
+    "brief": "Ballga qarab Gold yoki Standard yorlig‘ini beradigan SQL ifodani yig‘.",
+    "aha": "CASE WHEN SQL ichida shartli natija yaratadi. WHEN shartni tekshiradi, THEN mos qiymatni, ELSE esa boshqa holatni beradi.",
+    "steps": [
+      "CASE",
+      "  WHEN score >= 90 THEN 'Gold'",
+      "  ELSE 'Standard'",
+      "END AS level"
+    ]
   },
   {
-    "type": "choose",
+    "type": "sequence",
     "title": "Kino bazasi: final detektiv",
     "badge": "MOVIE DATABASE BOSS",
-    "brief": "Queryon kinosaroyida eng yuqori reytingli uch film kerak. Ma’lumotlar bazasidan g‘oliblarni top.",
-    "prompt": "movies jadvalidagi eng yuqori ratingli uchta filmni olish uchun to‘g‘ri so‘rov qaysi?",
-    "choices": [
-      "SELECT title, rating FROM movies ORDER BY rating DESC LIMIT 3;",
-      "SELECT * FROM movies LIMIT 3;",
-      "DELETE FROM movies ORDER BY rating;",
-      "SELECT rating FROM movies WHERE title;"
-    ],
-    "correct": 0,
-    "aha": "Tahliliy SQL so‘rovi ustun tanlaydi, kerakli jadvaldan oladi, rating bo‘yicha kamayish tartibida saralaydi va LIMIT bilan Top-3 ni qoldiradi."
+    "brief": "Queryon kinosaroyida eng yuqori reytingli uch film kerak. SELECT, saralash va LIMIT qismlarini joylashtir.",
+    "aha": "Tahliliy SQL so‘rovi ustun tanlaydi, kerakli jadvaldan oladi, rating bo‘yicha kamayish tartibida saralaydi va LIMIT bilan Top-3 ni qoldiradi.",
+    "steps": [
+      "SELECT title, rating",
+      "FROM movies",
+      "ORDER BY rating DESC",
+      "LIMIT 3;"
+    ]
   },
   {
-    "type": "choose",
+    "type": "sort",
     "title": "Excel katak koordinatasi",
     "badge": "CELL NAVIGATOR",
-    "brief": "Excelia xaritasida katak manzili ustun harfi va qator raqamidan tuziladi. Kerakli koordinatani top.",
-    "prompt": "B ustunining 3-qatoridagi katak qaysi?",
-    "choices": [
-      "3B",
-      "B3",
-      "BB3",
-      "B-3"
+    "brief": "Excelia xaritasidagi belgilarni ustun, qator va to‘liq katak manziliga ajrat.",
+    "aha": "Excel’da avval ustun harfi, keyin qator raqami yoziladi. B3 — B ustuni va 3-qator kesishgan katak.",
+    "buckets": [
+      "Ustun harfi",
+      "Qator raqami",
+      "Katak manzili"
     ],
-    "correct": 1,
-    "aha": "Excel’da avval ustun harfi, keyin qator raqami yoziladi. B3 — B ustuni va 3-qator kesishgan katak."
+    "items": [
+      [
+        "B",
+        0
+      ],
+      [
+        "D",
+        0
+      ],
+      [
+        "3",
+        1
+      ],
+      [
+        "5",
+        1
+      ],
+      [
+        "B3",
+        2
+      ],
+      [
+        "D5",
+        2
+      ]
+    ]
   },
   {
     "type": "formula",
@@ -918,19 +978,17 @@
     "aha": "IF mantiqiy shartni tekshiradi: rost bo‘lsa birinchi qiymat, aks holda ikkinchi qiymat qaytadi. COUNTIF sanaydi, SUMIF esa shartga mos sonlarni yig‘adi."
   },
   {
-    "type": "choose",
+    "type": "sequence",
     "title": "XLOOKUP qidiruv detektivi",
     "badge": "LOOKUP MISSION",
-    "brief": "C01 kurs kodi bo‘yicha kurs nomini top. Qidiruv ustuni va natija ustuni alohida beriladi.",
-    "prompt": "XLOOKUP uchun qaysi formula to‘g‘ri?",
-    "choices": [
-      "=XLOOKUP(A2,$G$2:$G$4,$H$2:$H$4)",
-      "=SUM(A2:H4)",
-      "=SORT(A2,$G$2:$G$4)",
-      "=COUNTIF(A2,$H$2:$H$4)"
-    ],
-    "correct": 0,
-    "aha": "XLOOKUP qidiriladigan qiymatni bir diapazondan topib, shu qatordagi natijani boshqa diapazondan qaytaradi."
+    "brief": "C01 kurs kodi orqali kurs nomini topish uchun XLOOKUP uchta qismdan foydalanadi. Ularni mantiqiy tartibga keltir.",
+    "aha": "XLOOKUP qidiriladigan qiymatni bir diapazondan topib, shu qatordagi natijani boshqa diapazondan qaytaradi.",
+    "steps": [
+      "Qidiriladigan qiymat: A2",
+      "Qidiruv diapazoni: G2:G4",
+      "Natija diapazoni: H2:H4",
+      "=XLOOKUP(A2,$G$2:$G$4,$H$2:$H$4)"
+    ]
   },
   {
     "type": "choose",
