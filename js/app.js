@@ -31,9 +31,19 @@
   let excelCells = {};
   let excelActions = {};
   let currentSqlResults = [];
+  const ARCADE_QUESTIONS = [
+    {emoji:'🗂️',topic:'DATA SAVODXONLIGI',prompt:'Qaysi variant strukturali data hisoblanadi?',options:['Tartibli ustunli jadval','Tasodifiy ovoz yozuvi','Bitta bezak rasmi','Ranglar palitrasi'],answer:0,why:'Jadvaldagi qatorlar va ustunlar strukturali ma’lumotni ifodalaydi.'},
+    {emoji:'🐍',topic:'PYTHON',prompt:'Python’da matnni ekranga chiqarish uchun qaysi buyruq ishlatiladi?',options:['show("Salom")','print("Salom")','echo("Salom")','display.text("Salom")'],answer:1,why:'print() qiymatni konsolga chiqaradi.'},
+    {emoji:'🛸',topic:'SQL',prompt:'students jadvalidagi barcha ustunlarni olish uchun qaysi so‘rov to‘g‘ri?',options:['GET ALL students;','SELECT * FROM students;','OPEN students;','SHOW ROWS students;'],answer:1,why:'SELECT * FROM jadval barcha ustun va qatorlarni tanlaydi.'},
+    {emoji:'🐼',topic:'PANDAS',prompt:'score qiymati 80 dan katta yoki teng qatorlarni qanday filtrlaysan?',options:['df.sort(80)','df["score"] = 80','df[df["score"] >= 80]','df.remove(80)'],answer:2,why:'Boolean filter shartni qanoatlantirgan qatorlarni qaytaradi.'},
+    {emoji:'📈',topic:'VIZUALIZATSIYA',prompt:'Vaqt bo‘yicha o‘zgarish va trendni ko‘rsatish uchun qaysi grafik qulay?',options:['Doiraviy diagramma','Chiziqli grafik','Faqat jadval sarlavhasi','Tasodifiy shakl'],answer:1,why:'Chiziqli grafik vaqt bo‘yicha o‘zgarishlarni ko‘rishga yordam beradi.'},
+    {emoji:'🧮',topic:'EXCEL',prompt:'B2 dan B5 gacha kataklardagi sonlarni qo‘shish formulasi qaysi?',options:['=ADD(B2:B5)','=SUM(B2:B5)','=PLUS(B2-B5)','=TOTAL(B2:B5)'],answer:1,why:'SUM diapazondagi qiymatlarni yig‘adi.'},
+    {emoji:'🔗',topic:'SQL ANALYTICS',prompt:'Har bir shahar bo‘yicha nechta o‘quvchi borligini hisoblashda qaysi juftlik kerak?',options:['GROUP BY city va COUNT(*)','ORDER BY city va DROP(*)','LIMIT city va SUM(*)','DISTINCT city va DELETE'],answer:0,why:'GROUP BY shaharlar bo‘yicha guruhlaydi, COUNT(*) esa yozuvlarni sanaydi.'}
+  ];
+  let arcadeState = {phase:'ready',round:0,score:0,streak:0,selected:null,questions:[],reward:''};
 
   function defaultProfile() {
-    return {name:'',avatar:'🚀',xp:0,streak:0,lastActive:'',completed:[],createdAt:new Date().toISOString(),projectChoice:'',projectNotes:'',projectChecks:{},preferences:{}};
+    return {name:'',avatar:'🚀',xp:0,streak:0,lastActive:'',completed:[],createdAt:new Date().toISOString(),projectChoice:'',projectNotes:'',projectChecks:{},preferences:{},arcadeBest:0,arcadeDailyReward:''};
   }
   function loadProfile() {
     try {
@@ -142,6 +152,14 @@
     else if(activeView==='teacher') root.innerHTML=renderTeacher();
     else root.innerHTML=renderDashboard();
   }
+  function renderJourneyTrack() {
+    const stops=WORLDS.map((w,i)=>{
+      const p=worldProgress(w),unlocked=isWorldUnlocked(i),finished=p.done===p.total;
+      const state=finished?'complete':unlocked?'active':'locked';
+      return '<button class="journey-stop '+state+'" data-world="'+i+'" aria-label="'+esc(w.name)+' — '+p.done+' / '+p.total+' missiya"><span class="journey-planet">'+w.emoji+'</span><strong>'+(i+1)+'. '+esc(w.name)+'</strong><small>'+p.done+'/'+p.total+' missiya</small></button>';
+    }).join('');
+    return '<section class="orbit-journey card"><div class="journey-heading"><div><span class="eyebrow">LIVE GALAXY MAP</span><h2>Galaktika bo‘ylab yo‘ling</h2><p>Sayyorani tanla — keyingi missiyang shu yerda kutmoqda.</p></div><span class="tag cyan">'+WORLDS.filter((w,i)=>isWorldUnlocked(i)).length+'/9 olam ochiq</span></div><div class="journey-route">'+stops+'</div></section>';
+  }
   function renderDashboard() {
     const done=completedCount(), pct=percent(done,54), next=getNextLesson();
     const wCards=WORLDS.slice(0,6).map((w,i)=>{
@@ -151,6 +169,7 @@
     const nextText=next===null?'Barcha missiyalar tugadi!':`#${next+1} · ${lessons[next].title}`;
     return `<section class="hero-panel"><div class="hero-copy"><span class="eyebrow">YANGI AVLOD DATA ANALYTICS AKADEMIYASI</span><h1>Ma’lumotlar olamiga<br><span>xush kelibsan, ${esc(profile.name||'Explorer')}!</span></h1><p>54 ta missiya. 9 ta olam. Python, Pandas, SQL va Excel. Har bir kod — yangi kuch, har bir tahlil — yangi kashfiyot.</p><div class="hero-buttons"><button class="btn btn-primary" data-open-next>${done?'Davom etish':'Sayohatni boshlash'} <span>→</span></button><button class="btn btn-secondary" data-view="map">Galaktikani ko‘r</button></div></div><div class="hero-art"><div class="planet-orb"><span class="planet-moon"></span></div></div></section>
       <section class="hero-stats"><div class="stat-card card"><span class="stat-icon">🎯</span><div><strong>${done}<small style="display:inline;color:#8b9ab7;font-size:10px"> / 54</small></strong><small>Tugallangan missiya</small></div></div><div class="stat-card card"><span class="stat-icon cyan">⚡</span><div><strong>${profile.xp||0}</strong><small>Yig‘ilgan XP</small></div></div><div class="stat-card card"><span class="stat-icon gold">🏅</span><div><strong>${currentLevel()}</strong><small>Explorer darajasi</small></div></div><div class="stat-card card"><span class="stat-icon green">🔥</span><div><strong>${profile.streak||0}</strong><small>Kunlik seriya</small></div></div></section>
+      ${renderJourneyTrack()}
       <div class="section-heading"><div><span class="eyebrow">SENING MISSIYANG</span><h2>Sayohatni davom ettir</h2><p>${next===null?'Barcha darslarni muvaffaqiyatli yakunlading.':`Keyingi topshiriq: ${esc(nextText)}`}</p></div><button class="text-link" data-view="course">Barcha darslar →</button></div>
       <div class="dashboard-grid"><section><div class="continue-card card"><div class="continue-icon">${next===null?'🏆':TYPE_ICON[lessons[next].kind]}</div><div><strong>${next===null?'Akademiya yakunlandi':esc(nextText)}</strong><small>${next===null?'Sertifikatingni ko‘r':'2 soatlik dars · Kichik missiyalar bilan'}</small></div><button class="btn btn-primary" data-open-next>${next===null?'Sertifikat':'Boshlash'} →</button></div>
       <div class="section-heading"><div><span class="eyebrow">KOSMIK XARITA</span><h2>O‘rganish olamlari</h2></div><button class="text-link" data-view="map">To‘liq xarita →</button></div><div class="world-preview">${wCards}</div></section>
@@ -184,9 +203,60 @@
     const weekdays=['Dushanba','Chorshanba','Juma'];
     return `<div class="lesson-row ${done?'done':''}" data-lesson="${index}" ${locked?'aria-disabled="true"':''}><span class="lesson-status">${done?'✓':locked?'🔒':String(index+1).padStart(2,'0')}</span><div><strong>${esc(l.title)}</strong><small>${weekdays[index%3]} · ${TYPE_LABEL[l.kind]} · 2 soat</small></div><span class="lesson-type tag ${TYPE_TAG[l.kind]}">${TYPE_ICON[l.kind]}</span></div>`;
   }
+  function renderSignalGame() {
+    if(arcadeState.phase==='ready'){
+      return '<section class="signal-game card"><div class="signal-art"><span class="signal-orbit orbit-one"></span><span class="signal-orbit orbit-two"></span><span class="signal-core">⚡</span><i class="signal-dot dot-one">✦</i><i class="signal-dot dot-two">✧</i></div><div class="signal-copy"><span class="eyebrow">ARCADE · TEZKOR SINOV</span><h2>DATA SIGNAL HUNT</h2><p>7 ta mavzudan tasodifiy 5 ta savol. To‘g‘ri javoblarni top, combo yig‘ va kunlik XP mukofotini qo‘lga kirit.</p><div class="signal-stats"><span>🏆 Rekord: <b>'+Number(profile.arcadeBest||0)+'/5</b></span><span>⏱ 5 raund</span><span>💎 3+ javob = XP</span></div><button class="btn btn-primary" data-arcade-start>O‘yinni boshlash <span>→</span></button></div></section>';
+    }
+    if(arcadeState.phase==='done'){
+      const perfect=arcadeState.score===arcadeState.questions.length;
+      return '<section class="signal-game card signal-result"><div class="result-emblem">'+(perfect?'🏆':'🚀')+'</div><span class="eyebrow">RUN COMPLETE</span><h2>'+(perfect?'PERFECT RUN!':'YAXSHI URINISH!')+'</h2><div class="result-score">'+arcadeState.score+'<small>/'+arcadeState.questions.length+'</small></div><p>'+(perfect?'Barcha signallarni to‘g‘ri topding. Sen haqiqiy Data Explorer!':'Natijangni yaxshilash uchun yana bir raund o‘yna.')+'</p><div class="signal-reward">'+esc(arcadeState.reward||'Yangi rekordlar sari!')+'</div><button class="btn btn-primary" data-arcade-start>Yana o‘ynash ↻</button></section>';
+    }
+    const q=arcadeState.questions[arcadeState.round];
+    const pct=Math.round((arcadeState.round/arcadeState.questions.length)*100);
+    const options=q.options.map((option,i)=>{
+      let cls='signal-option';
+      if(arcadeState.phase==='answered'&&i===q.answer)cls+=' is-correct';
+      if(arcadeState.phase==='answered'&&i===arcadeState.selected&&i!==q.answer)cls+=' is-wrong';
+      return '<button class="'+cls+'" data-arcade-answer="'+i+'" '+(arcadeState.phase==='answered'?'disabled':'')+'><span>'+String.fromCharCode(65+i)+'</span>'+esc(option)+'</button>';
+    }).join('');
+    const feedback=arcadeState.phase==='answered'
+      ? '<div class="signal-feedback '+(arcadeState.selected===q.answer?'good':'bad')+'"><strong>'+(arcadeState.selected===q.answer?'✦ To‘g‘ri signal!':'↻ Signalni o‘tkazib yubording')+'</strong><p>'+esc(q.why)+'</p><button class="btn btn-primary" data-arcade-next>'+(arcadeState.round===arcadeState.questions.length-1?'Natijani ko‘r':'Keyingi savol →')+'</button></div>'
+      : '';
+    return '<section class="signal-game card"><div class="signal-game-top"><div><span class="eyebrow">DATA SIGNAL HUNT</span><h2>Signalni tut!</h2></div><div class="signal-score"><b>'+arcadeState.score+'</b><small> / 5 ball</small></div></div><div class="signal-progress"><i style="width:'+pct+'%"></i></div><div class="signal-question"><div class="signal-question-icon">'+q.emoji+'</div><div><small>'+esc(q.topic)+' · RAUND '+(arcadeState.round+1)+'/5</small><h3>'+esc(q.prompt)+'</h3></div></div><div class="signal-options">'+options+'</div>'+feedback+'<div class="signal-foot"><span>🔥 Combo: <b>'+arcadeState.streak+'</b></span><span>Eng yaxshi natija: <b>'+Number(profile.arcadeBest||0)+'/5</b></span></div></section>';
+  }
+  function startSignalGame() {
+    const pool=ARCADE_QUESTIONS.slice().sort(()=>Math.random()-.5);
+    arcadeState={phase:'playing',round:0,score:0,streak:0,selected:null,questions:pool.slice(0,5),reward:''};
+    render();
+  }
+  function answerSignal(index) {
+    if(arcadeState.phase!=='playing'||arcadeState.selected!==null)return;
+    const q=arcadeState.questions[arcadeState.round];
+    arcadeState.selected=index;
+    if(index===q.answer){arcadeState.score++;arcadeState.streak++;}
+    else arcadeState.streak=0;
+    arcadeState.phase='answered';
+    render();
+  }
+  function nextSignalQuestion() {
+    if(arcadeState.phase!=='answered')return;
+    if(arcadeState.round<arcadeState.questions.length-1){
+      arcadeState.round++;arcadeState.selected=null;arcadeState.phase='playing';render();return;
+    }
+    arcadeState.phase='done';
+    profile.arcadeBest=Math.max(Number(profile.arcadeBest||0),arcadeState.score);
+    if(arcadeState.score>=3&&profile.arcadeDailyReward!==todayKey()){
+      profile.arcadeDailyReward=todayKey();profile.xp=(profile.xp||0)+15;arcadeState.reward='🎁 +15 XP — bugungi arcade mukofoti olindi!';
+    }else{
+      arcadeState.reward=arcadeState.score>=3?'Bugungi XP mukofoti allaqachon olingan. Rekording yangilandi!':'3 ta to‘g‘ri javob topsang, kunlik XP olasan.';
+    }
+    saveProfile();
+    if(arcadeState.score>=3)toast(arcadeState.reward,'success');
+    render();
+  }
   function renderArena() {
     const bosses=WORLDS.map((w,i)=>{const p=worldProgress(w),unlocked=isWorldUnlocked(i),boss=w.to;return `<article class="arena-card card"><div class="arena-icon">${unlocked?'👾':'🔒'}</div><h3>${w.name} ${i===8?'· Final boss':'· Boss sinovi'}</h3><p>${unlocked?`Olam missiyalari: ${p.done}/${p.total}. Yakuniy sinov — ${lessons[boss].title}.`:'Oldingi olam missiyalarini bajarib, ushbu sinovni och.'}</p><div class="progress-track"><i style="width:${p.pct}%"></i></div><button class="btn ${unlocked?'btn-secondary':'btn-ghost'}" style="margin-top:14px;width:100%" data-lesson="${boss}" ${unlocked?'':'disabled'}>${isDone(boss)?'Qayta ko‘rish':'Bossga chiqish'} →</button></article>`;}).join('');
-    return `<section class="arena-hero card"><span class="eyebrow">CHALLENGE ARENA</span><h1>Sinov maydoniga xush kelibsan!</h1><p>Har bir olamning oxirida boss missiya bor. Bu yerda o‘rganganlaringni birlashtirib, yangi darajaga chiqasan. Avval olamning oddiy missiyalarini bajar, keyin bossni chaqir.</p><span class="tag gold">🏆 Har bir boss uchun qo‘shimcha tajriba</span></section><div class="section-heading"><div><h2>9 ta boss sinovi</h2><p>Har bir olamning yakuniy vazifasi.</p></div></div><section class="arena-grid">${bosses}</section>`;
+    return `<section class="arena-hero card"><span class="eyebrow">CHALLENGE ARENA</span><h1>Sinov maydoniga xush kelibsan!</h1><p>Har bir olamning oxirida boss missiya bor. Bu yerda o‘rganganlaringni birlashtirib, yangi darajaga chiqasan. Avval olamning oddiy missiyalarini bajar, keyin bossni chaqir.</p><span class="tag gold">🏆 Har bir boss uchun qo‘shimcha tajriba</span></section>${renderSignalGame()}<div class="section-heading"><div><h2>9 ta boss sinovi</h2><p>Har bir olamning yakuniy vazifasi.</p></div></div><section class="arena-grid">${bosses}</section>`;
   }
   function renderAchievements() {
     const badgeDefs=[
@@ -457,9 +527,23 @@
       if(ok){completeLesson(index);}else toast(l.projectOptions?'Avval bitta variantni tanla.':'Barcha bandlarni bajarib belgila.','warning');
     });
   }
+  function celebrateMission() {
+    const layer=document.createElement('div');layer.className='celebration-layer';layer.setAttribute('aria-hidden','true');
+    for(let i=0;i<44;i++){
+      const bit=document.createElement('i');bit.className='confetti-piece';
+      bit.style.left=(Math.random()*100)+'%';
+      bit.style.setProperty('--fall',(70+Math.random()*50)+'vh');
+      bit.style.setProperty('--delay',(Math.random()*.35)+'s');
+      bit.style.setProperty('--spin',(Math.random()*720-360)+'deg');
+      bit.style.setProperty('--hue',Math.floor(Math.random()*360));
+      layer.appendChild(bit);
+    }
+    document.body.appendChild(layer);
+    setTimeout(()=>layer.remove(),2200);
+  }
   function completeLesson(index) {
     if(isDone(index)){toast('Bu missiya avval bajarilgan. Davom et!','success');return;}
-    profile.completed.push(index);profile.completed.sort((a,b)=>a-b);profile.xp=(profile.xp||0)+20;profile.lastActive=todayKey();profile.streak=Math.max(1,profile.streak||0);saveProfile();
+    profile.completed.push(index);profile.completed.sort((a,b)=>a-b);profile.xp=(profile.xp||0)+20;profile.lastActive=todayKey();profile.streak=Math.max(1,profile.streak||0);saveProfile();celebrateMission();
     const newBadges=[];if(profile.completed.length===1)newBadges.push('Birinchi signal nishoni ochildi!');if(profile.completed.length===54)newBadges.push('Barcha missiyalar tugadi — sertifikating tayyor!');
     toast(`Missiya bajarildi! +20 XP · Jami ${profile.xp} XP`,'success');
     renderLesson();
@@ -478,6 +562,9 @@
   }
   function bindGlobalEvents() {
     document.addEventListener('click',e=>{
+      const arcadeStart=e.target.closest('[data-arcade-start]');if(arcadeStart){startSignalGame();return;}
+      const arcadeAnswer=e.target.closest('[data-arcade-answer]');if(arcadeAnswer){answerSignal(Number(arcadeAnswer.dataset.arcadeAnswer));return;}
+      const arcadeNext=e.target.closest('[data-arcade-next]');if(arcadeNext){nextSignalQuestion();return;}
       const view=e.target.closest('[data-view]');if(view){setView(view.dataset.view);return;}
       const world=e.target.closest('[data-world]');if(world){const i=Number(world.dataset.world);if(!isWorldUnlocked(i)){toast('Bu olam qulflangan. Oldingi olamni yakunla.','warning');return;}const first=WORLDS[i].from;const next=Array.from({length:WORLDS[i].to-first+1},(_,n)=>first+n).find(n=>!isDone(n));openLesson(next===undefined?WORLDS[i].to:next);return;}
       const lesson=e.target.closest('[data-lesson]');if(lesson){const n=Number(lesson.dataset.lesson);if(lesson.hasAttribute('disabled'))return;openLesson(n);return;}
