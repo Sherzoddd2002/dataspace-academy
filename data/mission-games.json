@@ -986,19 +986,20 @@
     ]
   },
   {
-    "type": "choose",
-    "title": "Yakuniy loyiha: o‘z savolingni tanla",
-    "badge": "PROJECT LAUNCH",
-    "brief": "Project Nebula uchun kundalik hayotga yaqin savol tanla. Ism yoki boshqa shaxsiy ma’lumotlarni yig‘masdan, rozilik bilan anonim ma’lumotdan foydalan.",
-    "prompt": "Qaysi loyiha savoli o‘lchanadigan, xavfsiz va tahlilga yaroqli?",
-    "choices": [
-      "Ishtirokchilar roziligi bilan anonim sevimli fanlar va uyqu vaqti o‘rtasidagi bog‘liqlikni o‘rganish",
-      "Sinfdoshlarning parollarini yig‘ish",
-      "Roziliksiz to‘liq ism va telefon raqamlarini jamlash",
-      "Savolsiz tasodifiy raqamlarni ko‘chirish"
+    "type": "survey",
+    "title": "O‘z ma’lumotingdan grafik yarat",
+    "badge": "MY DATA LAB",
+    "brief": "Kichik anonim so‘rov o‘tkaz: sevimli fan va mustaqil o‘qish vaqtini qayd et. Kamida 3 ta rozilik asosidagi javob yig‘, keyin taqsimotni grafikda ko‘r.",
+    "aha": "Haqiqiy data loyihasi savol, aniq ustunlar va toza yozuvlardan boshlanadi. Ism, telefon yoki manzil kerak emas: javoblarni anonim saqla, qatnashuvchidan rozilik ol, so‘ng guruhlar sonini grafikda taqqosla.",
+    "subjects": [
+      "Matematika",
+      "Ingliz tili",
+      "Informatika",
+      "Biologiya",
+      "Tarix"
     ],
-    "correct": 0,
-    "aha": "Yaxshi loyiha aniq savoldan boshlanadi. Ishtirokchilarga nima yig‘ilishini tushuntir, rozilik ol, shaxsni aniqlovchi ma’lumotni keraksiz yig‘ma va natijani anonim tahlil qil."
+    "prompt": "Anonim javob qo‘sh",
+    "minimum": 3
   },
   {
     "type": "clean",
