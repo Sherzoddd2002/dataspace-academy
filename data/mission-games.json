@@ -1,0 +1,1119 @@
+[
+  {
+    "type": "sort",
+    "title": "Signalni sarala",
+    "badge": "DATA SORTER",
+    "brief": "Orbital radar uch xil signal topdi. Har birini mos qutiga sudra yoki avval signalni, keyin qutini bos.",
+    "aha": "Strukturali data jadvaldagi qator va ustunlarga joylashadi. Shuning uchun uni saralash, filtrlash va hisoblash mumkin.",
+    "buckets": [
+      "Raqam",
+      "Matn",
+      "Jadval"
+    ],
+    "items": [
+      [
+        "Yosh: 15",
+        0
+      ],
+      [
+        "Ism: Ali",
+        1
+      ],
+      [
+        "Baho: 92",
+        0
+      ],
+      [
+        "students.csv",
+        2
+      ],
+      [
+        "Shahar: Qarshi",
+        1
+      ],
+      [
+        "Sotuv: 120 000",
+        0
+      ]
+    ]
+  },
+  {
+    "type": "sort",
+    "title": "Yo‘qolgan fayllar arxivi",
+    "badge": "FILE RESCUE",
+    "brief": "DataPort arxivida fayllar chalkashib ketdi. Kengaytmasiga qarab tegishli papkaga joylashtir.",
+    "aha": ".csv va .xlsx jadval ma’lumotlari uchun, .py Python kodi uchun, .png esa rasm uchun ishlatiladi. Kengaytma fayl turini tez aniqlashga yordam beradi.",
+    "buckets": [
+      "Jadval",
+      "Kod",
+      "Rasm"
+    ],
+    "items": [
+      [
+        "students.csv",
+        0
+      ],
+      [
+        "mission.py",
+        1
+      ],
+      [
+        "chart.png",
+        2
+      ],
+      [
+        "sales.xlsx",
+        0
+      ],
+      [
+        "clean_data.py",
+        1
+      ],
+      [
+        "planet.jpg",
+        2
+      ]
+    ]
+  },
+  {
+    "type": "sequence",
+    "title": "Python darvozasini och",
+    "badge": "CODE BUILDER",
+    "brief": "Robot salomlashuvni tushunmayapti. Kod bo‘laklarini to‘g‘ri tartibga qo‘yib, uni ishga tushir.",
+    "aha": "O‘zgaruvchi qiymatga nom beradi. print() esa shu qiymatni ekranga chiqaradi. Kod yuqoridan pastga bajariladi.",
+    "steps": [
+      "student = 'Ali'",
+      "message = 'Salom, ' + student",
+      "print(message)"
+    ]
+  },
+  {
+    "type": "sort",
+    "title": "Qiymat turlarini ajrat",
+    "badge": "TYPE SCANNER",
+    "brief": "Energiya stansiyasidagi to‘rtta sensor signalini Python tushunadigan turlarga ajrat.",
+    "aha": "int — butun son, float — kasr son, str — matn, bool — True yoki False qiymati. input() esa odatda matn qaytaradi.",
+    "buckets": [
+      "int · butun",
+      "float · kasr",
+      "str · matn",
+      "bool · mantiq"
+    ],
+    "items": [
+      [
+        "15",
+        0
+      ],
+      [
+        "3.14",
+        1
+      ],
+      [
+        "'Data'",
+        2
+      ],
+      [
+        "True",
+        3
+      ],
+      [
+        "-8",
+        0
+      ],
+      [
+        "0.75",
+        1
+      ],
+      [
+        "'2026'",
+        2
+      ],
+      [
+        "False",
+        3
+      ]
+    ]
+  },
+  {
+    "type": "choose",
+    "title": "Robotga qaror qildirish",
+    "badge": "LOGIC CONTROL",
+    "brief": "Termis darvozasida robot faqat 60 yoki undan yuqori ball bilan o‘tadi. To‘g‘ri boshqaruv signalini yubor.",
+    "prompt": "score = 74. Robot qaysi yo‘lni tanlashi kerak?",
+    "choices": [
+      "if score > 60: → O‘tdi",
+      "if score >= 60: → O‘tdi",
+      "if score = 60: → O‘tdi",
+      "else: → O‘tdi"
+    ],
+    "correct": 1,
+    "aha": "if shart rost bo‘lsa, uning ichidagi kod bajariladi; aks holda else ishlaydi. >= belgisi 60 ning o‘zini ham qabul qiladi."
+  },
+  {
+    "type": "sequence",
+    "title": "Ro‘yxat omborini to‘ldir",
+    "badge": "LIST REPAIR",
+    "brief": "Listara omboriga yangi natijani qo‘sh. Robot buyruqlarni noto‘g‘ri ketma-ketlikda bajarsa, ball yo‘qoladi.",
+    "aha": "List bir nechta qiymatni tartib bilan saqlaydi. append() oxiriga element qo‘shadi, len() esa elementlar sonini qaytaradi.",
+    "steps": [
+      "scores = [72, 88, 91]",
+      "scores.append(95)",
+      "total = len(scores)",
+      "print(total)"
+    ]
+  },
+  {
+    "type": "sequence",
+    "title": "Chronos siklini ishga tushir",
+    "badge": "LOOP ENGINE",
+    "brief": "To‘rtta sonni birma-bir yig‘ib, robotga umumiy energiyani hisoblat.",
+    "aha": "for sikli ro‘yxatdagi har bir element uchun kodni takrorlaydi. total = 0 dan boshlanadi va har aylanishda yangi qiymat qo‘shiladi.",
+    "steps": [
+      "numbers = [3, 5, 7, 9]",
+      "total = 0",
+      "for number in numbers:",
+      "    total += number",
+      "print(total)"
+    ]
+  },
+  {
+    "type": "sort",
+    "title": "Lug‘at kalitlarini tikla",
+    "badge": "DICT MATCH",
+    "brief": "Sayyoralar katalogidagi kalit va qiymatlarni ikki alohida ustunga ajrat.",
+    "aha": "dict ma’lumotni kalit: qiymat juftligi sifatida saqlaydi. Masalan, student['name'] orqali ism olinadi.",
+    "buckets": [
+      "Kalit · key",
+      "Qiymat · value"
+    ],
+    "items": [
+      [
+        "'name'",
+        0
+      ],
+      [
+        "'Ali'",
+        1
+      ],
+      [
+        "'score'",
+        0
+      ],
+      [
+        "90",
+        1
+      ],
+      [
+        "'city'",
+        0
+      ],
+      [
+        "'Qarshi'",
+        1
+      ]
+    ]
+  },
+  {
+    "type": "sequence",
+    "title": "Funksiya mexanizmini yig‘",
+    "badge": "FUNCTION FORGE",
+    "brief": "Chronos yadrosi bir xil hisobni qayta ishlatishi kerak. Funksiya qismlarini mantiqiy tartibga keltir.",
+    "aha": "def funksiya yaratadi, parametr qiymat qabul qiladi, return natijani qaytaradi. Funksiyani turli qiymatlar bilan qayta chaqirish mumkin.",
+    "steps": [
+      "def double(x):",
+      "    result = x * 2",
+      "    return result",
+      "print(double(7))"
+    ]
+  },
+  {
+    "type": "sequence",
+    "title": "Fayl arxivini tikla",
+    "badge": "FILE RESCUE",
+    "brief": "Hisobotni avval yoz, keyin qayta o‘qi. FileForge roboti uchun xavfsiz ketma-ketlikni tuz.",
+    "aha": "with open() faylni ochadi va blok tugaganda yopadi. 'w' yozish, 'r' o‘qish rejimi. UTF-8 o‘zbek harflarini saqlaydi.",
+    "steps": [
+      "with open('report.txt', 'w', encoding='utf-8') as f:",
+      "    f.write('DataSpace tayyor!')",
+      "with open('report.txt', 'r', encoding='utf-8') as f:",
+      "    content = f.read()",
+      "print(content)"
+    ]
+  },
+  {
+    "type": "sequence",
+    "title": "Robot mini-o‘yinini kodla",
+    "badge": "BOT BUILDER",
+    "brief": "Robot 42 javobini tanisa, keyingi bosqichga o‘tsin. Funksiya qismlarini yig‘.",
+    "aha": "Funksiya ichidagi return qiymat qaytaradi. == ikki qiymat tengligini tekshiradi va True yoki False natija beradi.",
+    "steps": [
+      "def check_answer(answer):",
+      "    return answer == 42",
+      "result = check_answer(42)",
+      "print(result)"
+    ]
+  },
+  {
+    "type": "sort",
+    "title": "DataFrame qurilish maydoni",
+    "badge": "TABLE BUILDER",
+    "brief": "Pandoria laboratoriyasida jadval, ustun va katak tushunchalarini joyiga qo‘y.",
+    "aha": "DataFrame — qator va ustunlardan iborat jadval. Har bir ustun bitta xususiyatni, har bir qator esa bitta yozuvni ifodalaydi.",
+    "buckets": [
+      "Ustun",
+      "Qator",
+      "Katak qiymati"
+    ],
+    "items": [
+      [
+        "name",
+        0
+      ],
+      [
+        "score",
+        0
+      ],
+      [
+        "Ali | 85",
+        1
+      ],
+      [
+        "Madina | 92",
+        1
+      ],
+      [
+        "85",
+        2
+      ],
+      [
+        "'Ali'",
+        2
+      ]
+    ]
+  },
+  {
+    "type": "sequence",
+    "title": "CSV kapsulasini och",
+    "badge": "CSV LOADER",
+    "brief": "CSV kapsulasi matn ko‘rinishida keldi. Uni Pandas jadvaliga yuklash amallarini tartibla.",
+    "aha": "read_csv() CSV faylni DataFrame ga aylantiradi. Brauzer misolida StringIO matnni faylga o‘xshash oqim sifatida uzatadi.",
+    "steps": [
+      "import pandas as pd",
+      "from io import StringIO",
+      "csv_text = 'name,score\\\\nAli,80'",
+      "df = pd.read_csv(StringIO(csv_text))",
+      "print(df.head())"
+    ]
+  },
+  {
+    "type": "choose",
+    "title": "Kerakli ustunni skanerla",
+    "badge": "COLUMN SCAN",
+    "brief": "Katta jadvaldan faqat o‘quvchi ballarini ajrat. Qaysi buyruq to‘g‘ri?",
+    "prompt": "df jadvalidan faqat score ustunini scores nomiga ol.",
+    "choices": [
+      "scores = df['score']",
+      "scores = df.score()",
+      "scores = df['name']",
+      "scores = df.iloc['score']"
+    ],
+    "correct": 0,
+    "aha": "df['score'] bitta ustunni tanlaydi. loc yorliq bo‘yicha, iloc esa qator yoki ustun pozitsiyasi bo‘yicha tanlaydi."
+  },
+  {
+    "type": "filter",
+    "title": "Sayyora qidiruv skaneri",
+    "badge": "PANDAS FILTER",
+    "brief": "Hayot izlash roboti sayyoralarni tekshiryapti. Harorat slayderini 0°C ga qo‘y va suv belgisi borlarini qoldir.",
+    "aha": "Pandas’da df[(df['temp'] > 0) & (df['water'] == True)] kabi shartlar kerakli qatorlarni ajratadi. & ikkala shart ham bajarilishini talab qiladi.",
+    "metric": "Harorat",
+    "unit": "°C",
+    "min": -100,
+    "max": 100,
+    "start": -100,
+    "target": 0,
+    "flagLabel": "Suyuq suv bor",
+    "startFlag": false,
+    "targetFlag": true,
+    "rows": [
+      {
+        "name": "Aqua-7",
+        "value": 18,
+        "flag": true,
+        "tag": "Mos"
+      },
+      {
+        "name": "Frost-2",
+        "value": -35,
+        "flag": true,
+        "tag": "Sovuq"
+      },
+      {
+        "name": "Vulcan-9",
+        "value": 72,
+        "flag": false,
+        "tag": "Suv yo‘q"
+      },
+      {
+        "name": "Terra-4",
+        "value": 24,
+        "flag": true,
+        "tag": "Mos"
+      },
+      {
+        "name": "Ice-1",
+        "value": -12,
+        "flag": true,
+        "tag": "Sovuq"
+      },
+      {
+        "name": "Dust-6",
+        "value": 31,
+        "flag": false,
+        "tag": "Suv yo‘q"
+      }
+    ]
+  },
+  {
+    "type": "clean",
+    "title": "Xato ovchisi",
+    "badge": "DATA CLEANUP",
+    "brief": "Sensor jadvaliga shubhali yozuvlar aralashib ketdi. Bo‘sh qiymat, noto‘g‘ri harorat va takroriy qatorlarni belgila.",
+    "aha": "Tozalashda bo‘sh kataklar, noto‘g‘ri tur va dublikatlar tekshiriladi. Xatoni topishdan oldin uni qoidaga ko‘ra aniqlash kerak.",
+    "headers": [
+      "Sensor ID",
+      "Harorat",
+      "Shahar"
+    ],
+    "rows": [
+      [
+        "S-01",
+        "22",
+        "Qarshi"
+      ],
+      [
+        "S-02",
+        "",
+        "Toshkent"
+      ],
+      [
+        "S-03",
+        "18",
+        "Samarqand"
+      ],
+      [
+        "S-03",
+        "18",
+        "Samarqand"
+      ],
+      [
+        "S-04",
+        "issiq",
+        "Buxoro"
+      ],
+      [
+        "S-05",
+        "25",
+        "Nukus"
+      ]
+    ],
+    "bad": [
+      1,
+      3,
+      4
+    ]
+  },
+  {
+    "type": "formula",
+    "title": "Yangi ustun laboratoriyasi",
+    "badge": "CALCULATED COLUMN",
+    "brief": "Har bir o‘quvchining matematika va tabiiy fanlar ballaridan jami natija ustunini yarating.",
+    "aha": "DataFrame’da df['total'] = df['math'] + df['science'] yozuvi har bir qator uchun ikki ustunni qo‘shadi. Yangi ustun tahlil uchun hisoblangan belgi bo‘ladi.",
+    "table": {
+      "headers": [
+        "O‘quvchi",
+        "Math",
+        "Science"
+      ],
+      "rows": [
+        [
+          "Ali",
+          "80",
+          "70"
+        ],
+        [
+          "Madina",
+          "90",
+          "95"
+        ]
+      ]
+    },
+    "prompt": "Jami ball ustunini yaratish uchun qaysi ifoda to‘g‘ri?",
+    "choices": [
+      "df['total'] = df['math'] + df['science']",
+      "df['total'] = df['math'] - df['science']",
+      "df.total(math, science)",
+      "df['total'] = 0"
+    ],
+    "correct": 0
+  },
+  {
+    "type": "choose",
+    "title": "Shaharlar bo‘yicha guruhla",
+    "badge": "GROUP LAB",
+    "brief": "Ikki shahardagi natijalarni alohida ko‘rmoqchisan. Qaysi amal shaharlar kesimida o‘rtacha ballni hisoblaydi?",
+    "prompt": "Har bir city guruhi uchun score o‘rtachasini chiqar.",
+    "choices": [
+      "df.groupby('city')['score'].mean()",
+      "df.sort_values('city')",
+      "df['score'].sum()",
+      "df.drop('city')"
+    ],
+    "correct": 0,
+    "aha": "groupby() bir xil qiymatli qatorlarni guruhlaydi. mean() har bir guruhning o‘rtacha qiymatini hisoblaydi."
+  },
+  {
+    "type": "choose",
+    "title": "Statistika detektivi",
+    "badge": "STATISTICS QUEST",
+    "brief": "Bir guruhda 10, 11, 12, 13 va 100 ball bor. Oxirgi juda katta qiymat markazni chalg‘itmasligi kerak.",
+    "prompt": "Tipik markazni chet qiymat ta’siridan kamroq himoyalaydigan o‘lchov qaysi?",
+    "choices": [
+      "Mean · o‘rtacha",
+      "Median · mediana",
+      "Maximum · maksimum",
+      "Sum · yig‘indi"
+    ],
+    "correct": 1,
+    "aha": "Median tartiblangan qiymatlarning o‘rtasini oladi va juda katta yoki kichik chet qiymatlarga mean’dan kamroq ta’sirchan."
+  },
+  {
+    "type": "chart",
+    "title": "Grafik stansiyasini ishga tushir",
+    "badge": "CHART BUILDER",
+    "brief": "Uch oy bo‘yicha savdo o‘zgarishini ko‘rsatadigan grafikni tanla. Trend aniq ko‘rinishi kerak.",
+    "prompt": "Yanvar → Fevral → Mart bo‘yicha savdo dinamikasiga qaysi grafik mos?",
+    "choices": [
+      "Ustunli: kategoriyalarni solishtirish",
+      "Chiziqli: vaqt bo‘yicha trend",
+      "Doiraviy: ulushlar",
+      "Tarqalish: ikki sonli o‘zgaruvchi"
+    ],
+    "correct": 1,
+    "aha": "Vaqt bo‘yicha ketma-ket qiymatlar uchun line chart qulay. Grafikning turi savolga mos tanlanadi.",
+    "values": [
+      12,
+      18,
+      15
+    ],
+    "labels": [
+      "Yan",
+      "Fev",
+      "Mar"
+    ]
+  },
+  {
+    "type": "chart",
+    "title": "Grafik yolg‘onini fosh qil",
+    "badge": "VISUAL DETECTIVE",
+    "brief": "Reyting grafigida ustunlar 88 va 90 oralig‘ida juda katta farqdek ko‘rinmoqda. Muammoni aniqlab, to‘g‘ri tuzatishni tanla.",
+    "prompt": "Y o‘qi 87 dan boshlangani uchun kichik farq ulkan ko‘rinmoqda. Qanday tuzatasan?",
+    "choices": [
+      "Y o‘qini 0 dan boshlash yoki kesilganini ochiq belgilash",
+      "Ranglarni almashtirish",
+      "Sarlavhani olib tashlash",
+      "Ma’lumotlarning yarmini yashirish"
+    ],
+    "correct": 0,
+    "aha": "Kesilgan o‘q farqni bo‘rttirishi mumkin. O‘q oralig‘i va birliklari aniq ko‘rsatilsa, grafik xulosani chalg‘itmaydi.",
+    "values": [
+      88,
+      90,
+      89
+    ],
+    "labels": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  {
+    "type": "choose",
+    "title": "Database xaritasini tuz",
+    "badge": "DATABASE MAP",
+    "brief": "Students jadvalidagi yozuvlarni tahlil qil. Bitta qator nimani ifodalaydi?",
+    "prompt": "students jadvalidagi bitta qator nima?",
+    "choices": [
+      "Bitta talaba haqidagi yozuv",
+      "Butun ma’lumotlar bazasi",
+      "Faqat ustun nomlari",
+      "SQL dasturining o‘zi"
+    ],
+    "correct": 0,
+    "aha": "Relatsion bazada jadval qatorlari yozuvlarni, ustunlari esa atributlarni ifodalaydi. Bir nechta jadval bir bazada saqlanishi mumkin."
+  },
+  {
+    "type": "sequence",
+    "title": "Birinchi SELECT signalini yubor",
+    "badge": "SQL BUILDER",
+    "brief": "SQL-Base terminalida students jadvalidan barcha yozuvlarni olish uchun so‘rov qismlarini yig‘.",
+    "aha": "SELECT qaysi ustunlar kerakligini, FROM esa qaysi jadvaldan olinishi kerakligini bildiradi. * barcha ustunlarni anglatadi.",
+    "steps": [
+      "SELECT *",
+      "FROM students;"
+    ]
+  },
+  {
+    "type": "sequence",
+    "title": "Faqat kerakli ustunlar",
+    "badge": "QUERY BUILDER",
+    "brief": "Hisobotga faqat ism va ball kerak. SELECT so‘rovini kerakli ketma-ketlikka keltir.",
+    "aha": "SELECT name, score FROM students; faqat tanlangan ustunlarni qaytaradi. Keraksiz ustunlarni olmaslik natijani ixcham qiladi.",
+    "steps": [
+      "SELECT name, score",
+      "FROM students;"
+    ]
+  },
+  {
+    "type": "choose",
+    "title": "WHERE skaneri",
+    "badge": "SQL FILTER",
+    "brief": "Stansiyada faqat 16 yoshdan katta talabalar qolishi kerak. Qaysi filtr ishlaydi?",
+    "prompt": "age qiymati 16 dan katta bo‘lgan yozuvlarni top.",
+    "choices": [
+      "WHERE age > 16",
+      "WHERE age < 16",
+      "ORDER BY age",
+      "LIMIT 16"
+    ],
+    "correct": 0,
+    "aha": "WHERE qatorlarni shart bo‘yicha tanlaydi. > 16 sharti 17 va undan yuqori qiymatlarni qaytaradi, 16 ning o‘zini emas."
+  },
+  {
+    "type": "choose",
+    "title": "AND yoki OR?",
+    "badge": "LOGIC DETECTIVE",
+    "brief": "Qarshi yoki Toshkentdagi barcha o‘quvchilarni top. Shahar qiymati ikkidan biri bo‘lishi yetarli.",
+    "prompt": "Shahar Qarshi YOKI Toshkent bo‘lishi uchun qaysi shart to‘g‘ri?",
+    "choices": [
+      "city = 'Qarshi' AND city = 'Toshkent'",
+      "city = 'Qarshi' OR city = 'Toshkent'",
+      "city = 'Qarshi' NOT city = 'Toshkent'",
+      "city IN age"
+    ],
+    "correct": 1,
+    "aha": "OR kamida bitta shart rost bo‘lsa natijani qabul qiladi. AND esa ikkala shart bir vaqtda rost bo‘lishini talab qiladi. IN ixcham ro‘yxat tekshiruvini beradi."
+  },
+  {
+    "type": "sequence",
+    "title": "Top-3 reytingini och",
+    "badge": "RANKING ENGINE",
+    "brief": "Eng yuqori ball olgan uch talabani tepaga chiqar. So‘rov bo‘laklarini to‘g‘ri joylashtir.",
+    "aha": "ORDER BY score DESC ballni kamayish tartibida saralaydi. LIMIT 3 faqat eng yuqori uch qatorni qoldiradi.",
+    "steps": [
+      "SELECT name, score",
+      "FROM students",
+      "ORDER BY score DESC",
+      "LIMIT 3;"
+    ]
+  },
+  {
+    "type": "choose",
+    "title": "SQL qidiruv detektivi",
+    "badge": "PATTERN HUNTER",
+    "brief": "Uchta turli vazifa bor: ism A bilan boshlansin, ball 80–95 oralig‘ida bo‘lsin, yoki shahar qiymati bo‘sh bo‘lsin.",
+    "prompt": "Balli 80 dan 95 gacha bo‘lganlarni (ikkala chegara ham qo‘shiladi) qaysi shart topadi?",
+    "choices": [
+      "score BETWEEN 80 AND 95",
+      "score LIKE '80-95'",
+      "score IS NULL",
+      "score > 95"
+    ],
+    "correct": 0,
+    "aha": "BETWEEN oraliqning ikkala chegarasini ham o‘z ichiga oladi. LIKE matn naqshini, IS NULL esa bo‘sh qiymatni tekshiradi."
+  },
+  {
+    "type": "choose",
+    "title": "Takrorlarni yo‘qot",
+    "badge": "DISTINCT SCAN",
+    "brief": "Shahar nomlari ko‘p takrorlangan. Har bir shaharni bir martadan, city_name sarlavhasi bilan chiqar.",
+    "prompt": "Qaysi so‘rov takrorlanmas shaharlar ro‘yxatini beradi?",
+    "choices": [
+      "SELECT DISTINCT city AS city_name FROM students;",
+      "SELECT ALL city FROM students;",
+      "SELECT city_name FROM students;",
+      "DROP city FROM students;"
+    ],
+    "correct": 0,
+    "aha": "DISTINCT takroriy qiymatlarni olib tashlaydi. AS natija ustuniga tushunarli vaqtinchalik nom beradi."
+  },
+  {
+    "type": "sequence",
+    "title": "SQL mini-boss: uch shart",
+    "badge": "QUERY BOSS",
+    "brief": "Qarshidagi talabalarni balli bo‘yicha yuqoridan pastga tartibla va faqat ularni chiqar.",
+    "aha": "SQL so‘rovida SELECT va FROM dan keyin WHERE, so‘ng ORDER BY keladi. Shart bajarilgach natija kerakli tartibda ko‘rsatiladi.",
+    "steps": [
+      "SELECT name, score",
+      "FROM students",
+      "WHERE city = 'Qarshi'",
+      "ORDER BY score DESC;"
+    ]
+  },
+  {
+    "type": "choose",
+    "title": "Hisoblagichni ishga tushir",
+    "badge": "AGGREGATE LAB",
+    "brief": "Students jadvalidagi yozuvlar soni, ballar yig‘indisi va o‘rtachasini topish kerak.",
+    "prompt": "Faqat talabalar sonini hisoblash uchun qaysi funksiya ishlaydi?",
+    "choices": [
+      "COUNT(*)",
+      "SUM(*)",
+      "AVG(*)",
+      "MAX(*)"
+    ],
+    "correct": 0,
+    "aha": "COUNT qatorlarni sanaydi, SUM qiymatlarni qo‘shadi, AVG o‘rtacha qiymatni hisoblaydi. Ular agregat funksiyalar deyiladi."
+  },
+  {
+    "type": "choose",
+    "title": "Rekordni top",
+    "badge": "MIN MAX SCAN",
+    "brief": "Reytinglar orasidan eng yuqori ballni aniqlash kerak. Qaysi funksiya yordam beradi?",
+    "prompt": "students jadvalidagi eng katta score qiymatini top.",
+    "choices": [
+      "MIN(score)",
+      "MAX(score)",
+      "COUNT(score)",
+      "AVG(score)"
+    ],
+    "correct": 1,
+    "aha": "MAX eng katta, MIN esa eng kichik qiymatni qaytaradi. Ularni SELECT bilan ishlatib, bitta umumiy natija olish mumkin."
+  },
+  {
+    "type": "sequence",
+    "title": "Shaharlar bo‘yicha hisobla",
+    "badge": "GROUP ENGINE",
+    "brief": "Har bir shahar nechta o‘quvchiga ega? Guruhlash so‘rovini yig‘.",
+    "aha": "GROUP BY bir xil city qiymatlarini guruhlaydi. COUNT(*) har bir guruhdagi qatorlar sonini hisoblaydi.",
+    "steps": [
+      "SELECT city, COUNT(*)",
+      "FROM students",
+      "GROUP BY city;"
+    ]
+  },
+  {
+    "type": "filter",
+    "title": "HAVING darvozasini och",
+    "badge": "GROUP FILTER",
+    "brief": "Shaharlar bo‘yicha guruhlangan natijada kamida ikki o‘quvchisi bor guruhlarni qoldir.",
+    "aha": "WHERE guruhlashdan oldin qatorlarni, HAVING esa GROUP BY dan keyin guruhlangan natijalarni filtrlash uchun ishlatiladi.",
+    "metric": "O‘quvchilar soni",
+    "unit": "ta",
+    "min": 0,
+    "max": 5,
+    "start": 0,
+    "target": 2,
+    "rows": [
+      {
+        "name": "Qarshi",
+        "value": 2
+      },
+      {
+        "name": "Toshkent",
+        "value": 2
+      },
+      {
+        "name": "Samarqand",
+        "value": 1
+      },
+      {
+        "name": "Buxoro",
+        "value": 1
+      }
+    ]
+  },
+  {
+    "type": "choose",
+    "title": "JOIN ko‘prigini qur",
+    "badge": "TABLE CONNECTOR",
+    "brief": "Talaba nomi va kurs nomi ikki xil jadvalda turibdi. Ularni bog‘lash uchun qaysi amal kerak?",
+    "prompt": "students va courses jadvallarini course_id=id kaliti orqali birlashtir.",
+    "choices": [
+      "JOIN",
+      "ORDER BY",
+      "DISTINCT",
+      "LIMIT"
+    ],
+    "correct": 0,
+    "aha": "JOIN bog‘langan jadvallardagi ma’lumotni bir natijada ko‘rsatadi. Odatda umumiy kalit orqali mos yozuvlar topiladi."
+  },
+  {
+    "type": "sequence",
+    "title": "INNER JOIN ko‘prigi",
+    "badge": "INNER JOIN BUILDER",
+    "brief": "Faqat ikkala jadvalda ham mos kelgan kurs yozuvlarini ko‘rsatadigan so‘rovni yig‘.",
+    "aha": "INNER JOIN faqat ikkala tomonda mos kalit topilgan yozuvlarni qaytaradi. Mos bo‘lmaganlar natijaga kirmaydi.",
+    "steps": [
+      "SELECT students.name, courses.title",
+      "FROM students",
+      "INNER JOIN courses",
+      "ON students.course_id = courses.id;"
+    ]
+  },
+  {
+    "type": "choose",
+    "title": "Hech kimni yo‘qotma",
+    "badge": "LEFT JOIN RESCUE",
+    "brief": "Kursga yozilmagan talabalar ham hisobotda qolishi kerak. Qaysi birlashuvni tanlaysan?",
+    "prompt": "Barcha students qatorlarini saqlab, mos kurs bo‘lsa qo‘sh.",
+    "choices": [
+      "INNER JOIN",
+      "LEFT JOIN",
+      "RIGHT FILTER",
+      "CROSS DELETE"
+    ],
+    "correct": 1,
+    "aha": "LEFT JOIN chap jadvaldagi barcha yozuvlarni saqlaydi. O‘ng tomonda mos yozuv bo‘lmasa, uning ustunlari NULL bo‘ladi."
+  },
+  {
+    "type": "choose",
+    "title": "Daraja beruvchi CASE",
+    "badge": "CASE ENGINE",
+    "brief": "Robot ballga qarab Gold yoki Standard yorlig‘ini berishi kerak.",
+    "prompt": "90 va undan yuqori ballga Gold, qolganlariga Standard beradigan ifoda qaysi?",
+    "choices": [
+      "CASE WHEN score >= 90 THEN 'Gold' ELSE 'Standard' END",
+      "IF score = 90 SELECT Gold",
+      "CASE score DESC Gold",
+      "WHEN score < 90 THEN Gold"
+    ],
+    "correct": 0,
+    "aha": "CASE WHEN SQL ichida shartli natija yaratadi. WHEN shartni tekshiradi, THEN mos qiymatni, ELSE esa boshqa holatni beradi."
+  },
+  {
+    "type": "choose",
+    "title": "Kino bazasi: final detektiv",
+    "badge": "MOVIE DATABASE BOSS",
+    "brief": "Queryon kinosaroyida eng yuqori reytingli uch film kerak. Ma’lumotlar bazasidan g‘oliblarni top.",
+    "prompt": "movies jadvalidagi eng yuqori ratingli uchta filmni olish uchun to‘g‘ri so‘rov qaysi?",
+    "choices": [
+      "SELECT title, rating FROM movies ORDER BY rating DESC LIMIT 3;",
+      "SELECT * FROM movies LIMIT 3;",
+      "DELETE FROM movies ORDER BY rating;",
+      "SELECT rating FROM movies WHERE title;"
+    ],
+    "correct": 0,
+    "aha": "Tahliliy SQL so‘rovi ustun tanlaydi, kerakli jadvaldan oladi, rating bo‘yicha kamayish tartibida saralaydi va LIMIT bilan Top-3 ni qoldiradi."
+  },
+  {
+    "type": "choose",
+    "title": "Excel katak koordinatasi",
+    "badge": "CELL NAVIGATOR",
+    "brief": "Excelia xaritasida katak manzili ustun harfi va qator raqamidan tuziladi. Kerakli koordinatani top.",
+    "prompt": "B ustunining 3-qatoridagi katak qaysi?",
+    "choices": [
+      "3B",
+      "B3",
+      "BB3",
+      "B-3"
+    ],
+    "correct": 1,
+    "aha": "Excel’da avval ustun harfi, keyin qator raqami yoziladi. B3 — B ustuni va 3-qator kesishgan katak."
+  },
+  {
+    "type": "formula",
+    "title": "Formulani quvvatlantir",
+    "badge": "FORMULA BUILDER",
+    "brief": "E2 katagida Ali uchun Math va Science ballarining jami chiqishi kerak. To‘g‘ri formulani tanla.",
+    "table": {
+      "headers": [
+        "Katak",
+        "Qiymat"
+      ],
+      "rows": [
+        [
+          "B2 · Math",
+          "80"
+        ],
+        [
+          "C2 · Science",
+          "75"
+        ],
+        [
+          "E2 · Jami",
+          "?"
+        ]
+      ]
+    },
+    "prompt": "E2 uchun qaysi formula to‘g‘ri?",
+    "choices": [
+      "=B2+C2",
+      "=B2-C2",
+      "=SUM(B2;C2)",
+      "B2+C2"
+    ],
+    "correct": 0,
+    "aha": "Excel formulasi = belgisi bilan boshlanadi. =B2+C2 ikki katak qiymatini qo‘shadi va natija E2 da ko‘rinadi."
+  },
+  {
+    "type": "formula",
+    "title": "SUM va statistika qurollari",
+    "badge": "SPREADSHEET TOOLS",
+    "brief": "Ballar ustunidagi qiymatlarni bitta formula bilan yig‘. Keyingi safar AVERAGE, MIN va MAX ni ham sinab ko‘r.",
+    "table": {
+      "headers": [
+        "B2",
+        "B3",
+        "B4",
+        "B5"
+      ],
+      "rows": [
+        [
+          "72",
+          "88",
+          "91",
+          "95"
+        ]
+      ]
+    },
+    "prompt": "B2 dan B5 gacha jami ballni hisoblash formulasi qaysi?",
+    "choices": [
+      "=SUM(B2:B5)",
+      "=AVERAGE(B2:B5)",
+      "=MIN(B2:B5)",
+      "=COUNT(B2:B5)"
+    ],
+    "correct": 0,
+    "aha": "SUM diapazondagi sonlarni qo‘shadi. AVERAGE o‘rtacha, MIN eng kichik, MAX eng katta qiymatni qaytaradi."
+  },
+  {
+    "type": "choose",
+    "title": "Jadvalni tartibga sol",
+    "badge": "SORT & FILTER",
+    "brief": "O‘quvchilarni eng yuqori Math balli tepadan boshlanadigan qilib joylashtir. Qaysi amalni tanlaysan?",
+    "prompt": "Ball bo‘yicha kamayish tartibida saralash nima qiladi?",
+    "choices": [
+      "Eng katta ballarni yuqoriga chiqaradi",
+      "Faqat bo‘sh kataklarni o‘chiradi",
+      "Ustun nomini o‘zgartiradi",
+      "Jadvalni rasmga aylantiradi"
+    ],
+    "correct": 0,
+    "aha": "Sort qatorlarning tartibini o‘zgartiradi. Filter esa shartga mos qatorlarni ko‘rsatadi, qolgan ma’lumotni o‘chirib yubormaydi."
+  },
+  {
+    "type": "choose",
+    "title": "IF qaror kalkulyatori",
+    "badge": "FORMULA LOGIC",
+    "brief": "80 yoki undan yuqori ball olganlar “Yaxshi”, qolganlar “Mashq qil” deb belgilanadi.",
+    "prompt": "B2=85 bo‘lsa, qaysi formula kerakli natijani beradi?",
+    "choices": [
+      "=IF(B2>=80,\"Yaxshi\",\"Mashq qil\")",
+      "=SUM(B2,80)",
+      "=COUNTIF(B2,80)",
+      "=IF(B2<80,\"Yaxshi\",\"Mashq qil\")"
+    ],
+    "correct": 0,
+    "aha": "IF mantiqiy shartni tekshiradi: rost bo‘lsa birinchi qiymat, aks holda ikkinchi qiymat qaytadi. COUNTIF sanaydi, SUMIF esa shartga mos sonlarni yig‘adi."
+  },
+  {
+    "type": "choose",
+    "title": "XLOOKUP qidiruv detektivi",
+    "badge": "LOOKUP MISSION",
+    "brief": "C01 kurs kodi bo‘yicha kurs nomini top. Qidiruv ustuni va natija ustuni alohida beriladi.",
+    "prompt": "XLOOKUP uchun qaysi formula to‘g‘ri?",
+    "choices": [
+      "=XLOOKUP(A2,$G$2:$G$4,$H$2:$H$4)",
+      "=SUM(A2:H4)",
+      "=SORT(A2,$G$2:$G$4)",
+      "=COUNTIF(A2,$H$2:$H$4)"
+    ],
+    "correct": 0,
+    "aha": "XLOOKUP qidiriladigan qiymatni bir diapazondan topib, shu qatordagi natijani boshqa diapazondan qaytaradi."
+  },
+  {
+    "type": "choose",
+    "title": "Pivot Table quruvchisi",
+    "badge": "PIVOT BUILDER",
+    "brief": "Qarshi va Toshkent bo‘yicha jami ballni taqqoslash kerak. Qanday tuzilma tanlaysan?",
+    "prompt": "Pivot jadvalda shahar kesimida jami ballni olish uchun to‘g‘ri kombinatsiya qaysi?",
+    "choices": [
+      "Rows = Shahar; Values = Jami ball (SUM)",
+      "Rows = Ism; Values = Shahar (COUNT)",
+      "Columns = Sana; Values = Matn (MAX)",
+      "Filter = barcha yozuvlarni o‘chirish"
+    ],
+    "correct": 0,
+    "aha": "Pivot Table kategoriyalar bo‘yicha guruhlaydi va Values qismida SUM, COUNT yoki AVERAGE kabi hisobni bajaradi."
+  },
+  {
+    "type": "chart",
+    "title": "Hisobot grafikini yarat",
+    "badge": "CHART STUDIO",
+    "brief": "Ali, Madina va Boburning jami ballarini taqqoslash kerak. Qaysi grafik eng tushunarli?",
+    "prompt": "Uch o‘quvchining kategoriyalar bo‘yicha natijalarini taqqosla.",
+    "choices": [
+      "Ustunli grafik · Bar",
+      "Chiziqli grafik · Line",
+      "Histogram · taqsimot",
+      "Doiraviy · ulush"
+    ],
+    "correct": 0,
+    "aha": "Bar chart turli kategoriyalar qiymatini taqqoslaydi. Vaqt trendi uchun line, uzluksiz taqsimot uchun histogram mos.",
+    "values": [
+      155,
+      187,
+      160
+    ],
+    "labels": [
+      "Ali",
+      "Madina",
+      "Bobur"
+    ]
+  },
+  {
+    "type": "sequence",
+    "title": "Hisobotni eksportga tayyorla",
+    "badge": "DATA HANDOFF",
+    "brief": "Pandoria tozalagan jadvalni Excelia hisobotiga yetkaz. Python amallarini tartibga keltir.",
+    "aha": "Pandas DataFrame’ni Excel faylga yozishi mumkin. index=False keraksiz indeks ustunini qo‘shmaslik uchun ishlatiladi.",
+    "steps": [
+      "import pandas as pd",
+      "df = pd.DataFrame({'city':['Qarshi','Toshkent'], 'sales':[120,180]})",
+      "df.to_excel('report.xlsx', index=False)",
+      "print('Hisobot tayyor')"
+    ]
+  },
+  {
+    "type": "choose",
+    "title": "Yakuniy loyiha: o‘z savolingni tanla",
+    "badge": "PROJECT LAUNCH",
+    "brief": "Project Nebula uchun kundalik hayotga yaqin savol tanla. Ism yoki boshqa shaxsiy ma’lumotlarni yig‘masdan, rozilik bilan anonim ma’lumotdan foydalan.",
+    "prompt": "Qaysi loyiha savoli o‘lchanadigan, xavfsiz va tahlilga yaroqli?",
+    "choices": [
+      "Ishtirokchilar roziligi bilan anonim sevimli fanlar va uyqu vaqti o‘rtasidagi bog‘liqlikni o‘rganish",
+      "Sinfdoshlarning parollarini yig‘ish",
+      "Roziliksiz to‘liq ism va telefon raqamlarini jamlash",
+      "Savolsiz tasodifiy raqamlarni ko‘chirish"
+    ],
+    "correct": 0,
+    "aha": "Yaxshi loyiha aniq savoldan boshlanadi. Ishtirokchilarga nima yig‘ilishini tushuntir, rozilik ol, shaxsni aniqlovchi ma’lumotni keraksiz yig‘ma va natijani anonim tahlil qil."
+  },
+  {
+    "type": "clean",
+    "title": "Final loyiha: toza data",
+    "badge": "CLEANING QUEST",
+    "brief": "Loyihang jadvalidagi xatolarni aniqlagin: bo‘sh qiymat, dublikat va noto‘g‘ri formatli yozuvlarni belgila.",
+    "aha": "Tozalash rejasi ustun turi, bo‘sh qiymat, dublikat va formatni qamrab oladi. O‘zgartirishdan oldin xom nusxani saqlab qo‘y.",
+    "headers": [
+      "ID",
+      "Fan",
+      "Baho"
+    ],
+    "rows": [
+      [
+        "01",
+        "Matematika",
+        "88"
+      ],
+      [
+        "02",
+        "Ingliz tili",
+        ""
+      ],
+      [
+        "02",
+        "Ingliz tili",
+        "91"
+      ],
+      [
+        "03",
+        "Biologiya",
+        "A'lo"
+      ],
+      [
+        "04",
+        "Tarix",
+        "76"
+      ]
+    ],
+    "bad": [
+      1,
+      2,
+      3
+    ]
+  },
+  {
+    "type": "chart",
+    "title": "Tahlildan hikoya yarat",
+    "badge": "INSIGHT BUILDER",
+    "brief": "Senda oylar bo‘yicha natijalar bor. Savol — ko‘rsatkich vaqt o‘tishi bilan qanday o‘zgargan?",
+    "prompt": "Yanvardan iyungacha bo‘lgan trendni ko‘rsatish uchun qaysi grafik mos?",
+    "choices": [
+      "Chiziqli grafik · vaqt trendi",
+      "Doiraviy grafik · bitta paytdagi ulush",
+      "Ustunli grafik · faqat nomlar",
+      "Faqat rangli fon"
+    ],
+    "correct": 0,
+    "aha": "EDA ma’lumotni dastlabki o‘rganadi. Savolga mos statistik ko‘rsatkich va grafik tanlash naqshni ko‘rishga yordam beradi.",
+    "values": [
+      12,
+      15,
+      14,
+      19,
+      22,
+      25
+    ],
+    "labels": [
+      "Yan",
+      "Fev",
+      "Mar",
+      "Apr",
+      "May",
+      "Iyun"
+    ]
+  },
+  {
+    "type": "sequence",
+    "title": "Yakuniy hisobotni yig‘",
+    "badge": "REPORT ASSEMBLER",
+    "brief": "Hisobotingni mantiqiy oqimga keltir: muammo, ma’lumot, tozalash, tahlil va xulosa.",
+    "aha": "Hisobot faqat grafikdan iborat emas. Savol, manba, tozalash usuli, dalil, cheklov va amaliy tavsiya bir-biriga bog‘lanishi kerak.",
+    "steps": [
+      "Muammo va tadqiqot savoli",
+      "Ma’lumot manbasi va tavsifi",
+      "Tozalash va tayyorlash",
+      "Tahlil va grafiklar",
+      "Xulosa, cheklov va tavsiya"
+    ]
+  },
+  {
+    "type": "sequence",
+    "title": "Kengash oldida taqdimot",
+    "badge": "PRESENTATION RUN",
+    "brief": "Auditoriyani yo‘qotma: avval savolni ayt, keyin dalilni ko‘rsat, so‘ng xulosani chiqar.",
+    "aha": "Yaxshi taqdimot bitta asosiy xabar atrofida quriladi. Grafikni ko‘rsatibgina qolmay, u qanday dalil berayotganini sodda tilda izohla.",
+    "steps": [
+      "Muammo va savolni ayt",
+      "Eng muhim grafikni ko‘rsat",
+      "Grafikdagi dalilni izohla",
+      "Xulosa va tavsiyani ber"
+    ]
+  },
+  {
+    "type": "choose",
+    "title": "Keyingi galaktikani tanla",
+    "badge": "NEXT LEVEL",
+    "brief": "54 missiyani yakunlading. Endi qaysi yo‘nalishda chuqurlashmoqchisan? Maqsadingga mos yo‘lni tanla.",
+    "prompt": "Dashboard va biznes hisobotlar yaratish bilan shug‘ullanishni xohlasang, qaysi yo‘l mos?",
+    "choices": [
+      "Data Analyst · SQL + Power BI",
+      "Python Developer · avtomatlashtirish",
+      "Data Scientist · statistika + ML"
+    ],
+    "correct": 0,
+    "aha": "Kurs yakuni — boshlanish. Data Analyst SQL va vizualizatsiya, Python Developer avtomatlashtirish, Data Scientist esa statistika va ML yo‘nalishida chuqurlashadi."
+  }
+]
