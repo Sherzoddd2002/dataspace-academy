@@ -76,6 +76,10 @@ export async function getMyProfile() {
   return rpc("get_my_profile");
 }
 
+export async function ensureProfile({ username, displayName, avatar = "🚀", characterClass = "navigator" }) {
+  return completeProfile(username, displayName || username, avatar, characterClass);
+}
+
 async function completeProfile(username, displayName, avatar = "🚀", characterClass = "navigator") {
   const row = await rpc("create_my_profile", {
     p_username: String(username).trim().toLowerCase(),
