@@ -45,7 +45,7 @@
     "concept": "print() natijani chiqaradi. O'zgaruvchi qiymatga nom beradi: student = 'Ali'. Python brauzer ichida Pyodide orqali ishlaydi.",
     "challenge": "student o'zgaruvchisiga ismingni yoz va ekranga 'Salom, ' bilan birga chiqar.",
     "starter": "student = 'Data Explorer'\n# Quyida salomlashuvni chiqar\nprint('Salom, ' + student)",
-    "testCode": "assert 'Salom' in str(student)\nassert student != ''",
+    "testCode": "assert student != ''",
     "hint": "Matnni qo'shish uchun + operatoridan foydalan.",
     "explanation": "O'zgaruvchi qiymatni qayta ishlatish va keyin o'zgartirish imkonini beradi."
   },
