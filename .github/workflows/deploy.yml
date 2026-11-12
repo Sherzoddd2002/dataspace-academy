@@ -49,23 +49,44 @@ jobs:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Smoke-test Neon Data API RPC route
+      - name: Smoke-test Neon Auth and public leaderboard JWT
         env:
+          NEON_AUTH_URL: https://ep-little-sea-bae80di9.neonauth.c-8.eu-central-1.aws.neon.tech/neondb/auth
           NEON_DATA_API_URL: https://ep-little-sea-bae80di9.apirest.c-8.eu-central-1.aws.neon.tech/neondb/rest/v1
         run: |
           node --input-type=module <<'NODE'
-          const endpoint = `${process.env.NEON_DATA_API_URL}/rpc/get_my_profile`;
-          const response = await fetch(endpoint, {
+          const authResponse = await fetch(`${process.env.NEON_AUTH_URL}/token/anonymous`);
+          const authText = await authResponse.text();
+          let authBody = {};
+          try { authBody = JSON.parse(authText); } catch {}
+          const token = authBody.token || authBody.data?.token;
+          if (!authResponse.ok || !token) {
+            throw new Error(`Anonymous JWT endpoint failed (HTTP ${authResponse.status}): ${authText.slice(0, 500)}`);
+          }
+
+          const leaderboardUrl = new URL(`${process.env.NEON_DATA_API_URL}/dataspace_leaderboard`);
+          leaderboardUrl.searchParams.set('select', 'username,display_name,avatar,character_class,xp,streak,completed_count,created_at');
+          leaderboardUrl.searchParams.set('limit', '1');
+          const leaderboardResponse = await fetch(leaderboardUrl, {
+            headers: { 'Accept': 'application/json', 'Authorization': `Bearer ${token}` },
+          });
+          const leaderboardText = await leaderboardResponse.text();
+          if (!leaderboardResponse.ok) {
+            throw new Error(`Public leaderboard read failed (HTTP ${leaderboardResponse.status}): ${leaderboardText.slice(0, 500)}`);
+          }
+          console.log(`Anonymous JWT works; public leaderboard read passed (HTTP ${leaderboardResponse.status}).`);
+
+          const rpcResponse = await fetch(`${process.env.NEON_DATA_API_URL}/rpc/get_my_profile`, {
             method: 'POST',
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
             body: '{}'
           });
-          const body = await response.text();
-          if (response.status === 404) {
-            throw new Error(`RPC endpoint returned HTTP 404: ${body.slice(0, 600)}`);
+          const rpcText = await rpcResponse.text();
+          if (rpcResponse.status === 404) {
+            throw new Error(`RPC endpoint returned HTTP 404: ${rpcText.slice(0, 500)}`);
           }
-          if (![401, 403].includes(response.status)) {
-            throw new Error(`Expected anonymous RPC permission denial, received HTTP ${response.status}: ${body.slice(0, 600)}`);
+          if (![401, 403].includes(rpcResponse.status)) {
+            throw new Error(`Expected anonymous RPC permission denial, received HTTP ${rpcResponse.status}: ${rpcText.slice(0, 500)}`);
           }
-          console.log(`RPC endpoint exists; anonymous access correctly denied (HTTP ${response.status}).`);
+          console.log(`Private profile RPC correctly rejects anonymous access (HTTP ${rpcResponse.status}).`);
           NODE
