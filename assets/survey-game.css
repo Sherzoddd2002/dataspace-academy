@@ -1,0 +1,21 @@
+/* Anonymous personal-data mini project */
+.survey-privacy{padding:10px 12px;border:1px solid #846d4580;border-radius:8px;background:#302a24;color:#f1d7a5;font-size:9px;line-height:1.65;margin-bottom:14px}
+.survey-form{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;padding:13px;border:1px solid #354865;border-radius:10px;background:#1a2a44}
+.survey-form label{display:grid;gap:8px;color:#aebed8;font-size:9px}
+.survey-form label b{color:#7de3cc}
+.survey-form select{width:100%;min-height:37px;padding:8px;background:#0e1c30;color:#e4edff;border:1px solid #455a7a;border-radius:7px}
+.survey-form input[type=range]{width:100%;accent-color:#6ddbc7}
+.survey-form .btn{white-space:nowrap}
+.survey-progress{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:14px 0 8px;color:#e1ebfd;font-size:9px}
+.survey-progress span{color:#8fa2c2}
+.survey-table-wrap{overflow-x:auto;border:1px solid #31435f;border-radius:8px}
+.survey-table{width:100%;border-collapse:collapse;font-size:9px;color:#cbd8eb}
+.survey-table th,.survey-table td{padding:8px 10px;text-align:left;border-bottom:1px solid #293b58}
+.survey-table th{color:#91a5c9;background:#202f49}
+.survey-table tbody tr:last-child td{border-bottom:0}
+.survey-chart{display:grid;gap:8px;margin-top:15px}
+.survey-chart-row{display:grid;grid-template-columns:100px minmax(60px,1fr) 22px;align-items:center;gap:9px;font-size:9px;color:#b6c7e0}
+.survey-chart-row>div{height:10px;border-radius:8px;background:#253752;overflow:hidden}
+.survey-chart-row i{height:100%;display:block;border-radius:8px;background:linear-gradient(90deg,#8778ff,#52d8c3);transition:width .3s}
+.survey-chart-row>b{text-align:right;color:#e7f3ff}
+@media(max-width:680px){.survey-form{grid-template-columns:1fr}.survey-form .btn{width:100%}.survey-progress{align-items:flex-start;flex-direction:column}.survey-chart-row{grid-template-columns:86px minmax(60px,1fr) 18px}}
