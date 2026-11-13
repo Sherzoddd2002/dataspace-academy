@@ -139,7 +139,7 @@
   function setView(view) {
     activeView=view; activeLessonIndex=null;
     document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
-    const labels={dashboard:'Bosh sahifa',map:'Galaktika xaritasi',course:'54 ta dars',arena:'Musobaqa maydoni',leaderboard:'Reyting / O‘quvchilar',achievements:'Mukofotlarim',teacher:'Mentor paneli'};
+    const labels={dashboard:'Bosh sahifa',world3d:'3D olam',map:'Galaktika xaritasi',course:'54 ta dars',arena:'Musobaqa maydoni',leaderboard:'Reyting / O‘quvchilar',achievements:'Mukofotlarim',teacher:'Mentor paneli'};
     const crumb=document.getElementById('breadcrumb-current'); if(crumb) crumb.textContent=labels[view]||'Bosh sahifa';
     document.getElementById('sidebar').classList.remove('open');
     render();
@@ -226,7 +226,7 @@
       <label for="auth-password">Parol</label><input id="auth-password" type="password" minlength="8" maxlength="72" autocomplete="${signup?'new-password':'current-password'}" placeholder="${signup?'Kamida 8 belgi':'Parolingiz'}">
       ${signup?'<small class="auth-hint">Username 3–20 belgi: lotin harflari, raqamlar va pastki chiziq. Parolingizni eslab qoling — email orqali tiklash yo‘q.</small>':''}
       <p class="auth-error" id="auth-error" role="alert">${cloudError?esc(cloudError):''}</p>
-      <div class="modal-actions">${first?'':'<button class="btn btn-ghost" data-close-modal>Bekor qilish</button>'}<button class="btn btn-primary" id="auth-submit">${signup?'Akkaunt yaratish':'Kirish'} <span>→</span></button></div>`;
+      <div class="modal-actions">${first?'':'<button class="btn btn-ghost" data-close-modal>Bekor qilish</button>'}<button class="btn btn-ghost" data-guest-mode>🧊 Mehmon sifatida o‘yna</button><button class="btn btn-primary" id="auth-submit">${signup?'Akkaunt yaratish':'Kirish'} <span>→</span></button></div>`;
     document.getElementById('modal-backdrop').classList.remove('hidden');
     modal.querySelectorAll('[data-auth-mode]').forEach(btn=>btn.addEventListener('click',()=>openAuthModal(btn.dataset.authMode,first)));
     const submit=async()=>{
@@ -324,6 +324,13 @@
   function render() {
     updateChrome();
     const root=document.getElementById('app-content');
+    if(activeView!=='world3d')window.DataSpaceWorld?.unmount();
+    if(activeView==='world3d'){
+      root.innerHTML=renderWorld3DHost();
+      if(window.DataSpaceWorld)window.DataSpaceWorld.mount(document.getElementById('world3d-root'),window.DataSpace);
+      else{root.innerHTML='<div class="card empty-state"><strong>3D olam moduli yuklanmoqda...</strong><p>Bir necha soniya kutib turing.</p></div>';setTimeout(()=>{if(activeView==='world3d')render();},300);}
+      return;
+    }
     if(activeView==='dashboard') root.innerHTML=renderDashboard();
     else if(activeView==='map') root.innerHTML=renderMap();
     else if(activeView==='course') root.innerHTML=renderCourse();
@@ -332,6 +339,9 @@
     else if(activeView==='leaderboard') root.innerHTML=renderLeaderboard();
     else if(activeView==='teacher') root.innerHTML=renderTeacher();
     else root.innerHTML=renderDashboard();
+  }
+  function renderWorld3DHost() {
+    return '<div class="w3d-root" id="world3d-root"></div>';
   }
   function renderJourneyTrack() {
     const stops=WORLDS.map((w,i)=>{
@@ -392,7 +402,7 @@
       return `<article class="world-mini card ${unlocked?'':'locked'}" data-world="${i}"><span class="world-emoji">${w.emoji}</span><strong>${w.name}</strong><small>${p.done}/${p.total} missiya · ${w.weeks}</small><div class="mini-progress"><i style="width:${p.pct}%"></i></div></article>`;
     }).join('');
     const nextText=next===null?'Barcha missiyalar tugadi!':`#${next+1} · ${lessons[next].title}`;
-    return `<section class="hero-panel"><div class="hero-copy"><span class="eyebrow">YANGI AVLOD DATA ANALYTICS AKADEMIYASI</span><h1>Ma’lumotlar olamiga<br><span>xush kelibsan, ${esc(profile.name||'Explorer')}!</span></h1><p>54 ta missiya. 9 ta olam. Python, Pandas, SQL va Excel. Har bir kod — yangi kuch, har bir tahlil — yangi kashfiyot.</p><div class="hero-buttons"><button class="btn btn-primary" data-open-next>${done?'Davom etish':'Sayohatni boshlash'} <span>→</span></button><button class="btn btn-secondary" data-view="map">Galaktikani ko‘r</button></div></div><div class="hero-art hero-character-showcase"><div class="planet-orb"><span class="planet-moon"></span></div><div class="hero-character-card">${renderVoxelCharacter('showcase','idle')}<span class="hero-character-caption">${esc(getCharacterClass().name)}</span></div></div></section>
+    return `<section class="hero-panel"><div class="hero-copy"><span class="eyebrow">YANGI AVLOD DATA ANALYTICS AKADEMIYASI</span><h1>Ma’lumotlar olamiga<br><span>xush kelibsan, ${esc(profile.name||'Explorer')}!</span></h1><p>54 ta missiya. 9 ta olam. Python, Pandas, SQL va Excel. Har bir kod — yangi kuch, har bir tahlil — yangi kashfiyot.</p><div class="hero-buttons"><button class="btn btn-primary" data-open-next>${done?'Davom etish':'Sayohatni boshlash'} <span>→</span></button><button class="btn btn-gold" data-view="world3d">🧊 3D olamda o‘yna</button><button class="btn btn-secondary" data-view="map">Galaktikani ko‘r</button></div></div><div class="hero-art hero-character-showcase"><div class="planet-orb"><span class="planet-moon"></span></div><div class="hero-character-card">${renderVoxelCharacter('showcase','idle')}<span class="hero-character-caption">${esc(getCharacterClass().name)}</span></div></div></section>
       <section class="hero-stats"><div class="stat-card card"><span class="stat-icon">🎯</span><div><strong>${done}<small style="display:inline;color:#8b9ab7;font-size:10px"> / 54</small></strong><small>Tugallangan missiya</small></div></div><div class="stat-card card"><span class="stat-icon cyan">⚡</span><div><strong>${profile.xp||0}</strong><small>Yig‘ilgan XP</small></div></div><div class="stat-card card"><span class="stat-icon gold">🏅</span><div><strong>${currentLevel()}</strong><small>Explorer darajasi</small></div></div><div class="stat-card card"><span class="stat-icon green">🔥</span><div><strong>${profile.streak||0}</strong><small>Kunlik seriya</small></div></div></section>
       ${renderJourneyTrack()}
       <div class="section-heading"><div><span class="eyebrow">PLAY ZONE · MINI O‘YIN</span><h2>Data Signal Hunt</h2><p>Hozir o‘ynab ko‘r — 5 raund, kamida 3 ta to‘g‘ri javob uchun kunlik 15 XP.</p></div><span class="tag gold">🎮 ARCADE</span></div>
@@ -618,6 +628,7 @@
     renderLesson();window.scrollTo({top:0,behavior:'smooth'});
   }
   function renderLesson() {
+    window.DataSpaceWorld?.unmount();
     const index=activeLessonIndex,l=lessons[index],worldIndex=WORLDS.findIndex(w=>index>=w.from&&index<=w.to),world=WORLDS[worldIndex];
     const done=isDone(index),next=index<53?index+1:null,g=missionGames[index];
     const codeArea=(runtime)=>`<div class="lab-header"><div><strong>${runtime==='python'?'Python Editor':'SQL Query Editor'}</strong><small style="display:block;margin-top:3px">${runtime==='python'?'Brauzerda Python 3 · Pyodide':'SQLite · SQL sandbox'}</small></div><div class="lab-toolbar"><span class="tag ${runtime==='python'?'cyan':'gold'}">${runtime==='python'?'PY':'SQL'}</span></div></div><div class="editor-wrap"><div class="editor-top"><i class="editor-dot"></i><i class="editor-dot"></i><i class="editor-dot"></i><span class="editor-file">${runtime==='python'?'mission.py':'query.sql'}</span></div><textarea id="code-editor" class="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off">${esc(l.starter||'')}</textarea></div><div class="lab-actions"><button class="btn btn-secondary" id="run-code">▶ Kodni ishga tushir</button><button class="btn btn-primary" id="check-code">✓ Kodni tekshir</button><button class="btn btn-ghost" id="reset-code">Qayta tiklash</button><small>${runtime==='python'?'Python brauzer ichida ishlaydi.':'So‘rov lokal SQLite bazasida bajariladi.'}</small></div><div class="console-panel"><div class="console-head"><span>▸ NATIJA / CONSOLE</span><span id="runtime-status">Kutmoqda</span></div><div class="console-output" id="console-output"><span class="placeholder">Natija shu yerda ko‘rinadi. Kodni ishga tushir.</span></div><div id="plot-preview" class="plot-preview hidden"></div><div id="sql-results" class="sql-table-wrap hidden"></div></div>`;
@@ -891,6 +902,23 @@
       renderLesson();
     }catch(error){toast(error.message||'Progressni saqlab bo‘lmadi.','warning');}
   }
+  // 3D world quest reward. Does not change the current view, so the player stays in the world.
+  async function awardWorldQuest(index) {
+    if(!Number.isInteger(index)||index<0||index>=54)return {ok:false,error:'Noto‘g‘ri missiya indeksi.'};
+    if(isDone(index))return {ok:true,already:true,xp:0};
+    if(cloudUser&&cloud){
+      try{
+        const row=await cloud.completeLesson(index);
+        if(!row)throw new Error('Server natijani qaytarmadi.');
+        applyCloudProfile(row,cloudUser);celebrateMission();
+        return {ok:true,xp:20,synced:true};
+      }catch(error){return {ok:false,error:error.message||'Natijani serverga saqlab bo‘lmadi.'};}
+    }
+    profile.completed.push(index);
+    profile.xp=(profile.xp||0)+20;
+    saveProfile();celebrateMission();
+    return {ok:true,xp:20,local:true};
+  }
   function showCertificate() {
     if(completedCount()!==54){toast(`Sertifikat uchun yana ${54-completedCount()} ta missiya qoldi.`,'warning');return;}
     const print=document.createElement('div');print.id='print-certificate';print.innerHTML=`<div class="certificate"><div class="cert-seal">✦ 🎓 ✦</div><div style="letter-spacing:4px;font-size:11px;color:#777199">DATASPACE ACADEMY</div><h1>MUVAFFAQIYAT SERTIFIKATI</h1><p>Ushbu sertifikat</p><div class="cert-name">${esc(profile.name)}</div><p>18 haftalik, 54 darsdan iborat Data Analytics o‘quv yo‘lini muvaffaqiyatli tamomlaganini tasdiqlaydi.</p><h2>Python · Pandas · SQL · Excel</h2><p>DataSpace Explorer · ${new Date().toLocaleDateString('uz-UZ')}</p><div style="margin-top:30px;display:flex;justify-content:space-around;font-size:10px;color:#6b6985"><span>Mentor imzosi __________________</span><span>DataSpace Academy ✦</span></div></div>`;
@@ -906,6 +934,7 @@
   function bindGlobalEvents() {
     document.addEventListener('click',e=>{
       if(e.target.closest('[data-cloud-signout]')){signOutFromApp();return;}
+      if(e.target.closest('[data-guest-mode]')){closeModal();toast('Mehmon rejimi: 3D olamni o‘rganishing mumkin. XP shu brauzerda saqlanadi.','success');return;}
       if(e.target.closest('[data-refresh-leaderboard]')){refreshLeaderboard();return;}
       if(e.target.closest('[data-open-auth]')){openAuthModal(cloudUser?'signin':'signup');return;}
       const playerAction=e.target.closest('[data-player-action]');
@@ -1000,5 +1029,23 @@
       document.getElementById('app-content').innerHTML='<div class="error-state"><strong>Galaktikani yuklab bo‘lmadi</strong><p>'+esc(e.message)+'</p><button class="btn btn-primary" onclick="location.reload()">Qayta urinish</button></div>';
     }
   }
+  // Public bridge consumed by the 3D Roblox-style world module.
+  window.DataSpace={
+    getState(){
+      return {
+        profileName:profile.name||'Explorer',
+        avatar:profile.avatar||'🚀',
+        characterClass:profile.characterClass||'navigator',
+        xp:profile.xp||0,
+        completed:profile.completed.slice(),
+        nextLesson:getNextLesson(),
+        lessons,missionGames,
+        worlds:WORLDS.map((w,i)=>({...w,index:i,unlocked:isWorldUnlocked(i),progress:worldProgress(w)})),
+        isCloud:!!cloudUser
+      };
+    },
+    setView,openLesson,toast,
+    awardQuest:awardWorldQuest
+  };
   init();
 })();

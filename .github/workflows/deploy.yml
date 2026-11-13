@@ -36,6 +36,11 @@ jobs:
       - name: Validate character worlds and controls
         run: |
           node -e 'const fs=require("fs"); const a=fs.readFileSync("js/app.js","utf8"); const h=fs.readFileSync("index.html","utf8"); const z=fs.readFileSync("assets/voxel-worlds.css","utf8"); for(const key of ["renderVoxelCharacter","renderGameWorldStage","triggerCharacterAction","data-player-action","characterClass"]) if(!a.includes(key)) throw new Error("Missing game feature: "+key); if(!h.includes("assets/voxel-worlds.css")) throw new Error("World styles not linked"); if(!z.includes(".game-world.biome-8")||!z.includes(".voxel-character")) throw new Error("Character world styles incomplete");'
+      - name: Validate 3D Roblox learning world
+        run: |
+          node --experimental-default-type=module --check js/world3d.js
+          node --experimental-default-type=module --check assets/vendor/three.module.min.js
+          node -e 'const fs=require("fs");const h=fs.readFileSync("index.html","utf8");const a=fs.readFileSync("js/app.js","utf8");const w=fs.readFileSync("js/world3d.js","utf8");for(const k of ["assets/world3d.css","js/world3d.js"])if(!h.includes(k))throw new Error("Missing 3D asset: "+k);for(const k of ["renderWorld3DHost","awardWorldQuest","DataSpaceWorld","data-guest-mode"])if(!a.includes(k))throw new Error("Missing 3D integration: "+k);for(const k of ["startQuest","solveQuest","buildIslands","updateNear","DataSpaceWorld"])if(!w.includes(k))throw new Error("Incomplete 3D world: "+k);for(const f of ["js/world3d.js","assets/world3d.css","assets/vendor/three.module.min.js"])if(!fs.existsSync(f))throw new Error("Missing file "+f);'
       - name: Validate username accounts and global leaderboard
         run: |
           node --check js/cloud.js
